@@ -2,7 +2,7 @@ name: Build & Release Go
 
 on:
   release:
-    types: [published]
+    types: [published,updated]
 
 jobs:
   setup:
