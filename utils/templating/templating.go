@@ -23,7 +23,11 @@ func ParseTemplate(templt *template.Template, tmplStr string, variables any) (st
 }
 
 func CreateTemplateWithFunc(name string, funcMap template.FuncMap) *template.Template {
-	return template.New(name).Funcs(funcMap)
+	templt := template.New(name).Funcs(funcMap)
+
+	templt = AddTemplateDelim(templt, "{{{", "}}}")
+
+	return templt
 }
 
 func AddTemplateOptions(templt *template.Template, options ...string) *template.Template {
@@ -35,7 +39,7 @@ func AddTemplateDelim(templt *template.Template, left, right string) *template.T
 }
 
 func TransformTemplateKeys(tmplStr string, prefix string, transform func(varRegex *regexp.Regexp, m string) string) (string, error) {
-	re, err := regexp.Compile(`{{[^{}]+}}`)
+	re, err := regexp.Compile(`{{{[^{}]+}}}`)
 
 	if err != nil {
 		return tmplStr, err

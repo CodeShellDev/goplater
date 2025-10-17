@@ -269,8 +269,6 @@ func templateStr(str string, context TemplateContext, variables map[string]any) 
 		},
 	})
 
-	templt = templating.AddTemplateDelim(templt, "{{{", "}}}")
-
 	if supress {
 		templt = templating.AddTemplateOptions(templt, "missingkey=zero")
 	}
