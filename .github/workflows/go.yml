@@ -5,8 +5,8 @@ on:
     types: [published]
 
 jobs:
-  build:
-    name: Build & Test
+  setup:
+    name: Setup
     runs-on: ubuntu-latest
 
     steps:
@@ -32,9 +32,21 @@ jobs:
       - name: Install dependencies
         run: go mod tidy
 
-      - name: Run tests
+  test:
+    name: Test
+    runs-on: ubuntu-latest
+    needs: setup
+
+    steps:
+      - name: Run Go test
         run: go test ./... -v
 
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+    needs: test
+
+    steps:
       - name: Build binaries
         run: |
           mkdir -p dist
