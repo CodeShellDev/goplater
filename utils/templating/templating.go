@@ -26,8 +26,12 @@ func CreateTemplateWithFunc(name string, funcMap template.FuncMap) *template.Tem
 	return template.New(name).Funcs(funcMap)
 }
 
-func AddTemplateOption(templt *template.Template, options ...string) *template.Template {
+func AddTemplateOptions(templt *template.Template, options ...string) *template.Template {
 	return templt.Option(options...)
+}
+
+func AddTemplateDelim(templt *template.Template, left, right string) *template.Template {
+	return templt.Delims(left, right)
 }
 
 func TransformTemplateKeys(tmplStr string, prefix string, transform func(varRegex *regexp.Regexp, m string) string) (string, error) {

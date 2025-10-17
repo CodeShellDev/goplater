@@ -27,6 +27,9 @@ var match []string
 var recursive bool
 var flatten bool
 
+var verbose bool
+var supress bool
+
 type TemplateContext struct {
 	invoker 	string
 	name 		string
@@ -67,6 +70,9 @@ func init() {
 	templateCmd.Flags().StringSliceVarP(&match, "match", "m", []string{".*"}, "regex match for templating")
 
 	templateCmd.Flags().StringSliceVarP(&whitespace, "whitespace", "w", []string{"l","t"}, "remove whitespace from files")
+
+	templateCmd.Flags().BoolVarP(&verbose, "verbose", "v", false, "print additional information")
+	templateCmd.Flags().BoolVarP(&supress, "ignore-errors", "i", false, "ignore / supress errors")
 }
 
 func run(cmd *cobra.Command, args []string) {
@@ -157,6 +163,8 @@ func templateFile(relativePath string) error {
 }
 
 func templateContent(content string, context TemplateContext) (string, error) {
+
+
 	normalized := normalize(content)
 
 	tmplStr, err := templateStr(normalized, context, nil)
@@ -261,8 +269,10 @@ func templateStr(str string, context TemplateContext, variables map[string]any) 
 		},
 	})
 
+	templt = templating.AddTemplateDelim(templt, "{{{", "}}}")
+
 	if supress {
-		templt = templating.AddTemplateOption(templt, "missingkey=zero")
+		templt = templating.AddTemplateOptions(templt, "missingkey=zero")
 	}
 
 	tmplStr, err = templating.ParseTemplate(templt, tmplStr, variables)
