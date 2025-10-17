@@ -127,7 +127,7 @@ func handleFile(relativePath string) {
 
 	err := templateFile(relativePath)
 
-	if err != nil {
+	if err != nil && !supress {
 		fmt.Println("error templating:", err.Error())
 	}
 }
