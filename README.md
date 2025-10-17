@@ -1,5 +1,5 @@
 # goplater
 
-A Go utility to template files (also recursively)
+Goplater is a commandline programm that templates files by using local and also remote files.
 
-{{ @://https://raw.githubusercontent.com/CodeShellDev/secured-signal-api/refs/heads/main/docker-compose.yaml }}
+## Getting Started

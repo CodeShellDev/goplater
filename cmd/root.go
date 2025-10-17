@@ -6,6 +6,10 @@ import (
 	"github.com/spf13/cobra"
 )
 
+
+var verbose bool
+var supress bool
+
 var rootCmd = &cobra.Command{
 	Use:   "goplater",
     Short: "Go Template CLI",
@@ -23,5 +27,6 @@ func Execute() {
 }
 
 func init() {
-	
+	rootCmd.Flags().BoolVarP(&verbose, "verbose", "v", false, "print additional information")
+	rootCmd.Flags().BoolVarP(&supress, "ignore-errors", "i", false, "ignore / supress errors")
 }

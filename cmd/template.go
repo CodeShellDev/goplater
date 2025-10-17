@@ -24,7 +24,6 @@ var sourceContext string = "."
 var whitespace []string
 var match []string
 
-var verbose bool
 var recursive bool
 var flatten bool
 
@@ -60,7 +59,6 @@ func init() {
 	rootCmd.AddCommand(templateCmd)
 
 	templateCmd.Flags().BoolVarP(&recursive, "recursive", "r", false, "recusively template files")
-	templateCmd.Flags().BoolVarP(&verbose, "verbose", "v", false, "print additional information")
 	templateCmd.Flags().BoolVarP(&flatten, "flatten", "f", false, "flatten output path: don't preserve source folder structure")
 
 	templateCmd.Flags().StringVarP(&outputContext, "output", "o", ".", "output path for templated files")
@@ -262,6 +260,10 @@ func templateStr(str string, context TemplateContext, variables map[string]any) 
 			return templateGet(key, context)	
 		},
 	})
+
+	if supress {
+		templt = templating.AddTemplateOption(templt, "missingkey=zero")
+	}
 
 	tmplStr, err = templating.ParseTemplate(templt, tmplStr, variables)
 

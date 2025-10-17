@@ -26,6 +26,10 @@ func CreateTemplateWithFunc(name string, funcMap template.FuncMap) *template.Tem
 	return template.New(name).Funcs(funcMap)
 }
 
+func AddTemplateOption(templt *template.Template, options ...string) *template.Template {
+	return templt.Option(options...)
+}
+
 func TransformTemplateKeys(tmplStr string, prefix string, transform func(varRegex *regexp.Regexp, m string) string) (string, error) {
 	re, err := regexp.Compile(`{{[^{}]+}}`)
 
