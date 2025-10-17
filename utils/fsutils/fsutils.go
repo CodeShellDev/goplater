@@ -90,3 +90,10 @@ func resolveOutput(source, output string) string {
 	// Rename or overwrite file
 	return output
 }
+
+func Relative(abs, rel string) string {
+	fullPath := filepath.Join(abs, rel)
+	fullPath = filepath.Clean(fullPath)
+
+	return fullPath
+}

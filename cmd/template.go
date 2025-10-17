@@ -17,16 +17,22 @@ import (
 	"github.com/spf13/cobra"
 )
 
-var context string = "."
-var output string = "."
-var localContext string = "."
+var fileContext string = "."
+var outputContext string = "."
+var sourceContext string = "."
 
 var whitespace []string
 var match []string
 
 var verbose bool
 var recursive bool
-var preserveStructure bool
+var flatten bool
+
+type TemplateContext struct {
+	invoker 	string
+	name 		string
+	// ...
+}
 
 var templateCmd = &cobra.Command{
 	Use:   "template",
@@ -55,10 +61,10 @@ func init() {
 
 	templateCmd.Flags().BoolVarP(&recursive, "recursive", "r", false, "recusively template files")
 	templateCmd.Flags().BoolVarP(&verbose, "verbose", "v", false, "print additional information")
-	templateCmd.Flags().BoolVarP(&preserveStructure, "preserve-struct", "p", true, "preserves source folder structure in output path")
+	templateCmd.Flags().BoolVarP(&flatten, "flatten", "f", false, "flatten output path: don't preserve source folder structure")
 
-	templateCmd.Flags().StringVarP(&output, "output", "o", ".", "output path for templated files")
-	templateCmd.Flags().StringVarP(&localContext, "source", "s", ".", "source path for local files")
+	templateCmd.Flags().StringVarP(&outputContext, "output", "o", ".", "output path for templated files")
+	templateCmd.Flags().StringVarP(&sourceContext, "source", "s", ".", "source path for local files")
 
 	templateCmd.Flags().StringSliceVarP(&match, "match", "m", []string{".*"}, "regex match for templating")
 
@@ -66,31 +72,29 @@ func init() {
 }
 
 func run(cmd *cobra.Command, args []string) {
-	context = args[0]
+	fileContext = args[0]
 
-	fullPath, _ := filepath.Abs(context)
+	fullPath, _ := filepath.Abs(fileContext)
 
 	isDir := fsutils.IsDir(fullPath)
 	isFile := fsutils.IsFile(fullPath)
 
 	if isDir {
-		localContext = context
-
-		filepath.WalkDir(context, func(path string, d fs.DirEntry, err error) error {
+		filepath.WalkDir(fileContext, func(path string, d fs.DirEntry, err error) error {
 			if err != nil {
 				return err
 			}
 
 			if !d.IsDir() {
 				handleFile(path)
-			} else if path != context && !recursive {
+			} else if path != fileContext && !recursive {
 				return filepath.SkipDir
 			}
 
 			return nil
 		})
 	} else if isFile {
-		handleFile(context)
+		handleFile(fileContext)
 	}
 }
 
@@ -145,9 +149,7 @@ func templateFile(relativePath string) error {
 		return errors.New("empty file")
 	}
 
-	normalized := normalize(string(data))
-
-	tmplStr, err := templateStr("main", normalized, nil)
+	tmplStr, err := templateContent(string(data), TemplateContext{invoker: relativePath, name: relativePath})
 
 	if err != nil {
 		return err
@@ -156,8 +158,16 @@ func templateFile(relativePath string) error {
 	return handleFileWrite(tmplStr, relativePath)
 }
 
+func templateContent(content string, context TemplateContext) (string, error) {
+	normalized := normalize(content)
+
+	tmplStr, err := templateStr(normalized, context, nil)
+
+	return tmplStr, err
+}
+
 func handleFileWrite(content, relativePath string) error {
-	fullPath := fsutils.ResolveOutput(relativePath, output, preserveStructure)
+	fullPath := fsutils.ResolveOutput(relativePath, outputContext, !flatten)
 
 	if verbose {
 		fmt.Println("writing to", fullPath)
@@ -199,14 +209,28 @@ func removeWhitespace(r rune) bool {
 	return r == ' ' || r == '\t' || r == '\n' || r == '\r'
 }
 
-func templateGet(key string) any {
+func templateGet(key string, context TemplateContext) any {
 	var res string
+
+	keyWithoutPrefix := key[4:]
 
 	switch(key[:4]) {
 	case "@://":
-		res = get.Remote(key[4:])
+		res = get.Remote(keyWithoutPrefix)
 	case "#://":
-		res = get.Local(key[4:], localContext)
+		isRel := strings.HasPrefix(keyWithoutPrefix, "./") || strings.HasPrefix(keyWithoutPrefix, "../")
+
+		filePathAbs, _ := filepath.Abs(context.invoker)
+
+		if isRel {
+			res = get.Local(keyWithoutPrefix, filepath.Dir(filePathAbs))
+		} else {
+			res = get.Local(keyWithoutPrefix, sourceContext)
+		}
+
+		keyWithoutPrefix = fsutils.Relative(filepath.Dir(filePathAbs), keyWithoutPrefix)
+
+		fmt.Println(keyWithoutPrefix)
 	}
 
 	if slices.Contains(whitespace, "l") {
@@ -217,18 +241,26 @@ func templateGet(key string) any {
 		res = strings.TrimRightFunc(res, removeWhitespace)
 	}
 
+	fileName := filepath.Base(keyWithoutPrefix)
+
+	if matchFile(fileName) {
+		res, _ = templateContent(res, TemplateContext{invoker: keyWithoutPrefix, name: keyWithoutPrefix})
+	}
+
 	return res
 }
 
-func templateStr(name, str string, variables map[string]any) (string, error) {
+func templateStr(str string, context TemplateContext, variables map[string]any) (string, error) {
 	tmplStr, err := templating.AddTemplateFunc(str, "get")
 
 	if err != nil {
 		return str, err
 	}
 
-	templt := templating.CreateTemplateWithFunc(name, template.FuncMap{
-		"get": templateGet,
+	templt := templating.CreateTemplateWithFunc(context.name, template.FuncMap{
+		"get": func (key string) any {
+			return templateGet(key, context)	
+		},
 	})
 
 	tmplStr, err = templating.ParseTemplate(templt, tmplStr, variables)

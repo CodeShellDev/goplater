@@ -7,6 +7,8 @@ import (
 	"net/url"
 	"os"
 	"path/filepath"
+
+	"github.com/codeshelldev/goplater/utils/fsutils"
 )
 
 func Remote(key string) string {
@@ -36,8 +38,8 @@ func Remote(key string) string {
 func Local(key, context string) string {
 	contextAbs, _ := filepath.Abs(context)
 
-	fullPath, _ := filepath.Rel(contextAbs, key)
-
+	fullPath := fsutils.Relative(contextAbs, key)
+	
 	fullPath, err := filepath.Abs(fullPath)
 
 	if err == nil {
