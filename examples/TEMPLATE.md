@@ -2,7 +2,7 @@
 Wow, look at this incredible file... 🥳
 ```
 
-{{{ #://examples/fs/INCREDIBLE.md }}}
+`{{{ #://examples/fs/INCREDIBLE.md }}}`
 
 ```md
 You want the `docker-compose.yaml` file for Secured Signal API?
