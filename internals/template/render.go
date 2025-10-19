@@ -30,11 +30,8 @@ func templateStr(str string, context context.TemplateContext, variables map[stri
 	}
 
 	templt := templateutils.CreateTemplateWithFunc(context.Path, template.FuncMap{
-		"get": func (path string) any {
-			newContext := context
-			newContext.Path = path
-
-			return templateGet(newContext)
+		"get": func (str string) any {
+			return templateGet(str, context)
 		},
 	})
 

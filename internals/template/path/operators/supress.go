@@ -1,6 +1,7 @@
 package operators
 
 import (
+	"fmt"
 	"strings"
 
 	"github.com/codeshelldev/goplater/internals/template/context"
@@ -12,6 +13,8 @@ func init() {
 		Name: "supress",
 		AllowedProtocols: []types.TemplateProtocol{{ Name: "local" },{ Name: "remote" }},
 		ApplyFunc: func(pathComponent, content string, context context.TemplateContext) (string, context.TemplateContext) {
+			fmt.Println(context)
+			
 			return content, context
 		},
 		MatchFunc: func(match string) (bool, string) {
