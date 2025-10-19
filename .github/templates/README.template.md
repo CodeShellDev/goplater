@@ -29,7 +29,7 @@ This Template will then include `examples/data.json` and `docker-compose.yaml` (
 Which results in:
 
 ```markdown
-{{{ #://examples/TEMPLATE.md }}}
+{{{ !#://examples/TEMPLATE.md }}}
 ```
 
 ## Contributing
