@@ -23,8 +23,8 @@ Take a look at this `TEMPLATE.md` file:
 {{{ #://examples/TEMPLATE.md }}}
 ```
 
-Notice the `{{{ #://... }}}` and `{{{ @://... }}}`, these are used to include local and remot files in your Template respectively.
-This Template will then include `examples/data.json` and `docker-compose.yaml` (from [Secured Signal API](https://github.com/CodeShellDev/secured-signal-api/blob/main/docker-compose.yaml)) in its File Content.
+Notice the `{{ #://... }}}` and `{{ @://... }}}`, these are used to include local and remot files in your Template respectively.
+This Template will then include `examples/fs/INCREDIBLE.md` and `docker-compose.yaml` (from [Secured Signal API](https://github.com/CodeShellDev/secured-signal-api/blob/main/docker-compose.yaml)) in its File Content.
 
 Which results in:
 
