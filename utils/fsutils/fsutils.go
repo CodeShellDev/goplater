@@ -33,17 +33,7 @@ func IsFile(path string) bool {
 	return false
 }
 
-// Resolves Path based on relative Source and relative Output Path.
-// Use `preserverStruct` to preserve folder structure
-func ResolveOutput(source, output string, preserveStruct bool) string {
-	if preserveStruct {
-		return resolveOutputPreserved(source, output)
-	}
-
-	return resolveOutput(source, output)
-}
-
-func resolveOutputPreserved(source, output string) string {
+func ResolveOutputPreserved(source, output string) string {
 	isDirOutput := strings.HasSuffix(output, "/")
 
 	if isDirOutput && output != "." {
@@ -71,7 +61,7 @@ func resolveOutputPreserved(source, output string) string {
 	return output
 }
 
-func resolveOutput(source, output string) string {
+func ResolveOutput(source, output string) string {
 	isDirSource := strings.HasSuffix(source, "/")
 	isDirOutput := strings.HasSuffix(output, "/")
 

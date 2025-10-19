@@ -62,7 +62,7 @@ func TestOutputPath(t *testing.T) {
 	}
 
 	for _, outputPathCase := range cases {
-		got := fsutils.ResolveOutput(outputPathCase.source, outputPathCase.output, false)
+		got := fsutils.ResolveOutput(outputPathCase.source, outputPathCase.output)
 
 		if got != outputPathCase.expect {
 			t.Error("\nERROR\nsource:", outputPathCase.source, "\noutput:", outputPathCase.output, "\nexpected:", outputPathCase.expect, "\ngot:", got)
@@ -125,7 +125,7 @@ func TestOutputPathPreserve(t *testing.T) {
 	}
 
 	for _, outputPathCase := range cases {
-		got := fsutils.ResolveOutput(outputPathCase.source, outputPathCase.output, true)
+		got := fsutils.ResolveOutputPreserved(outputPathCase.source, outputPathCase.output)
 
 		if got != outputPathCase.expect {
 			t.Error("\nERROR\nsource:", outputPathCase.source, "\noutput:", outputPathCase.output, "\nexpected:", outputPathCase.expect, "\ngot:", got)

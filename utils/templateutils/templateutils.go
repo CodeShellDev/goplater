@@ -1,4 +1,4 @@
-package templating
+package templateutils
 
 import (
 	"bytes"
@@ -38,14 +38,14 @@ func AddTemplateDelim(templt *template.Template, left, right string) *template.T
 	return templt.Delims(left, right)
 }
 
-func TransformTemplateKeys(tmplStr string, prefix string, transform func(varRegex *regexp.Regexp, m string) string) (string, error) {
+func TransformTemplateKeys(tmplStr string, transform func(varRegex *regexp.Regexp, m string) string) (string, error) {
 	re, err := regexp.Compile(`{{{[^{}]+}}}`)
 
 	if err != nil {
 		return tmplStr, err
 	}
 
-	varRe, err := regexp.Compile(`"`+prefix+`([^"\n]+)"|`+prefix+`([a-zA-Z0-9_.]+)`)
+	varRe, err := regexp.Compile(`"([^"\t\n\r\f\v]+)"|([a-zA-Z0-9_.]+)`)
 
 	if err != nil {
 		return tmplStr, err
@@ -59,31 +59,9 @@ func TransformTemplateKeys(tmplStr string, prefix string, transform func(varRege
 }
 
 func AddTemplateFunc(tmplStr string, funcName string) (string, error) {
-	return TransformTemplateKeys(tmplStr, ``, func(re *regexp.Regexp, match string) string {
+	return TransformTemplateKeys(tmplStr, func(re *regexp.Regexp, match string) string {
 		return re.ReplaceAllStringFunc(match, func(varMatch string) string {
 			return "("+funcName+" "+varMatch+")"
 		})
 	})
-}
-
-func ReplaceTemplatePrefix(content string, fromPrefix, toPrefix string) (string, error) {
-	tmplStr, err := TransformTemplateKeys(content, fromPrefix, func(re *regexp.Regexp, match string) string {
-		re, _ = regexp.Compile(`"`+fromPrefix+`([^"\n]+)"|`+fromPrefix+`([^"\s{}]+)`)
-
-		return re.ReplaceAllStringFunc(match, func(varMatch string) string {
-			var varName string
-
-			submatches := re.FindStringSubmatch(varMatch)
-
-			if submatches[1] != "" {
-				varName = submatches[1]
-			} else {
-				varName = submatches[2]
-			}
-
-			return `"` + toPrefix + varName + `"`
-		})
-	})
-
-	return tmplStr, err
 }
