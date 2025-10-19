@@ -25,7 +25,7 @@ Take a look at this `TEMPLATE.md` file:
 Wow, look at this incredible file... 🥳
 ```
 
-{{{ #://examples/fs/INCREDIBLE.md }}}
+`{{{ #://examples/fs/INCREDIBLE.md }}}`
 
 ```md
 You want the `docker-compose.yaml` file for Secured Signal API?
@@ -49,8 +49,9 @@ Which results in:
 Wow, look at this incredible file... 🥳
 ```
 
-```go
+````go
 // src: cmd/root.go
+
 package cmd
 
 import (
@@ -78,7 +79,7 @@ func Execute() {
 func init() {
 	
 }
-```
+````
 
 ```md
 You want the `docker-compose.yaml` file for Secured Signal API?
