@@ -19,12 +19,38 @@ This will create a new file called `README.md` in your current working directory
 
 Take a look at this `TEMPLATE.md` file:
 
-```markdown
-Wow, look at this incredible file... 🥳
+---
 
-`cmd/root.go`:
+```md
+Wow, look at this incredible file... 🥳
+```
+
+{{{ #://examples/fs/INCREDIBLE.md }}}
+
+```md
+You want the `docker-compose.yaml` file for Secured Signal API?
+Really? Here you go:
+```
+
+```yaml
+{{{ @://https://raw.githubusercontent.com/CodeShellDev/secured-signal-api/refs/heads/main/docker-compose.yaml }}}
+```
+
+---
+
+Notice the `{{ #://... }}}` and `{{ @://... }}}`, these are used to include local and remot files in your Template respectively.
+This Template will then include `examples/fs/INCREDIBLE.md` and `docker-compose.yaml` (from [Secured Signal API](https://github.com/CodeShellDev/secured-signal-api/blob/main/docker-compose.yaml)) in its File Content.
+
+Which results in:
+
+---
+
+```md
+Wow, look at this incredible file... 🥳
+```
 
 ```go
+// src: cmd/root.go
 package cmd
 
 import (
@@ -54,8 +80,10 @@ func init() {
 }
 ```
 
+```md
 You want the `docker-compose.yaml` file for Secured Signal API?
 Really? Here you go:
+```
 
 ```yaml
 services:
@@ -91,25 +119,6 @@ services:
 
 networks:
   backend:
-```
-```
-
-Notice the `{{ #://... }}}` and `{{ @://... }}}`, these are used to include local and remot files in your Template respectively.
-This Template will then include `examples/fs/INCREDIBLE.md` and `docker-compose.yaml` (from [Secured Signal API](https://github.com/CodeShellDev/secured-signal-api/blob/main/docker-compose.yaml)) in its File Content.
-
-Which results in:
-
-```markdown
-Wow, look at this incredible file... 🥳
-
-{{{ #://examples/fs/INCREDIBLE.md }}}
-
-You want the `docker-compose.yaml` file for Secured Signal API?
-Really? Here you go:
-
-```yaml
-{{{ @://https://raw.githubusercontent.com/CodeShellDev/secured-signal-api/refs/heads/main/docker-compose.yaml }}}
-```
 ```
 
 ## Contributing
