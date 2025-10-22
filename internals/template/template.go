@@ -35,6 +35,7 @@ func run(context context.TemplateContext) {
 			if !d.IsDir() {
 				newContext := context
 				newContext.Path = path
+				newContext.Invoker = path
 
 				handleFile(newContext)
 			} else if path != context.Path && !context.Options.Recursive {
