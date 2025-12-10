@@ -4,7 +4,7 @@ Goplater is a Go commandline programm that helps you template your files.
 
 ## Getting Started
 
-Download the `latest` binaries from the Release Page.
+Download the latest binary from the Release page.
 Make it executable with `chmod +x goplater` and run it for the first time.
 
 Use the `goplater template` command to template files:
