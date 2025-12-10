@@ -4,7 +4,7 @@ Goplater is a Go commandline programm that helps you template your files.
 
 ## Getting Started
 
-Download the `latest` binaries from the Release Page.
+Download the latest binary from the Release page.
 Make it executable with `chmod +x goplater` and run it for the first time.
 
 Use the `goplater template` command to template files:
@@ -87,39 +87,7 @@ Really? Here you go:
 ```
 
 ```yaml
-services:
-  signal-api:
-    image: bbernhard/signal-cli-rest-api:latest
-    container_name: signal-api
-    environment:
-      - MODE=normal
-    volumes:
-      - ./data:/home/.local/share/signal-cli
-    restart: unless-stopped
-    networks:
-      backend:
-        aliases:
-          - signal-api
-
-  secured-signal:
-    image: ghcr.io/codeshelldev/secured-signal-api:latest
-    container_name: secured-signal
-    environment:
-      API__URL: http://signal-api:8080
-      SETTINGS__VARIABLES__RECIPIENTS:
-        '[+123400002, +123400003, +123400004]'
-      SETTINGS__VARIABLES__NUMBER: "+123400001"
-      API__TOKENS: '[LOOOOOONG_STRING]'
-    ports:
-      - "8880:8880"
-    restart: unless-stopped
-    networks:
-      backend:
-        aliases:
-          - secured-signal-api
-
-networks:
-  backend:
+404: Not Found
 ```
 
 ## Contributing
