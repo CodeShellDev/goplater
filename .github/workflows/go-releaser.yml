@@ -1,0 +1,14 @@
+name: Build & Release Go
+
+on:
+  release:
+    types: [published]
+
+jobs:
+  update:
+    uses: codeshelldev/gh-actions/.github/workflows/go-releaser.yml@main
+    name: Go Releaser
+    with:
+      platforms: linux/amd64, linux/arm64, darwin/amd64, windows/amd64
+    secrets:
+      GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
