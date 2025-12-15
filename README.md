@@ -33,7 +33,7 @@ Really? Here you go:
 ```
 
 ```yaml
-{{{ @://https://raw.githubusercontent.com/CodeShellDev/secured-signal-api/refs/heads/main/docker-compose.yaml }}}
+{{{ @://https://raw.githubusercontent.com/CodeShellDev/secured-signal-api/refs/heads/docs/docker-compose.yaml }}}
 ```
 
 ---
