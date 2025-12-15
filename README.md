@@ -33,7 +33,7 @@ Really? Here you go:
 ```
 
 ```yaml
-{{{ @://https://raw.githubusercontent.com/CodeShellDev/secured-signal-api/refs/heads/docs/docker-compose.yaml }}}
+{{{ @://https://github.com/CodeShellDev/secured-signal-api/raw/refs/heads/docs/docs/getting-started/examples/docker-compose.yaml }}}
 ```
 
 ---
@@ -87,7 +87,38 @@ Really? Here you go:
 ```
 
 ```yaml
-404: Not Found
+services:
+  signal-api:
+    image: bbernhard/signal-cli-rest-api:latest
+    container_name: signal-api
+    environment:
+      - MODE=normal
+    volumes:
+      - ./data:/home/.local/share/signal-cli
+    restart: unless-stopped
+    networks:
+      backend:
+        aliases:
+          - signal-api
+
+  secured-signal:
+    image: ghcr.io/codeshelldev/secured-signal-api:latest
+    container_name: secured-signal
+    environment:
+      API__URL: http://signal-api:8080
+      SETTINGS__MESSAGE__VARIABLES__RECIPIENTS: "[+123400002, +123400003, +123400004]"
+      SETTINGS__MESSAGE__VARIABLES__NUMBER: "+123400001"
+      API__TOKENS: "[LOOOOOONG_STRING]"
+    ports:
+      - "8880:8880"
+    restart: unless-stopped
+    networks:
+      backend:
+        aliases:
+          - secured-signal-api
+
+networks:
+  backend:
 ```
 
 ## Contributing
