@@ -10,5 +10,5 @@ Really? Here you go:
 ```
 
 ```yaml
-{{{ @://https://raw.githubusercontent.com/CodeShellDev/secured-signal-api/refs/heads/docs/docker-compose.yaml }}}
+{{{ @://https://github.com/CodeShellDev/secured-signal-api/raw/refs/heads/docs/docs/getting-started/examples/docker-compose.yaml }}}
 ```
