@@ -13,7 +13,7 @@
 	"license": "MIT",
 	"author": "CodeShellDev",
 	"bin": {
-		"goplater": "bin/goplater"
+		"goplater": "bin/goplater.js"
 	},
 	"files": [
 		"bin/",
