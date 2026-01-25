@@ -1,0 +1,13 @@
+{
+	"name": "@codeshelldev/goplater-linux-x64",
+	"version": "0.0.0",
+	"bin": {
+		"goplater": "bin/goplater"
+	},
+	"files": [
+		"bin/",
+		"package.json",
+		"README.md",
+		"LICENSE"
+	]
+}
