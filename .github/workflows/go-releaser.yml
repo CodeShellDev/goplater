@@ -41,6 +41,7 @@ jobs:
       - name: Publish npm package
         run: |
           cp -r dist/* npm/bin/
+          chmod +x -R npm/bin/${{ github.repository }}-*
           cp README.md npm/
           cp LICENSE npm/
           cd npm/
