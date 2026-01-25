@@ -16,7 +16,7 @@ if (!plat || !arch) {
 	process.exit(1)
 }
 
-const distDir = path.resolve(__dirname, "../dist")
+const distDir = path.resolve(__dirname)
 const files = fs.readdirSync(distDir)
 
 let binaryFile = files.find((f) => f.includes(`${plat}-${arch}`))
