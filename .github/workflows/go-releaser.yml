@@ -18,19 +18,25 @@ jobs:
     needs: update
     runs-on: ubuntu-latest
 
+    permissions:
+      contents: read
+      packages: write
+
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout repository
+        uses: actions/checkout@v5
+
+      - name: Setup node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "24.x"
+          registry-url: "https://npm.pkg.github.com"
 
       - name: Download build artifacts
         uses: actions/download-artifact@v4
         with:
           name: go-binaries
           path: dist
-
-      - name: Setup node
-        uses: actions/setup-node@v6
-        with:
-          registry-url: https://registry.npmjs.org
 
       - name: Publish npm package
         run: |
@@ -39,4 +45,6 @@ jobs:
           cp LICENSE npm/
           cd npm/
           npm version ${{ github.event.release.tag_name }} --no-git-tag-version
-          npm publish --access public
+          npm publish
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
