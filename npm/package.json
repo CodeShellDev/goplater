@@ -12,9 +12,6 @@
 	},
 	"license": "MIT",
 	"author": "CodeShellDev",
-	"scripts": {
-		"postinstall": "chmod +x node_modules/@codeshelldev/goplater/bin/goplater-*"
-	},
 	"bin": {
 		"goplater": "bin/goplater.js"
 	},
