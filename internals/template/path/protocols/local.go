@@ -20,14 +20,16 @@ func init() {
 			isRel := strings.HasPrefix(pathComponent, "./") || strings.HasPrefix(pathComponent, "../")
 
 			filePathAbs, _ := filepath.Abs(context.Invoker)
+			
+			relPathComponent := fsutils.Relative(filepath.Dir(filePathAbs), pathComponent)
+
+			context.Invoker = relPathComponent
 
 			if isRel {
 				res = fetchutils.Local(pathComponent, filepath.Dir(filePathAbs))
 			} else {
 				res = fetchutils.Local(pathComponent, context.Options.Source)
 			}
-
-			pathComponent = fsutils.Relative(filepath.Dir(filePathAbs), pathComponent)
 
 			return res, context
 		},
