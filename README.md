@@ -158,7 +158,7 @@ delete map "key"
 ```
 
 ```
-delete array i
+delete array 0
 ```
 
 ## Contributing
