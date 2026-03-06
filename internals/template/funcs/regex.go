@@ -47,7 +47,7 @@ var regexFindGroupsFunc = TemplateFunc{
 
 var regexReplaceFunc = TemplateFunc{
 	Name: "regexReplace",
-	Handler: func(context context.TemplateContext, regex string, str string, replaceWith string) string {
+	Handler: func(context context.TemplateContext, str string, regex string, replaceWith string) string {
 		re, err := regexp.Compile(regex)
 
 		if err != nil {
