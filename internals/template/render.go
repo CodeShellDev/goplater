@@ -5,7 +5,8 @@ import (
 
 	"github.com/codeshelldev/goplater/internals/template/context"
 	"github.com/codeshelldev/goplater/internals/template/core"
-	"github.com/codeshelldev/goplater/utils/templateutils"
+	"github.com/codeshelldev/goplater/internals/template/funcs"
+	"github.com/codeshelldev/gotl/pkg/templating"
 )
 
 func (t *Templater) Render(content string, context context.TemplateContext) (string, error) {
@@ -15,35 +16,24 @@ func (t *Templater) Render(content string, context context.TemplateContext) (str
 var _ core.IRenderer = (*Templater)(nil)
 
 func templateContent(content string, context context.TemplateContext) (string, error) {
-	normalized := normalize(content)
+	normalized := content
 
-	tmplStr, err := templateStr(normalized, context, nil)
+	tmplStr, err := templateStr(normalized, context)
 
 	return tmplStr, err
 }
 
-func templateStr(str string, context context.TemplateContext, variables map[string]any) (string, error) {
-	tmplStr, err := templateutils.AddTemplateFunc(str, "get")
+func templateStr(str string, context context.TemplateContext) (string, error) {
+	templt := template.New(context.Path)
+	templt.Delims("${{{", "}}}")
+	
+	templt.Funcs(funcs.GetFuncMap(context))
+
+	err := templating.ParseTemplate(templt, str)
 
 	if err != nil {
 		return str, err
 	}
 
-	templt := templateutils.CreateTemplateWithFunc(context.Path, template.FuncMap{
-		"get": func (str string) any {
-			return templateGet(str, context)
-		},
-	})
-
-	if context.Options.Supress {
-		templt = templateutils.AddTemplateOptions(templt, "missingkey=zero")
-	}
-
-	tmplStr, err = templateutils.ParseTemplate(templt, tmplStr, variables)
-
-	if err != nil {
-		return str, err
-	}
-
-	return tmplStr, nil
+	return templating.ExecuteTemplate(templt, nil)
 }

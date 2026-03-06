@@ -17,22 +17,149 @@ This will create a new file called `README.md` in your current working directory
 
 ## Usage
 
-Take a look at this `TEMPLATE.md` file:
+### Format
 
----
+Goplater uses Go's [builtin templating library](https://pkg.go.dev/text/template) therefor the syntax should be consistent with other projects.
 
-{{{ !#://examples/TEMPLATE.md }}}
+**Example:**
 
----
+```
+File Content: $​{​{​{ read "./myfile.txt" }​}​}
+```
 
-Notice the `{­{­{ #://... }­}­}` and `{­{­{ @://... }­}­}`, these are used to include local and remote files in your Template respectively.
-This Template will then include `examples/fs/INCREDIBLE.md` and `docker-compose.yaml` (from [Secured Signal API](https://github.com/CodeShellDev/secured-signal-api/blob/main/docker-compose.yaml)) in its File Content.
+### Functions
 
-Which results in:
+As you saw in the example above `read` is used for reading and output file contents.
+But there are more as you will see in the following…
 
----
+#### `read`
 
-{{{ #://examples/TEMPLATE.md }}}
+Reads from absolute or relative file path (depending on input),
+where relative paths are relative to the invoker.
+
+```
+read "path"
+```
+
+##### `readOpts`
+
+Same as `read` but with another parameter for additional arguments:
+
+| Short | Long          | Type   | Note                        |
+| ----- | ------------- | ------ | --------------------------- |
+| `-r`  | `--recursive` | `bool` | tries templating read files |
+
+```
+read "path" "--flag1" "--flag2"
+```
+
+#### `fetch`
+
+Performs a get http request to the specified url.
+
+```
+fetch "url"
+```
+
+#### `json`
+
+Parses json string as dictionary (`map[string]any`).
+
+#### `yaml`
+
+Parses yaml string as dictionary (`map[string]any`).
+
+#### `html`
+
+Parses html string as html document.
+
+##### `htmlDocFind`
+
+Query element by selector in html document.
+
+```
+htmlDocFind ( html "html_string" ) "h3:contains['xyz']"
+```
+
+##### `htmlFind`
+
+Query element by selector within another element.
+
+```
+htmlFind ( htmlDocFind document ) "h3:contains['xyz']"
+```
+
+##### `htmlText`
+
+Outputs inner text of a html element.
+
+```
+htmlText ( htmlDocFind document "selector" )
+```
+
+##### `htmlAttr`
+
+Outputs the value of the specified elements attribute.
+
+```
+htmlAttr ( htmlDocFind document "selector" ) "attribute"
+```
+
+##### `htmlInner`
+
+Outputs element's inner html string.
+
+```
+htmlInner ( htmlDocFind document "selector" )
+```
+
+#### `trim`
+
+Outputs trimmed string.
+
+#### `upper`
+
+Outputs uppercased string.
+
+#### `lower`
+
+Outputs lowercased string.
+
+#### `contains`
+
+Returns wether string contains substring.
+
+```
+contains "Sunflower" "flower"
+```
+
+#### `replace`
+
+Replaces substring with new string in old string.
+
+```
+replace "Sunflower" "flower" "shine"
+```
+
+#### `split`
+
+Split string by separator and return array of all parts.
+
+```
+split "Apple, Banana, Strawberry" ","
+```
+
+#### `delete`
+
+Deletes an entry from a dictionary or array.
+
+```
+delete map "key"
+```
+
+```
+delete array 0
+```
 
 ## Contributing
 

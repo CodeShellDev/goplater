@@ -17,108 +17,148 @@ This will create a new file called `README.md` in your current working directory
 
 ## Usage
 
-Take a look at this `TEMPLATE.md` file:
+### Format
 
----
+Goplater uses Go's [builtin templating library](https://pkg.go.dev/text/template) therefor the syntax should be consistent with other projects.
 
-```md
-Wow, look at this incredible file... 🥳
+**Example:**
+
+```
+File Content: $​{​{​{ read "./myfile.txt" }​}​}
 ```
 
-`{{{ #://examples/fs/INCREDIBLE.md }}}`
+### Functions
 
-```md
-You want the `docker-compose.yaml` file for Secured Signal API?
-Really? Here you go:
+As you saw in the example above `read` is used for reading and output file contents.
+But there are more as you will see in the following…
+
+#### `read`
+
+Reads from absolute or relative file path (depending on input),
+where relative paths are relative to the invoker.
+
+```
+read "path"
 ```
 
-```yaml
-{{{ @://https://github.com/CodeShellDev/secured-signal-api/raw/refs/heads/docs/docs/getting-started/examples/docker-compose.yaml }}}
+##### `readOpts`
+
+Same as `read` but with another parameter for additional arguments:
+
+| Short | Long          | Type   | Note                        |
+| ----- | ------------- | ------ | --------------------------- |
+| `-r`  | `--recursive` | `bool` | tries templating read files |
+
+```
+read "path" "--flag1" "--flag2"
 ```
 
----
+#### `fetch`
 
-Notice the `{­{­{ #://... }­}­}` and `{­{­{ @://... }­}­}`, these are used to include local and remote files in your Template respectively.
-This Template will then include `examples/fs/INCREDIBLE.md` and `docker-compose.yaml` (from [Secured Signal API](https://github.com/CodeShellDev/secured-signal-api/blob/main/docker-compose.yaml)) in its File Content.
+Performs a get http request to the specified url.
 
-Which results in:
-
----
-
-```md
-Wow, look at this incredible file... 🥳
+```
+fetch "url"
 ```
 
-````go
-// src: cmd/root.go
+#### `json`
 
-package cmd
+Parses json string as dictionary (`map[string]any`).
 
-import (
-	"os"
+#### `yaml`
 
-	"github.com/spf13/cobra"
-)
+Parses yaml string as dictionary (`map[string]any`).
 
-var rootCmd = &cobra.Command{
-	Use:   "goplater",
-    Short: "Go Template CLI",
-    Long:  `Go CLI Programm to Template files.`,
-	// Uncomment the following line if your bare application
-	// has an action associated with it:
-	// Run: func(cmd *cobra.Command, args []string) { },
-}
+#### `html`
 
-func Execute() {
-	err := rootCmd.Execute()
-	if err != nil {
-		os.Exit(1)
-	}
-}
+Parses html string as html document.
 
-func init() {
-	
-}
-````
+##### `htmlDocFind`
 
-```md
-You want the `docker-compose.yaml` file for Secured Signal API?
-Really? Here you go:
+Query element by selector in html document.
+
+```
+htmlDocFind ( html "html_string" ) "h3:contains['xyz']"
 ```
 
-```yaml
-services:
-  signal-api:
-    image: bbernhard/signal-cli-rest-api:latest
-    container_name: signal-api
-    environment:
-      - MODE=normal
-    volumes:
-      - ./data:/home/.local/share/signal-cli
-    restart: unless-stopped
-    networks:
-      backend:
-        aliases:
-          - signal-api
+##### `htmlFind`
 
-  secured-signal:
-    image: ghcr.io/codeshelldev/secured-signal-api:latest
-    container_name: secured-signal
-    environment:
-      API__URL: http://signal-api:8080
-      SETTINGS__MESSAGE__VARIABLES__RECIPIENTS: "[+123400002, +123400003, +123400004]"
-      SETTINGS__MESSAGE__VARIABLES__NUMBER: "+123400001"
-      API__TOKENS: "[LOOOOOONG_STRING]"
-    ports:
-      - "8880:8880"
-    restart: unless-stopped
-    networks:
-      backend:
-        aliases:
-          - secured-signal-api
+Query element by selector within another element.
 
-networks:
-  backend:
+```
+htmlFind ( htmlDocFind document ) "h3:contains['xyz']"
+```
+
+##### `htmlText`
+
+Outputs inner text of a html element.
+
+```
+htmlText ( htmlDocFind document "selector" )
+```
+
+##### `htmlAttr`
+
+Outputs the value of the specified elements attribute.
+
+```
+htmlAttr ( htmlDocFind document "selector" ) "attribute"
+```
+
+##### `htmlInner`
+
+Outputs element's inner html string.
+
+```
+htmlInner ( htmlDocFind document "selector" )
+```
+
+#### `trim`
+
+Outputs trimmed string.
+
+#### `upper`
+
+Outputs uppercased string.
+
+#### `lower`
+
+Outputs lowercased string.
+
+#### `contains`
+
+Returns wether string contains substring.
+
+```
+contains "Sunflower" "flower"
+```
+
+#### `replace`
+
+Replaces substring with new string in old string.
+
+```
+replace "Sunflower" "flower" "shine"
+```
+
+#### `split`
+
+Split string by separator and return array of all parts.
+
+```
+split "Apple, Banana, Strawberry" ","
+```
+
+#### `delete`
+
+Deletes an entry from a dictionary or array.
+
+```
+delete map "key"
+```
+
+```
+delete array i
 ```
 
 ## Contributing

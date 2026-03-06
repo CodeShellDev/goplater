@@ -11,25 +11,25 @@ import (
 	"github.com/codeshelldev/goplater/utils/fsutils"
 )
 
-func Remote(path string) string {
-	_, err := url.Parse(path)
+func Remote(urlStr string) string {
+	_, err := url.Parse(urlStr)
 
 	if err != nil {
 		fmt.Println("error parsing url:", err.Error())
-		return "invalid url: " + path
+		return "invalid url: " + urlStr
 	}
 
-	response, err := http.Get(path)
+	response, err := http.Get(urlStr)
 	if err != nil {
 		fmt.Println("error requesting remote:", err.Error())
-		return "remote failed: " + path
+		return "remote failed: " + urlStr
 	}
 	defer response.Body.Close()
 
 	body, err := io.ReadAll(response.Body)
 	if err != nil {
 		fmt.Println("error reading body:", err.Error())
-		return "body malformed: " + path
+		return "body malformed: " + urlStr
 	}
 
 	return string(body)
