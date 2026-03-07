@@ -1,6 +1,8 @@
 package core
 
-import "github.com/codeshelldev/goplater/internals/template/context"
+import (
+	"github.com/codeshelldev/goplater/internals/template/context"
+)
 
 var Renderer IRenderer
 var Matcher IMatcher

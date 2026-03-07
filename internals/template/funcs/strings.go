@@ -55,6 +55,13 @@ var joinFunc = TemplateFunc{
 	},
 }
 
+var appendFunc = TemplateFunc{
+	Name: "append",
+	Handler: func(context context.TemplateContext, str string, append string) string {
+		return str + append
+	},
+}
+
 func init() {
 	Register(trimFunc)
 	Register(upperFunc)
@@ -63,4 +70,5 @@ func init() {
 	Register(replaceFunc)
 	Register(splitFunc)
 	Register(joinFunc)
+	Register(appendFunc)
 }

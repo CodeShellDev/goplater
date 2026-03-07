@@ -19,9 +19,15 @@ type ReadOptions struct {
 var readFunc = TemplateFunc{
 	Name: "read",
 	Handler: func(context context.TemplateContext, path string) string {
-		return readHandlerWithOpts(context, path, ReadOptions{
+		str, err := readHandlerWithOpts(context, path, ReadOptions{
 			Recursive: true,
 		})
+
+		if err != nil {
+			panic("could not read " + path + ": " + err.Error())
+		}
+
+		return str
 	},
 }
 
@@ -32,19 +38,27 @@ var readOptsFunc = TemplateFunc{
 
 		flags.ParseArgs(&opts, args)
 
-		return readHandlerWithOpts(context, path, opts)
+		str, err := readHandlerWithOpts(context, path, opts)
+
+		if err != nil {
+			panic("could not read " + path + ": " + err.Error())
+		}
+
+		return str
 	},
 }
 
 
-func readHandlerWithOpts(context context.TemplateContext, path string, opts ReadOptions) string {
+func readHandlerWithOpts(context context.TemplateContext, path string, opts ReadOptions) (string, error) {
+	var err error
+
 	res := readHandler(context, path)
 
 	if opts.Recursive {
-		res, _ = core.Renderer.Render(res, context)
+		res, err = core.Renderer.Render(res, context)
 	}
 
-	return res
+	return res, err
 }
 
 func readHandler(context context.TemplateContext, path string) string {

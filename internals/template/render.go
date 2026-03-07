@@ -24,7 +24,17 @@ func templateContent(content string, context context.TemplateContext) (string, e
 }
 
 func templateStr(str string, context context.TemplateContext) (string, error) {
-	templt := template.New(context.Path)
+	templt, err := createTemplateWithContext(context.Path, str, context)
+
+	if err != nil {
+		return str, err
+	}
+
+	return templating.ExecuteTemplate(templt, nil)
+}
+
+func createTemplateWithContext(name string, str string, context context.TemplateContext) (*template.Template, error) {
+	templt := template.New(name)
 	templt.Delims("${{{", "}}}")
 	
 	templt.Funcs(funcs.GetFuncMap(context))
@@ -32,8 +42,8 @@ func templateStr(str string, context context.TemplateContext) (string, error) {
 	err := templating.ParseTemplate(templt, str)
 
 	if err != nil {
-		return str, err
+		return nil, err
 	}
 
-	return templating.ExecuteTemplate(templt, nil)
+	return templt, nil
 }

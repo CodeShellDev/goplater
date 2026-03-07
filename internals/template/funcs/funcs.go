@@ -1,72 +1,164 @@
 package funcs
 
 import (
-	"reflect"
+	"bytes"
+	"errors"
+	"maps"
+	"text/template"
 
 	"github.com/codeshelldev/goplater/internals/template/context"
+	"github.com/codeshelldev/gotl/pkg/templating"
+	"github.com/google/uuid"
 )
 
-type TemplateFunc struct {
-	Name string
-	Handler any
+var functionFuncs = map[string]any{}
+
+const functionOutputsKey = "out"
+
+func setLocal(callerID string, key string, value any) {
+	_, exists := runtime.locals[callerID]
+
+	if !exists {
+		runtime.locals[callerID] = map[string]any{}
+	}
+
+	runtime.locals[callerID][key] = value
 }
 
-var funcs = map[string]any{}
+func getLocal(callerID string, key string) any {
+	scope, exists := runtime.locals[callerID]
 
-func Register(f TemplateFunc) {
-	funcs[f.Name] = f.Handler
+	if exists {
+		return scope[key]
+	}
+
+	return nil
 }
 
-func GetFuncMap(context context.TemplateContext) map[string]any{
-	m := make(map[string]any, len(funcs))
+func RegisterFunction(f TemplateFunc) {
+	functionFuncs[f.Name] = f.Handler
+}
 
-	for k, v := range funcs {
-		m[k] = bindContext(v, context)
+func GetFunctionFuncMap(context context.TemplateContext, callerID string) map[string]any{
+	m := make(map[string]any, len(functionFuncs))
+
+	for k, v := range functionFuncs {
+		m[k] = bindContext(v, context, callerID)
 	}
 
 	return m
 }
 
-func bindContext(fn any, ctx any) any {
-	v := reflect.ValueOf(fn)
-	t := v.Type()
+var funcDefineFunc = TemplateFunc{
+	Name: "funcDefine",
+	Handler: func(context context.TemplateContext, name string, tmplBody string) any {
+		funcCreate(context, name, tmplBody)
+		return ""
+	},
+}
 
-	if t.Kind() != reflect.Func {
-		panic("bindContext: fn is not a function")
+var funcCallFunc = TemplateFunc{
+	Name: "funcCall",
+	Handler: func(context context.TemplateContext, name string) []any {
+		outputs, err := funcCall(context, name, nil)
+
+		if err != nil {
+			panic("could not call func: " + err.Error())
+		}
+
+		return outputs
+	},
+}
+
+var funcCallWithArgsFunc = TemplateFunc{
+	Name: "funcCallArgs",
+	Handler: func(context context.TemplateContext, name string, args []any) []any {
+		outputs, err := funcCall(context, name, args...)
+
+		if err != nil {
+			panic("could not call func: " + err.Error())
+		}
+
+		return outputs
+	},
+}
+
+func funcCreate(_ context.TemplateContext, name, tmplBody string) any {
+    runtime.funcs[name] = tmplBody
+
+    return ""
+}
+
+func funcCall(context context.TemplateContext, name string, args ...any) ([]any, error) {
+	tmplBody, ok := runtime.funcs[name]
+	
+	if !ok {
+		return nil, errors.New("function \"" + name + "\" not defined")
 	}
 
-	if t.NumIn() < 1 {
-		panic("bindContext: function must have at least one parameter for context")
+	var buf bytes.Buffer
+
+	data := map[string]any{
+		"args": args,
 	}
 
-	newFuncType := reflect.FuncOf(
-		func() []reflect.Type {
-			ins := []reflect.Type{}
-			
-			for i := 1; i < t.NumIn(); i++ {
-				ins = append(ins, t.In(i))
-			}
-			
-			return ins
-		}(),
+	callerID := uuid.NewString()
 
-		func() []reflect.Type {
-			outs := []reflect.Type{}
+	templt := template.New(context.Path + ":" + "func:" + name)
+	templt.Delims("{{{", "}}}")
 
-			for out := range t.Outs() {
-				outs = append(outs, out)
-			}
+	funcMap := GetFuncMap(context)
+	addMap := GetFunctionFuncMap(context, callerID)
 
-			return outs
-		}(),
-		t.IsVariadic(),
-	)
+	maps.Copy(funcMap, addMap)
 
-	newFunc := reflect.MakeFunc(newFuncType, func(args []reflect.Value) (results []reflect.Value) {
-		newArgs := append([]reflect.Value{reflect.ValueOf(ctx)}, args...)
+	templt.Funcs(funcMap)
 
-		return v.Call(newArgs)
-	})
+	err := templating.ParseTemplate(templt, tmplBody)
 
-	return newFunc.Interface()
+	if err != nil {
+		return nil, err
+	}
+
+	err = templt.Execute(&buf, data)
+
+	if err != nil {
+		return nil, err
+	}
+
+	out, ok := getLocal(callerID, functionOutputsKey).([]any)
+
+	if ok {
+		return out, nil
+	}
+
+	return nil, nil
+}
+
+var returnFunc = TemplateFunc{
+	Name: "return",
+	Handler: func(context context.TemplateContext, callerID string, i int, value any) any {
+		out, ok := getLocal(callerID, functionOutputsKey).([]any)
+
+		if !ok {
+			out = []any{}
+		}
+
+		for len(out) <= i {
+			out = append(out, nil)
+		}
+
+		out[i] = value
+
+		setLocal(callerID, functionOutputsKey, out)
+		return ""
+	},
+}
+
+func init() {
+	Register(funcDefineFunc)
+	Register(funcCallWithArgsFunc)
+	Register(funcCallFunc)
+
+	RegisterFunction(returnFunc)
 }
