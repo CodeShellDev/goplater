@@ -1,6 +1,8 @@
-# Goplater
+<h3 align="center">Goplater</h3>
 
-Goplater is a Go commandline programm that helps you template your files.
+<img align="center" alt="Goplater Logo" src="https://github.com/codeshelldev/goplater/raw/refs/heads/main/logo/goplater.png">
+
+<p align="center">Goplater is a Go commandline programm that helps you template your files</p>
 
 ## Getting Started
 
@@ -173,4 +175,8 @@ Why not ⭐️ this Repo? :)
 
 ## License
 
-[MIT](https://choosealicense.com/licenses/mit/)
+This Project is licensed under the [MIT License](./LICENSE).
+
+## Legal
+
+Logo designed by @CodeShellDev — All Rights Reserved. Go gopher mascot originally created by [Renée French](https://instagram.com/reneefrench/), used under the [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/) license.
