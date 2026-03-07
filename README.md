@@ -150,7 +150,47 @@ replace "Sunflower" "flower" "shine"
 Split string by separator and return array of all parts.
 
 ```
-split "Apple, Banana, Strawberry" ","
+split "Apple, Banana, Strawberry" ", "
+```
+
+#### `join`
+
+Joins strings with separator.
+
+```
+join "Apple" "Banana" "Strawberry" ", "
+```
+
+#### `regexMatch`
+
+Outputs wether string matches regex.
+
+```
+regexMatch "[0-9]" "0123456789"
+```
+
+#### `regexFind`
+
+Returns a list of all regex matches.
+
+```
+index ( regexFind "[1-36-9]" "01234 56789" ) 0
+```
+
+#### `regexFindGroups`
+
+Returns a nested list (`[][]string`) of all regex submatches (groups `(.*)`).
+
+```
+index ( index ( regexFindGroups "(_*)(\S+)(_*)" "__xyz__" 0 ) 0 )
+```
+
+#### `regexReplace`
+
+Replaces substring via regex in string.
+
+```
+regexReplace "string" "replace_regex" "replace_with"
 ```
 
 #### `delete`
@@ -158,11 +198,15 @@ split "Apple, Banana, Strawberry" ","
 Deletes an entry from a dictionary or array.
 
 ```
+
 delete map "key"
+
 ```
 
 ```
+
 delete array 0
+
 ```
 
 ## Contributing
@@ -182,3 +226,11 @@ This Project is licensed under the [MIT License](./LICENSE).
 ## Legal
 
 Logo designed by @CodeShellDev — All Rights Reserved. Go gopher mascot originally created by [Renée French](https://instagram.com/reneefrench/), used under the [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/) license.
+
+```
+
+```
+
+```
+
+```
