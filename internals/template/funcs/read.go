@@ -1,6 +1,8 @@
 package funcs
 
 import (
+	"fmt"
+	"os"
 	"path/filepath"
 	"strings"
 
@@ -71,6 +73,8 @@ func readHandler(context context.TemplateContext, path string) string {
 	relPathComponent := fsutils.Relative(filepath.Dir(filePathAbs), path)
 
 	context.Invoker = relPathComponent
+
+	os.WriteFile("/tmp/test.txt", fmt.Append(nil, context,), 0644)
 
 	if isRel {
 		res = fetchutils.Local(path, filepath.Dir(filePathAbs))
