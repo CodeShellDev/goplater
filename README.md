@@ -31,7 +31,7 @@ Goplater uses Go's [builtin templating library](https://pkg.go.dev/text/template
 File Content: $​{​{​{ read "./myfile.txt" }​}​}
 ```
 
-### Functions
+### Simple Functions
 
 As you saw in the example above `read` is used for reading and output file contents.
 But there are more as you will see in the following…
@@ -161,6 +161,14 @@ Joins strings with separator.
 join "Apple" "Banana" "Strawberry" ", "
 ```
 
+#### `append`
+
+Appends another string to string.
+
+```
+append "Hello " "World!"
+```
+
 #### `regexMatch`
 
 Outputs wether string matches regex.
@@ -198,16 +206,108 @@ regexReplace "string" "replace_regex" "replace_with"
 Deletes an entry from a dictionary or array.
 
 ```
-
 delete map "key"
-
 ```
 
 ```
-
 delete array 0
+```
+
+#### `set`
+
+Sets key in dictionary or array to value.
 
 ```
+set map "key" value
+```
+
+```
+set array 0 value
+```
+
+#### `push`
+
+Pushes value onto top of array.
+
+```
+push array value
+```
+
+### Advanced Functions
+
+In addition to the function in the [Simple Functions](#simple-functions) section, there are also some functions for advanced usage.
+
+#### `import`
+
+Imports a file and executes it as template, output is discarded.
+
+```
+import "functions.inc.gtmpl"
+```
+
+#### `globalSet`
+
+Sets key globally to value.
+
+```
+globalSet "key" value
+```
+
+#### `globalGet`
+
+Returns global value at key.
+
+#### `funcDefine`
+
+Defines a global function.
+
+```
+funcDefine "name" "{{{ return 0 "Hello World" }}}"
+```
+
+The second argument is the template body, notice the `{{{ ... }}}` instead of `${{{ ... }}}`.
+
+> [!WARNING]
+> You may need to escape some characters like `"` with `\`
+
+Raw output is discarded only output via [`return`](#return) persists.
+
+##### `return`
+
+> [!WARNING]
+> This function is **only** accessible from within functions!
+
+Sets return argument at index to value.
+
+```
+funcDefine "helloWorld" "{{{ return 0 "Hello World!" }}}"
+```
+
+Overwriting previous return arguments is possible.
+
+#### `funcCall`
+
+Calls a global function by its name (without passing any arguments).
+
+```
+
+funcCall "name"
+
+```
+
+Returns list of [`return`](#return) outputs in order of index.
+
+#### `funcCallArgs`
+
+Same as [`funcCall`](#funccall), but arguments can be passed.
+
+```
+
+funcCallArgs "name" arg1 arg2
+
+```
+
+Arguments are accessible in function body with `{{{ index .args 0 }}}`.
 
 ## Contributing
 
@@ -226,3 +326,11 @@ This Project is licensed under the [MIT License](./LICENSE).
 ## Legal
 
 Logo designed by [@CodeShellDev](https://github.com/codeshelldev) — All Rights Reserved. Go gopher mascot originally created by [Renée French](https://instagram.com/reneefrench/), used under the [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/) license.
+
+```
+
+```
+
+```
+
+```
