@@ -262,13 +262,12 @@ Returns global value at key.
 Defines a global function.
 
 ```
-funcDefine "name" "{{{ return 0 "Hello World" }}}"
+funcDefine "name" `
+    {{{ return 0 "Hello World" }}}
+`
 ```
 
 The second argument is the template body, notice the `{{{ ... }}}` instead of `$​{​{​{ ... }​}​}`.
-
-> [!WARNING]
-> You may need to escape some characters like `"` with `\`
 
 Raw output is discarded only output via [`return`](#return) persists.
 
