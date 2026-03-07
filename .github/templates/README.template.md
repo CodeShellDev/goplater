@@ -6,6 +6,19 @@
 
 <p align="center"><strong>Goplater</strong> is a Go commandline program that helps you template your files</p>
 
+## Contents
+
+- [Getting Started](#getting-started)
+- [Usage](#usage)
+  - [String Functions](#string-functions)
+  - [Container Functions](#container-functions)
+  - [Parser Functions](#parser-functions)
+  - [Advanced Functions](#advanced-functions)
+- [Contributing](#contributing)
+- [Support](#support)
+- [License](#license)
+- [Legal](#legal)
+
 ## Getting Started
 
 Download the latest binary from the Release page.
@@ -31,10 +44,10 @@ Goplater uses Go's [builtin templating library](https://pkg.go.dev/text/template
 File Content: $​{​{​{ read "./myfile.txt" }​}​}
 ```
 
-### Simple Functions
-
 As you saw in the example above `read` is used for reading and output file contents.
 But there are more as you will see in the following…
+
+### String Functions
 
 #### `read`
 
@@ -65,58 +78,6 @@ Performs a get http request to the specified url.
 fetch "url"
 ```
 
-#### `json`
-
-Parses json string as dictionary (`map[string]any`).
-
-#### `yaml`
-
-Parses yaml string as dictionary (`map[string]any`).
-
-#### `html`
-
-Parses html string as html document.
-
-##### `htmlDocFind`
-
-Query element by selector in html document.
-
-```
-htmlDocFind ( html "html_string" ) "h3:contains['xyz']"
-```
-
-##### `htmlFind`
-
-Query element by selector within another element.
-
-```
-htmlFind ( htmlDocFind document ) "h3:contains['xyz']"
-```
-
-##### `htmlText`
-
-Outputs inner text of a html element.
-
-```
-htmlText ( htmlDocFind document "selector" )
-```
-
-##### `htmlAttr`
-
-Outputs the value of the specified elements attribute.
-
-```
-htmlAttr ( htmlDocFind document "selector" ) "attribute"
-```
-
-##### `htmlInner`
-
-Outputs element's inner html string.
-
-```
-htmlInner ( htmlDocFind document "selector" )
-```
-
 #### `trim`
 
 Outputs trimmed string.
@@ -137,6 +98,46 @@ Returns wether string contains substring.
 contains "Sunflower" "flower"
 ```
 
+#### `count`
+
+Returns amount of times that substring is present in string.
+
+#### `repeat`
+
+Repeats string n times.
+
+```
+repeat "*" 5
+```
+
+#### `startsWith`
+
+Returns wether string starts with prefix.
+
+```
+startsWith "Sunflower" "Sun"
+```
+
+#### `endsWith`
+
+Returns wether string ends with prefix.
+
+```
+endsWith "Sunflower" "flower"
+```
+
+#### `isEmpty`
+
+Returns wether string is empty (`""`).
+
+#### `indexOf`
+
+Returns starting index of substring in string.
+
+```
+indexOf "Apple Banana Strawberry" "Apple"
+```
+
 #### `replace`
 
 Replaces substring with new string in old string.
@@ -147,10 +148,42 @@ replace "Sunflower" "flower" "shine"
 
 #### `split`
 
-Split string by separator and return array of all parts.
+Split string by separator and return slice of all parts.
 
 ```
 split "Apple, Banana, Strawberry" ", "
+```
+
+#### `before`
+
+Outputs string before substring in string.
+
+```
+before "Apple Banana Strawberry" "Banana"
+```
+
+#### `after`
+
+Outputs string after substring in string.
+
+```
+after "Apple Banana Strawberry" "Apple"
+```
+
+#### `between`
+
+Outputs inbetween of starting and ending substring.
+
+```
+between "Apple Banana Strawberry" "Apple" "Strawberry"
+```
+
+#### `slice`
+
+Slice string by `start` and `end` bounds.
+
+```
+slice "  Apple  " 2 7
 ```
 
 #### `join`
@@ -159,6 +192,14 @@ Joins strings with separator.
 
 ```
 join "Apple" "Banana" "Strawberry" ", "
+```
+
+#### `concat`
+
+Concat multiple strings.
+
+```
+concat "Apple" "Banana" "Strawberry"
 ```
 
 #### `append`
@@ -201,36 +242,148 @@ Replaces substring via regex in string.
 regexReplace "string" "replace_regex" "replace_with"
 ```
 
+### Conversion Functions
+
+Functions for converting types.
+
+#### `toString`
+
+Returns value as string (via `fmt.Sprint()`).
+
+#### `toInt`
+
+Parses string as int.
+
+#### `toFloat64`
+
+Parses string as float64.
+
+#### `toFloat32`
+
+Same as [`toFloat64`](#tofloat64), but for float32.
+
+#### `toBool`
+
+Parses string as bool.
+
+### Container Functions
+
+The following are functions for slices and maps.
+
+#### `has`
+
+Returns wether map or slice has key.
+
 #### `delete`
 
-Deletes an entry from a dictionary or array.
+Deletes an entry from a map or slice.
 
 ```
 delete map "key"
 ```
 
 ```
-delete array 0
+delete slice 0
 ```
 
 #### `set`
 
-Sets key in dictionary or array to value.
+Sets key in map or slice to value.
 
 ```
 set map "key" value
 ```
 
 ```
-set array 0 value
+set slice 0 value
 ```
 
-#### `push`
+#### `slicePush`
 
-Pushes value onto top of array.
+Pushes value on top of slice.
 
 ```
-push array value
+slicePush slice value
+```
+
+#### `sliceCreate`
+
+Creates slice by using arguments as items.
+
+```
+sliceCreate "a" "b" "c"
+```
+
+### Parser Functions
+
+The following section is dedicated to parser functions, for example json.
+
+#### `jsonDecode`
+
+Parses json string as map.
+
+#### `jsonEncode`
+
+Returns json string from object.
+
+#### `yamlDecode`
+
+Parses yaml string as map.
+
+#### `yamlEncode`
+
+Returns yaml string from object.
+
+#### `base64Decode`
+
+Decodes base64 into raw string.
+
+#### `base64Encode`
+
+Encodes raw string into base64.
+
+#### `htmlDecode`
+
+Parses html string as html document.
+
+##### `htmlDocFind`
+
+Query element by selector in html document.
+
+```
+htmlDocFind ( html "html_string" ) "h3:contains['xyz']"
+```
+
+##### `htmlFind`
+
+Query element by selector within another element.
+
+```
+htmlFind ( htmlDocFind document ) "h3:contains['xyz']"
+```
+
+##### `htmlText`
+
+Outputs inner text of a html element.
+
+```
+htmlText ( htmlDocFind document "selector" )
+```
+
+##### `htmlAttr`
+
+Outputs the value of the specified elements attribute.
+
+```
+htmlAttr ( htmlDocFind document "selector" ) "attribute"
+```
+
+##### `htmlInner`
+
+Outputs element's inner html string.
+
+```
+htmlInner ( htmlDocFind document "selector" )
 ```
 
 ### Advanced Functions
@@ -300,7 +453,7 @@ returnNext value
 
 ##### `returnAll`
 
-Sets return output array directly with **multiple** arguments.
+Sets return output slice directly with **multiple** arguments.
 
 ```
 returnAll out1 out2 out3
@@ -308,15 +461,15 @@ returnAll out1 out2 out3
 
 ##### `returnOutputs`
 
-Sets return output array directly with **one array**.
+Sets return output slice directly with **one slice**.
 
 ```
-returnOutputs array
+returnOutputs slice
 ```
 
 ##### `outputsGet`
 
-Returns the whole output array.
+Returns the whole output slice.
 
 #### `funcCall`
 
@@ -355,3 +508,5 @@ This Project is licensed under the [MIT License](./LICENSE).
 ## Legal
 
 Logo designed by [@CodeShellDev](https://github.com/codeshelldev) — All Rights Reserved. Go gopher mascot originally created by [Renée French](https://instagram.com/reneefrench/), used under the [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/) license.
+
+${{{ concat "a" "b" "c" }}}

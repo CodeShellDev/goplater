@@ -3,7 +3,6 @@ package funcs
 import (
 	"bytes"
 	"errors"
-	"fmt"
 	"maps"
 	"text/template"
 
@@ -188,12 +187,10 @@ var returnNextFunc = TemplateFunc{
 
 var returnAllFunc = TemplateFunc{
 	Name: "returnAll",
-	Handler: func(context context.TemplateContext, callerID string, value ...any) any {
-		value = unpackArgs(value...)
+	Handler: func(context context.TemplateContext, callerID string, values ...any) any {
+		values = unpackArgs(values...)
 
-		fmt.Println(value)
-
-		setLocal(callerID, functionOutputsKey, value)
+		setLocal(callerID, functionOutputsKey, values)
 		return ""
 	},
 }

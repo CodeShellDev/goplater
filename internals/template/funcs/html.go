@@ -7,16 +7,12 @@ import (
 	"github.com/codeshelldev/goplater/internals/template/context"
 )
 
-var htmlFunc = TemplateFunc{
-	Name: "html",
-	Handler: func(context context.TemplateContext, str string) (*goquery.Document) {
+var htmlDecodeFunc = TemplateFunc{
+	Name: "htmlDecode",
+	Handler: func(context context.TemplateContext, str string) (*goquery.Document, error) {
 		doc, err := goquery.NewDocumentFromReader(strings.NewReader(str))
 
-		if err != nil {
-			panic("error parsing html: " + err.Error())
-		}
-
-		return doc
+		return doc, err
 	},
 }
 
@@ -60,7 +56,7 @@ var htmlInnerFunc = TemplateFunc{
 }
 
 func init() {
-	Register(htmlFunc)
+	Register(htmlDecodeFunc)
 	Register(htmlDocFindFunc)
 	Register(htmlFindFunc)
 	Register(htmlTextFunc)

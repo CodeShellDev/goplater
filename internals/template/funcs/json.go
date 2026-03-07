@@ -5,19 +5,21 @@ import (
 	"github.com/codeshelldev/gotl/pkg/jsonutils"
 )
 
-var jsonFunc = TemplateFunc{
-	Name: "json",
-	Handler: func(context context.TemplateContext, str string) map[string]any {
-		res, err := jsonutils.GetJsonSafe[map[string]any](str)
+var jsonEncodeFunc = TemplateFunc{
+	Name: "jsonEncode",
+	Handler: func(context context.TemplateContext, obj any) (string, error) {
+		return jsonutils.ToJsonSafe(obj)
+	},
+}
 
-		if err != nil {
-			panic("error parsing json: " + err.Error())
-		}
-
-		return res
+var jsonDecodeFunc = TemplateFunc{
+	Name: "jsonDecode",
+	Handler: func(context context.TemplateContext, str string) (map[string]any, error) {
+		return jsonutils.GetJsonSafe[map[string]any](str)
 	},
 }
 
 func init() {
-	Register(jsonFunc)
+	Register(jsonEncodeFunc)
+	Register(jsonDecodeFunc)
 }

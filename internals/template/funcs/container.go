@@ -20,13 +20,58 @@ var containerSetFunc = TemplateFunc{
 	},
 }
 
-var slicePushFunc = TemplateFunc{
-	Name: "push",
-	Handler: func(context context.TemplateContext, container []any, value any) any {
-		i := len(container) + 1
-
-		return setKey(container, i, value)
+var containerHasFunc = TemplateFunc{
+	Name: "has",
+	Handler: func(context context.TemplateContext, container any, key any) bool {
+		return hasKey(container, key)
 	},
+}
+
+var slicePushFunc = TemplateFunc{
+	Name: "slicePush",
+	Handler: func(context context.TemplateContext, container []any, value any) []any {
+		return append(container, value)
+	},
+}
+
+var sliceCreate = TemplateFunc{
+	Name: "sliceCreate",
+	Handler: func(context context.TemplateContext, value ...any) []any {
+		value = unpackArgs(value...)
+
+		return value
+	},
+}
+
+func hasKey(data any, key any) bool {
+	val := reflect.ValueOf(data)
+
+	if val.Kind() == reflect.Pointer {
+		val = val.Elem()
+	}
+
+	switch val.Kind() {
+	case reflect.Map:
+		for _, k := range val.MapKeys() {
+			if reflect.DeepEqual(k.Interface(), key) {
+				return true
+			}
+		}
+
+		return false
+
+	case reflect.Slice, reflect.Array:
+		for i := 0; i < val.Len(); i++ {
+			if reflect.DeepEqual(val.Index(i).Interface(), key) {
+				return true
+			}
+		}
+
+		return false
+
+	default:
+		return false
+	}
 }
 
 func deleteKey(data any, key any) any {
@@ -87,6 +132,8 @@ func setKey(data any, key any, value any) any {
 func init() {
 	Register(containerDeleteFunc)
 	Register(containerSetFunc)
+	Register(containerHasFunc)
 	
 	Register(slicePushFunc)
+	Register(sliceCreate)
 }
