@@ -1,8 +1,8 @@
-<h3 align="center">Goplater</h3>
-
 <p align="center">
     <img width="256" height="256" alt="Goplater Logo" src="https://github.com/codeshelldev/goplater/raw/refs/heads/main/logo/goplater.png">
 </p>
+
+<h1 align="center">Goplater</h1>
 
 <p align="center">Goplater is a Go commandline programm that helps you template your files</p>
 
