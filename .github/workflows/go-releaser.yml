@@ -10,6 +10,7 @@ jobs:
     name: Go Releaser
     with:
       platforms: linux/amd64, linux/arm64, darwin/amd64, windows/amd64
+      set-version: true
     secrets:
       GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 

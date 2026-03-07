@@ -9,10 +9,7 @@ import (
 var rootCmd = &cobra.Command{
 	Use:   "goplater",
     Short: "Go Template CLI",
-    Long:  `Go CLI Programm to Template files.`,
-	// Uncomment the following line if your bare application
-	// has an action associated with it:
-	// Run: func(cmd *cobra.Command, args []string) { },
+    Long:  `Go CLI programm for templating files.`,
 }
 
 func Execute() {
