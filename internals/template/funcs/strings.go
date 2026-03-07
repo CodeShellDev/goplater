@@ -48,6 +48,13 @@ var splitFunc = TemplateFunc{
 	},
 }
 
+var joinFunc = TemplateFunc{
+	Name: "join",
+	Handler: func(context context.TemplateContext, str []string, sep string) string {
+		return strings.Join(str, sep)
+	},
+}
+
 func init() {
 	Register(trimFunc)
 	Register(upperFunc)
@@ -55,4 +62,5 @@ func init() {
 	Register(containsFunc)
 	Register(replaceFunc)
 	Register(splitFunc)
+	Register(joinFunc)
 }
