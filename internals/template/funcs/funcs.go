@@ -3,6 +3,7 @@ package funcs
 import (
 	"bytes"
 	"errors"
+	"fmt"
 	"maps"
 	"text/template"
 
@@ -72,7 +73,9 @@ var funcCallFunc = TemplateFunc{
 
 var funcCallWithArgsFunc = TemplateFunc{
 	Name: "funcCallArgs",
-	Handler: func(context context.TemplateContext, name string, args []any) []any {
+	Handler: func(context context.TemplateContext, name string, args ...any) []any {
+		unpackArgs(args...)
+
 		outputs, err := funcCall(context, name, args...)
 
 		if err != nil {
@@ -81,6 +84,16 @@ var funcCallWithArgsFunc = TemplateFunc{
 
 		return outputs
 	},
+}
+
+func unpackArgs(args ...any) {
+	if len(args) == 1 {
+		inner, ok := args[0].([]any)
+
+		if ok {
+			args = inner
+		}
+	}
 }
 
 func funcCreate(_ context.TemplateContext, name, tmplBody string) any {
@@ -155,10 +168,65 @@ var returnFunc = TemplateFunc{
 	},
 }
 
+var returnNextFunc = TemplateFunc{
+	Name: "returnNext",
+	Handler: func(context context.TemplateContext, callerID string, value any) any {
+		out, ok := getLocal(callerID, functionOutputsKey).([]any)
+
+		if !ok {
+			out = []any{}
+		}
+
+		out = append(out, value)
+
+		setLocal(callerID, functionOutputsKey, out)
+		return ""
+	},
+}
+
+var returnAllFunc = TemplateFunc{
+	Name: "returnAll",
+	Handler: func(context context.TemplateContext, callerID string, value ...any) any {
+		unpackArgs(value...)
+
+		fmt.Println(value)
+
+		setLocal(callerID, functionOutputsKey, value)
+		return ""
+	},
+}
+
+var returnOutputsFunc = TemplateFunc{
+	Name: "returnOutputs",
+	Handler: func(context context.TemplateContext, callerID string, value []any) any {
+		setLocal(callerID, functionOutputsKey, value[0])
+
+		return ""
+	},
+}
+
+var outputsGetFunc = TemplateFunc{
+	Name: "outputsGet",
+	Handler: func(context context.TemplateContext, callerID string) []any {
+		out, ok := getLocal(callerID, functionOutputsKey).([]any)
+
+		if !ok {
+			out = []any{}
+		}
+
+		return out
+	},
+}
+
 func init() {
 	Register(funcDefineFunc)
 	Register(funcCallWithArgsFunc)
 	Register(funcCallFunc)
 
 	RegisterFunction(returnFunc)
+	RegisterFunction(returnNextFunc)
+	RegisterFunction(returnAllFunc)
+	RegisterFunction(returnOutputsFunc)
+
+	RegisterFunction(outputsGetFunc)
 }
