@@ -47,7 +47,7 @@ read "path"
 
 ##### `readOpts`
 
-Same as `read` but with another parameter for additional arguments:
+Same as [`read`](#read) but with another parameter for additional arguments:
 
 | Short | Long          | Type   | Note                        |
 | ----- | ------------- | ------ | --------------------------- |
