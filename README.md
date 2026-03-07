@@ -239,7 +239,7 @@ In addition to the function in the [Simple Functions](#simple-functions) section
 
 #### `import`
 
-Imports a file and executes it as template, output is discarded.
+Imports a file and **executes** it as template, output is **discarded**.
 
 ```
 import "functions.inc.gtmpl"
@@ -277,13 +277,47 @@ Raw output is discarded only output via [`return`](#return) persists.
 > [!WARNING]
 > This function is **only** accessible from within functions!
 
-Sets return argument at index to value.
+Sets return argument at **index** to **value**.
 
 ```
 funcDefine "helloWorld" "{{{ return 0 "Hello World!" }}}"
 ```
 
-Overwriting previous return arguments is possible.
+**Overwriting** previous return arguments is possible.
+
+##### `returnNext`
+
+Same as [`return`](#return), but **appends** to output.
+
+Shorthand for:
+
+```
+return i+1 value
+```
+
+```
+returnNext value
+```
+
+##### `returnAll`
+
+Sets return output array directly with **multiple** arguments.
+
+```
+returnAll out1 out2 out3
+```
+
+##### `returnOutputs`
+
+Sets return output array directly with **one array**.
+
+```
+returnOutputs array
+```
+
+##### `outputsGet`
+
+Returns the whole output array.
 
 #### `funcCall`
 
@@ -322,6 +356,3 @@ This Project is licensed under the [MIT License](./LICENSE).
 ## Legal
 
 Logo designed by [@CodeShellDev](https://github.com/codeshelldev) — All Rights Reserved. Go gopher mascot originally created by [Renée French](https://instagram.com/reneefrench/), used under the [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/) license.
-
-${{{ funcDefine "test" "{{{ return 0 ( index .args 0 ) }}}" }}}
-${{{ funcCallArgs "test" "output" }}}
