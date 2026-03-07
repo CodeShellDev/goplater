@@ -74,7 +74,7 @@ var funcCallFunc = TemplateFunc{
 var funcCallWithArgsFunc = TemplateFunc{
 	Name: "funcCallArgs",
 	Handler: func(context context.TemplateContext, name string, args ...any) []any {
-		unpackArgs(args...)
+		args = unpackArgs(args...)
 
 		outputs, err := funcCall(context, name, args...)
 
@@ -86,7 +86,7 @@ var funcCallWithArgsFunc = TemplateFunc{
 	},
 }
 
-func unpackArgs(args ...any) {
+func unpackArgs(args ...any) []any {
 	if len(args) == 1 {
 		inner, ok := args[0].([]any)
 
@@ -94,6 +94,8 @@ func unpackArgs(args ...any) {
 			args = inner
 		}
 	}
+
+	return args
 }
 
 func funcCreate(_ context.TemplateContext, name, tmplBody string) any {
@@ -187,7 +189,7 @@ var returnNextFunc = TemplateFunc{
 var returnAllFunc = TemplateFunc{
 	Name: "returnAll",
 	Handler: func(context context.TemplateContext, callerID string, value ...any) any {
-		unpackArgs(value...)
+		value = unpackArgs(value...)
 
 		fmt.Println(value)
 
