@@ -225,12 +225,4 @@ This Project is licensed under the [MIT License](./LICENSE).
 
 ## Legal
 
-Logo designed by @CodeShellDev — All Rights Reserved. Go gopher mascot originally created by [Renée French](https://instagram.com/reneefrench/), used under the [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/) license.
-
-```
-
-```
-
-```
-
-```
+Logo designed by [@CodeShellDev](https://github.com/codeshelldev) — All Rights Reserved. Go gopher mascot originally created by [Renée French](https://instagram.com/reneefrench/), used under the [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/) license.
