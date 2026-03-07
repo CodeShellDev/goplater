@@ -4,7 +4,7 @@
 
 <h1 align="center">Goplater</h1>
 
-<p align="center"><strong>Goplater</strong> is a Go commandline programm that helps you template your files</p>
+<p align="center"><strong>Goplater</strong> is a Go commandline program that helps you template your files</p>
 
 ## Getting Started
 
