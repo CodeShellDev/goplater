@@ -8,7 +8,7 @@ import (
 var Version string
 
 func main() {
-	cmd.Execute()
-
 	store.Version = Version
+
+	cmd.Execute()
 }
