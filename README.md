@@ -290,9 +290,7 @@ Overwriting previous return arguments is possible.
 Calls a global function by its name (without passing any arguments).
 
 ```
-
 funcCall "name"
-
 ```
 
 Returns list of [`return`](#return) outputs in order of index.
@@ -302,9 +300,7 @@ Returns list of [`return`](#return) outputs in order of index.
 Same as [`funcCall`](#funccall), but arguments can be passed.
 
 ```
-
 funcCallArgs "name" arg1 arg2
-
 ```
 
 Arguments are accessible in function body with `{{{ index .args 0 }}}`.
@@ -326,11 +322,3 @@ This Project is licensed under the [MIT License](./LICENSE).
 ## Legal
 
 Logo designed by [@CodeShellDev](https://github.com/codeshelldev) — All Rights Reserved. Go gopher mascot originally created by [Renée French](https://instagram.com/reneefrench/), used under the [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/) license.
-
-```
-
-```
-
-```
-
-```
