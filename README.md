@@ -265,7 +265,7 @@ Defines a global function.
 funcDefine "name" "{{{ return 0 "Hello World" }}}"
 ```
 
-The second argument is the template body, notice the `{{{ ... }}}` instead of `${{{ ... }}}`.
+The second argument is the template body, notice the `{{{ ... }}}` instead of `$​{​{​{ ... }​}​}`.
 
 > [!WARNING]
 > You may need to escape some characters like `"` with `\`
@@ -322,3 +322,6 @@ This Project is licensed under the [MIT License](./LICENSE).
 ## Legal
 
 Logo designed by [@CodeShellDev](https://github.com/codeshelldev) — All Rights Reserved. Go gopher mascot originally created by [Renée French](https://instagram.com/reneefrench/), used under the [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/) license.
+
+${{{ funcDefine "test" "{{{ return 0 ( index .args 0 ) }}}" }}}
+${{{ funcCallArgs "test" "output" }}}
