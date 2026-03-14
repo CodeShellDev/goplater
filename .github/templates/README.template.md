@@ -10,6 +10,7 @@
 
 - [Getting Started](#getting-started)
 - [Usage](#usage)
+  - [File Functions](#file-functions)
   - [String Functions](#string-functions)
   - [Math Functions](#math-functions)
   - [Container Functions](#container-functions)
@@ -45,10 +46,10 @@ Goplater uses Go's [builtin templating library](https://pkg.go.dev/text/template
 File Content: +​{​{​{ read "./myfile.txt" }​}​}
 ```
 
+### File Functions
+
 As you saw in the example above `read` is used for reading and output file contents.
 But there are more as you will see in the following…
-
-### String Functions
 
 #### `read`
 
@@ -76,6 +77,8 @@ Performs a get http request to the specified url.
 ```
 fetch "url"
 ```
+
+### String Functions
 
 #### `trim`
 
