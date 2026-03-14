@@ -1,33 +1,8 @@
-package funcs
+package funcutils
 
-import (
-	"reflect"
+import "reflect"
 
-	"github.com/codeshelldev/goplater/internals/template/context"
-)
-
-type TemplateFunc struct {
-	Name string
-	Handler any
-}
-
-var funcs = map[string]any{}
-
-func Register(f TemplateFunc) {
-	funcs[f.Name] = f.Handler
-}
-
-func GetFuncMap(context context.TemplateContext) map[string]any{
-	m := make(map[string]any, len(funcs))
-
-	for k, v := range funcs {
-		m[k] = bindContext(v, context)
-	}
-
-	return m
-}
-
-func bindContext(fn any, ctx ...any) any {
+func BindContext(fn any, ctx ...any) any {
 	v := reflect.ValueOf(fn)
 	t := v.Type()
 
@@ -36,7 +11,7 @@ func bindContext(fn any, ctx ...any) any {
 	}
 
 	if t.NumIn() < len(ctx) {
-		panic("bindContext: function must have at least as many parameters as ctx values")
+		panic("bindContext: function must have at least as many parameters as context values")
 	}
 
 	newFuncType := reflect.FuncOf(

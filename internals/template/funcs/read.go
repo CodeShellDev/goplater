@@ -1,93 +1,100 @@
 package funcs
 
 import (
-	"fmt"
 	"os"
 	"path/filepath"
 	"strings"
 
 	"github.com/codeshelldev/goplater/internals/template/context"
-	"github.com/codeshelldev/goplater/internals/template/core"
-	"github.com/codeshelldev/goplater/utils/fetchutils"
+	"github.com/codeshelldev/goplater/pkg/templating"
+	"github.com/codeshelldev/goplater/pkg/templating/modules"
 	"github.com/codeshelldev/goplater/utils/fsutils"
-
-	"github.com/jessevdk/go-flags"
 )
 
-type ReadOptions struct {
-	Recursive	bool	`short:"r" long:"recursive"`
-}
+var readFunc = modules.NewFunc("read", read)
 
-var readFunc = TemplateFunc{
-	Name: "read",
-	Handler: func(context context.TemplateContext, path string) string {
-		str, err := readHandlerWithOpts(context, path, ReadOptions{
-			Recursive: true,
-		})
+func read(rt *templating.Runtime, context templating.Context, path string) string {
+	str, ctx := readHandler(context, path)
 
-		if err != nil {
-			panic("could not read " + path + ": " + err.Error())
-		}
+	str, err := rt.GetEngine().Execute(":read:" + path, str, nil, rt.GetEngineOptions(), ctx)
 
-		return str
-	},
-}
-
-var readOptsFunc = TemplateFunc{
-	Name: "readOpts",
-	Handler: func(context context.TemplateContext, path string, args []string) string {
-		var opts ReadOptions
-
-		flags.ParseArgs(&opts, args)
-
-		str, err := readHandlerWithOpts(context, path, opts)
-
-		if err != nil {
-			panic("could not read " + path + ": " + err.Error())
-		}
-
-		return str
-	},
-}
-
-
-func readHandlerWithOpts(context context.TemplateContext, path string, opts ReadOptions) (string, error) {
-	var err error
-
-	res := readHandler(context, path)
-
-	if opts.Recursive {
-		res, err = core.Renderer.Render(res, context)
+	if err != nil {
+		panic("could not read " + path + ": " + err.Error())
 	}
 
-	return res, err
+	return str
 }
 
-func readHandler(context context.TemplateContext, path string) string {
+var readArgsFunc = modules.NewFunc("readArgs", readArgs)
+
+func readArgs(rt *templating.Runtime, context templating.Context, path string, args ...any) string {
+	args = modules.UnpackArgs(args...)
+
+	str, ctx := readHandler(context, path)
+
+	data := map[string]any{
+		"args": args,
+	}
+
+	str, err := rt.GetEngine().Execute(":read:" + path, str, data, rt.GetEngineOptions(), ctx)
+
+	if err != nil {
+		panic("could not read " + path + ": " + err.Error())
+	}
+
+	return str
+}
+
+func readHandler(ctx templating.Context, path string) (string, templating.Context) {
 	var res string
 
+	tmplContext := ctx.Get(context.TemplateContextKey).(context.TemplateContext)
+
 	isRel := strings.HasPrefix(path, "./") || strings.HasPrefix(path, "../")
-
-	filePathAbs, _ := filepath.Abs(context.Invoker)
+	isRelToSource := strings.HasPrefix(path, "~/")
 	
-	relPathComponent := fsutils.Relative(filepath.Dir(filePathAbs), path)
-
-	context.Invoker = relPathComponent
-
-	os.WriteFile("/tmp/test.txt", fmt.Append(nil, context,), 0644)
+	var filePathAbs string
 
 	if isRel {
-		res = fetchutils.Local(path, filepath.Dir(filePathAbs))
+		abs, _ := filepath.Abs(tmplContext.Invoker)
+
+		filePathAbs = getAbsPathWithSource(path, filepath.Dir(abs))
+	} else if isRelToSource {
+		path, _ = strings.CutPrefix(path, "~/")
+		path = "./" + path
+
+		filePathAbs = getAbsPathWithSource(path, tmplContext.Options.Source)
 	} else {
-		res = fetchutils.Local(path, context.Options.Source)
+		filePathAbs, _ = filepath.Abs(path)
 	}
 
-	res, _ = core.Renderer.Render(res, context)
+	res = readFile(filePathAbs)
 
-	return res
+	tmplContext.Invoker = filePathAbs
+
+	newContext := templating.Context{}
+
+	newContext.Set(context.TemplateContextKey, tmplContext)
+
+	return res, newContext
 }
 
-func init() {
-	Register(readFunc)
-	Register(readOptsFunc)
+func readFile(path string) string {
+	data, err := os.ReadFile(path)
+	
+	if err != nil {
+		return "file not found: " + path
+	}
+
+	return string(data)
+}
+
+func getAbsPathWithSource(path, source string) string {
+	sourceAbs, _ := filepath.Abs(source)
+
+	fullPath := fsutils.Relative(sourceAbs, path)
+	
+	fullPath, _ = filepath.Abs(fullPath)
+
+	return fullPath
 }

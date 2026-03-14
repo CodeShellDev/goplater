@@ -1,12 +1,11 @@
 package template
 
 import (
-	"text/template"
-
 	"github.com/codeshelldev/goplater/internals/template/context"
 	"github.com/codeshelldev/goplater/internals/template/core"
 	"github.com/codeshelldev/goplater/internals/template/funcs"
-	"github.com/codeshelldev/gotl/pkg/templating"
+	"github.com/codeshelldev/goplater/pkg/templating"
+	"github.com/codeshelldev/goplater/pkg/templating/collections"
 )
 
 func (t *Templater) Render(content string, context context.TemplateContext) (string, error) {
@@ -23,27 +22,22 @@ func templateContent(content string, context context.TemplateContext) (string, e
 	return tmplStr, err
 }
 
-func templateStr(str string, context context.TemplateContext) (string, error) {
-	templt, err := createTemplateWithContext(context.Path, str, context)
+func templateStr(str string, tmplContext context.TemplateContext) (string, error) {
+	e := templating.NewEngine()
 
-	if err != nil {
-		return str, err
-	}
+	e.Use(funcs.Module)
 
-	return templating.ExecuteTemplate(templt, nil)
-}
+	e.UseModules(collections.All...)
 
-func createTemplateWithContext(name string, str string, context context.TemplateContext) (*template.Template, error) {
-	templt := template.New(name)
-	templt.Delims("${{{", "}}}")
-	
-	templt.Funcs(funcs.GetFuncMap(context))
+	ctx := templating.Context{}
+	ctx.Set(context.TemplateContextKey, tmplContext)
 
-	err := templating.ParseTemplate(templt, str)
-
-	if err != nil {
-		return nil, err
-	}
-
-	return templt, nil
+	return e.Execute(tmplContext.Path, str, nil, templating.EngineOptions{
+		Delims: templating.Delims{
+			Left: "+{{{", Right: "}}}",
+		},
+		FuncDelims: templating.Delims{
+			Left: "{{{", Right: "}}}",
+		},
+	}, ctx)
 }

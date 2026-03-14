@@ -1,33 +1,20 @@
 package funcs
 
 import (
-	"github.com/codeshelldev/goplater/internals/template/context"
-	"github.com/codeshelldev/goplater/internals/template/core"
+	"github.com/codeshelldev/goplater/pkg/templating"
+	"github.com/codeshelldev/goplater/pkg/templating/modules"
 )
 
-var importFunc = TemplateFunc{
-	Name: "import",
-	Handler: func(context context.TemplateContext, path string) any {
-		tmpltBody, err := readHandlerWithOpts(context, path, ReadOptions{
-			Recursive: false,
-		})
+var importFunc = modules.NewFunc("import", importFn)
 
-		if err != nil {
-			panic("error during import of " + path + ": " + err.Error())
-		}
+func importFn(rt *templating.Runtime, context templating.Context, path string) any {
+	str, ctx := readHandler(context, path)
 
-		if tmpltBody != "" {
-			_, err := core.Renderer.Render(tmpltBody, context)
+	_, err := rt.GetEngine().ExecuteWithRuntime(":import:" + path, str, nil, rt.GetEngineOptions().Delims, ctx, rt)
 
-			if err != nil {
-				panic("error during import of " + path + ": " + err.Error())
-			}
-		}
+	if err != nil {
+		panic("error during import of " + path + ": " + err.Error())
+	}
 
-		return ""
-	},
-}
-
-func init() {
-	Register(importFunc)
+	return ""
 }

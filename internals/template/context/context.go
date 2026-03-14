@@ -1,5 +1,7 @@
 package context
 
+import "github.com/codeshelldev/goplater/pkg/templating"
+
 type TemplateOptions struct {
 	Output string
 	Source string
@@ -19,6 +21,8 @@ type TemplateContext struct {
 	Path 		string
 	Options		TemplateOptions
 }
+
+const TemplateContextKey templating.ContextKey = "templateContext"
 
 func New() TemplateContext {
 	return TemplateContext{ Options: TemplateOptions{ } }
