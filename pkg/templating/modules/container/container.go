@@ -7,45 +7,78 @@ import (
 	"github.com/codeshelldev/goplater/pkg/templating/modules"
 )
 
-var Module = modules.NewModule(containerDeleteFunc, containerSetFunc, containerHasFunc, containerIncludesFunc, slicePushFunc, sliceCreateFunc)
+var Module = modules.NewModule(containerDeleteFunc, containerSetFunc, containerHasFunc, containerIncludesFunc, slicePushFunc, sliceCreateWithFunc, sliceCreateFunc, mapCreateFunc, mapCreateWithFunc)
 
 var containerDeleteFunc = modules.NewFunc("delete", delete)
 
-func delete(_ *templating.Runtime, _ templating.Context, container any, key any) any  {
+func delete(_ *templating.Runtime, _ templating.Context, container *any, key any) any {
 	return deleteKey(container, key)
 }
 
 var containerSetFunc = modules.NewFunc("set", set)
 
-func set(_ *templating.Runtime, _ templating.Context, container any, key any, value any) any  {
+func set(_ *templating.Runtime, _ templating.Context, container *any, key any, value any) any {
 	return setKey(container, key, value)
 }
 
 var containerHasFunc = modules.NewFunc("has", has)
 
-func has(_ *templating.Runtime, _ templating.Context, container any, key any) bool  {
+func has(_ *templating.Runtime, _ templating.Context, container any, key any) bool {
 	return hasKey(container, key)
 }
 
 var containerIncludesFunc = modules.NewFunc("includes", includes)
 
-func includes(_ *templating.Runtime, _ templating.Context, container any, value any) bool  {
+func includes(_ *templating.Runtime, _ templating.Context, container any, value any) bool {
 	return hasValue(container, value)
 }
 
 var slicePushFunc = modules.NewFunc("slicePush", slicePush)
 
-func slicePush(_ *templating.Runtime, _ templating.Context, container []any, value any) []any  {
+func slicePush(_ *templating.Runtime, _ templating.Context, container []any, value any) []any {
 	return append(container, value)
 }
 
-var sliceCreateFunc = modules.NewFunc("sliceCreate", sliceCreate)
+var sliceCreateWithFunc = modules.NewFunc("sliceCreateWith", sliceCreateWith)
 
-func sliceCreate(_ *templating.Runtime, _ templating.Context, value ...any) []any  {
+func sliceCreateWith(_ *templating.Runtime, _ templating.Context, value ...any) []any {
 	value = modules.UnpackArgs(value...)
 
 	return value
 }
+
+var sliceCreateFunc = modules.NewFunc("sliceCreate", sliceCreate)
+
+func sliceCreate(_ *templating.Runtime, _ templating.Context, value ...any) []any {
+	return []any{}
+}
+
+var mapCreateWithFunc = modules.NewFunc("mapCreateWith", mapCreateWith)
+
+func mapCreateWith(_ *templating.Runtime, _ templating.Context, value ...any) map[string]any {
+	value = modules.UnpackArgs(value...)
+
+	out := map[string]any{}
+
+	for i := 1; i < len(value); i+=2 {
+		key, ok := value[i - 1].(string)
+
+		if !ok {
+			continue
+		}
+
+		out[key] = value[i]
+	}
+
+	return out
+}
+
+var mapCreateFunc = modules.NewFunc("mapCreate", sliceCreate)
+
+func mapCreate(_ *templating.Runtime, _ templating.Context, value ...any) map[string]any {
+	return map[string]any{}
+}
+
 
 func hasKey(data any, key any) bool {
 	val := reflect.ValueOf(data)
