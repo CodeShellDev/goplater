@@ -12,6 +12,7 @@
 - [Usage](#usage)
   - [File Functions](#file-functions)
   - [String Functions](#string-functions)
+  - [Math Functions](#math-functions)
   - [Container Functions](#container-functions)
   - [Parser Functions](#parser-functions)
   - [Advanced Functions](#advanced-functions)
@@ -42,7 +43,7 @@ Goplater uses Go's [builtin templating library](https://pkg.go.dev/text/template
 **Example:**
 
 ```
-File Content: $​{​{​{ read "./myfile.txt" }​}​}
+File Content: +​{​{​{ read "./myfile.txt" }​}​}
 ```
 
 ### File Functions
@@ -59,17 +60,15 @@ where relative paths are relative to the invoker.
 read "path"
 ```
 
-##### `readOpts`
+#### `readArgs`
 
-Same as [`read`](#read) but with another parameter for additional arguments:
-
-| Short | Long          | Type   | Note                        |
-| ----- | ------------- | ------ | --------------------------- |
-| `-r`  | `--recursive` | `bool` | tries templating read files |
+Same as [`read`], but allows to supply additional arguments to the file for further processing.
 
 ```
-read "path" "--flag1" "--flag2"
+read "path" arg1 arg2 arg3
 ```
+
+Arguments are accessible in under `.args` with `{{{ index .args 0 }}}`.
 
 #### `fetch`
 
@@ -245,6 +244,28 @@ Replaces substring via regex in string.
 regexReplace "string" "replace_regex" "replace_with"
 ```
 
+### Math Functions
+
+#### `add`
+
+Adds two numbers together.
+
+#### `sub`
+
+Subtraction for two numbers.
+
+#### `mult`
+
+Multiplies two numbers.
+
+#### `divd`
+
+Divides a through b.
+
+#### `mod`
+
+Performs a modulo b.
+
 ### Conversion Functions
 
 Functions for converting types.
@@ -276,6 +297,10 @@ The following are functions for slices and maps.
 #### `has`
 
 Returns wether map or slice has key.
+
+#### `includes`
+
+Returns wether map or slice includes value.
 
 #### `delete`
 
@@ -470,7 +495,7 @@ Sets return output slice directly with **one slice**.
 returnOutputs slice
 ```
 
-##### `outputsGet`
+##### `getOutputs`
 
 Returns the whole output slice.
 
@@ -482,7 +507,7 @@ Calls a global function by its name (without passing any arguments).
 funcCall "name"
 ```
 
-Returns list of [`return`](#return) outputs in order of index.
+Returns list of [`return`](#return) outputs in order of index, or if applicable only a single output.
 
 #### `funcCallArgs`
 
