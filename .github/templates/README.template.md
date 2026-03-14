@@ -316,7 +316,7 @@ delete slice 0
 
 #### `set`
 
-Sets key in map or slice to value.
+Returns map or slice with updated key.
 
 ```
 set map "key" value
@@ -326,15 +326,31 @@ set map "key" value
 set slice 0 value
 ```
 
+#### `mapCreate`
+
+Creates empty map (`map[string]any`).
+
+#### `mapCreateWith`
+
+Creates map by using arguments as key value pairs.
+
+```
+mapCreateWith "key1" value1 "key2" value2
+```
+
 #### `slicePush`
 
-Pushes value on top of slice.
+Returns slice with value pushed on top.
 
 ```
 slicePush slice value
 ```
 
 #### `sliceCreate`
+
+Creates empty slice.
+
+#### `sliceCreateWith`
 
 Creates slice by using arguments as items.
 
