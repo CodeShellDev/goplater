@@ -11,13 +11,13 @@ var Module = modules.NewModule(containerDeleteFunc, containerSetFunc, containerH
 
 var containerDeleteFunc = modules.NewFunc("delete", delete)
 
-func delete(_ *templating.Runtime, _ templating.Context, container *any, key any) any {
+func delete(_ *templating.Runtime, _ templating.Context, container any, key any) any {
 	return deleteKey(container, key)
 }
 
 var containerSetFunc = modules.NewFunc("set", set)
 
-func set(_ *templating.Runtime, _ templating.Context, container *any, key any, value any) any {
+func set(_ *templating.Runtime, _ templating.Context, container any, key any, value any) any {
 	return setKey(container, key, value)
 }
 
