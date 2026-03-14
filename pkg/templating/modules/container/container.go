@@ -39,6 +39,12 @@ func slicePush(_ *templating.Runtime, _ templating.Context, container []any, val
 	return append(container, value)
 }
 
+var sliceCreateFunc = modules.NewFunc("sliceCreate", sliceCreate)
+
+func sliceCreate(_ *templating.Runtime, _ templating.Context, value ...any) []any {
+	return []any{}
+}
+
 var sliceCreateWithFunc = modules.NewFunc("sliceCreateWith", sliceCreateWith)
 
 func sliceCreateWith(_ *templating.Runtime, _ templating.Context, value ...any) []any {
@@ -47,10 +53,10 @@ func sliceCreateWith(_ *templating.Runtime, _ templating.Context, value ...any) 
 	return value
 }
 
-var sliceCreateFunc = modules.NewFunc("sliceCreate", sliceCreate)
+var mapCreateFunc = modules.NewFunc("mapCreate", mapCreate)
 
-func sliceCreate(_ *templating.Runtime, _ templating.Context, value ...any) []any {
-	return []any{}
+func mapCreate(_ *templating.Runtime, _ templating.Context) map[string]any {
+	return map[string]any{}
 }
 
 var mapCreateWithFunc = modules.NewFunc("mapCreateWith", mapCreateWith)
@@ -72,13 +78,6 @@ func mapCreateWith(_ *templating.Runtime, _ templating.Context, value ...any) ma
 
 	return out
 }
-
-var mapCreateFunc = modules.NewFunc("mapCreate", sliceCreate)
-
-func mapCreate(_ *templating.Runtime, _ templating.Context, value ...any) map[string]any {
-	return map[string]any{}
-}
-
 
 func hasKey(data any, key any) bool {
 	val := reflect.ValueOf(data)
