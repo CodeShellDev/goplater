@@ -21,6 +21,8 @@
 - [License](#license)
 - [Legal](#legal)
 
+Need help? Come join our [Matrix Server](https://matrix.to/#/#codeshelldev.sso.goplater:matrix.org)!
+
 ## Getting Started
 
 Download the latest binary from the Release page.
