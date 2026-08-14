@@ -21,7 +21,7 @@
 - [License](#license)
 - [Legal](#legal)
 
-Need help? Come join our [Matrix Server](https://matrix.to/#/#codeshelldev.sso.goplater:matrix.org)!
+Need help? Come join our [Matrix Server](https://matrix.to/#/#codeshelldev.oss.goplater:matrix.org)!
 
 ## Getting Started
 
