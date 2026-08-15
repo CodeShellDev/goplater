@@ -42,7 +42,7 @@ func templateStr(str string, tmplContext *context.TemplateContext) (string, erro
 
 	return e.Execute(tmplContext.Path, str, nil, templating.EngineOptions{
 		Delims: types.Delims{
-			Left: "+{{{", Right: "}}}",
+			Left: "+{{", Right: "}}",
 		},
 	}, ctx)
 }
