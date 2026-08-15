@@ -11,6 +11,7 @@ jobs:
     with:
       platforms: linux/amd64, linux/arm64, darwin/amd64, windows/amd64
       add-version: true
+      ldflags: "-X 'buildinfo.Version=${{ github.event.release.tag_name }}' -X 'buildinfo.Commit=${{ github.sha }}'"
     secrets:
       GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
