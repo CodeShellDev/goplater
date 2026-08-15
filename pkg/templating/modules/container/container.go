@@ -7,7 +7,7 @@ import (
 	"github.com/codeshelldev/goplater/pkg/templating/modules"
 )
 
-var Module = modules.NewModule(containerDeleteFunc, containerSetFunc, containerHasFunc, containerIncludesFunc, slicePushFunc, sliceCreateFunc, mapCreateFunc, mapCreateWithFunc)
+var Module = modules.NewModule(containerDeleteFunc, containerSetFunc, containerHasFunc, containerIncludesFunc, slicePushFunc, sliceCreateFunc, mapCreateFunc)
 
 var containerDeleteFunc = modules.NewFunc("delete", delete)
 
@@ -47,13 +47,11 @@ func sliceCreate(_ *templating.Runtime, _ *templating.Context, value ...any) []a
 
 var mapCreateFunc = modules.NewFunc("mapCreate", mapCreate)
 
-func mapCreate(_ *templating.Runtime, _ *templating.Context) map[string]any {
-	return map[string]any{}
-}
+func mapCreate(_ *templating.Runtime, _ *templating.Context, value ...any) map[string]any {
+	if len(value) <= 1 {
+		return map[string]any{}
+	}
 
-var mapCreateWithFunc = modules.NewFunc("mapCreateWith", mapCreateWith)
-
-func mapCreateWith(_ *templating.Runtime, _ *templating.Context, value ...any) map[string]any {
 	value = modules.UnpackArgs(value...)
 
 	out := map[string]any{}
