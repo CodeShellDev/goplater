@@ -1,6 +1,7 @@
 package funcs
 
 import (
+	"io/fs"
 	"os"
 	"path/filepath"
 
@@ -205,9 +206,9 @@ var listDirFunc = modules.NewFunc("listDir", listDir)
 func listDir(_ *templating.Runtime, ctx *templating.Context, path string) ([]string, error) {
 	tmplContext := ctx.Get(context.TemplateContextKey).(*context.TemplateContext)
 
-	filePathAbs := resolvePath(*tmplContext, path)
+	folderPathAbs := resolvePath(*tmplContext, path)
 
-	entries, err := os.ReadDir(filePathAbs)
+	entries, err := os.ReadDir(folderPathAbs)
 	if err != nil {
 		return nil, err
 	}
@@ -220,6 +221,27 @@ func listDir(_ *templating.Runtime, ctx *templating.Context, path string) ([]str
 
 	return result, nil
 }
+
+var walkDirFunc = modules.NewFunc("walkDir", walkDir)
+
+func walkDir(_ *templating.Runtime, ctx *templating.Context, path string) ([]string, error) {
+	tmplContext := ctx.Get(context.TemplateContextKey).(*context.TemplateContext)
+
+	folderPathAbs := resolvePath(*tmplContext, path)
+
+	paths := []string{}
+
+	err := filepath.WalkDir(folderPathAbs, func(path string, d fs.DirEntry, err error) error {
+		if err != nil {
+			return err
+		}
+		paths = append(paths, path)
+		return nil
+	})
+
+	return paths, err
+}
+
 
 var fsRemoveFunc = modules.NewFunc("fsRemove", fsRemove)
 
