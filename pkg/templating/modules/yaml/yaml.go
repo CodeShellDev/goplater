@@ -3,7 +3,7 @@ package yaml
 import (
 	"github.com/codeshelldev/goplater/pkg/templating"
 	"github.com/codeshelldev/goplater/pkg/templating/modules"
-	"go.yaml.in/yaml/v4"
+	"go.yaml.in/yaml/v3"
 )
 
 var Module = modules.NewModule(yamlEncodeFunc, yamlDecodeFunc)
