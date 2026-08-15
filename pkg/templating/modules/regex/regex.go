@@ -7,7 +7,7 @@ import (
 	"github.com/codeshelldev/goplater/pkg/templating/modules"
 )
 
-var Module = modules.NewModule(regexMatchFunc, regexFindFunc, regexFindGroupsFunc, regexReplaceFunc)
+var Module = modules.NewModule(regexMatchFunc, regexFindFunc, regexFindGroupsFunc, regexFindGroupsIndexFunc, regexReplaceFunc)
 
 var regexMatchFunc = modules.NewFunc("regexMatch", regexMatch)
 
@@ -43,6 +43,18 @@ func regexFindGroups(_ *templating.Runtime, _ *templating.Context, regex string,
 	}
 
 	return re.FindAllStringSubmatch(str, -1)
+}
+
+var regexFindGroupsIndexFunc = modules.NewFunc("regexFindGroupsIndex", regexFindGroupsIndex)
+
+func regexFindGroupsIndex(_ *templating.Runtime, _ *templating.Context, regex string, str string) [][]int  {
+	re, err := regexp.Compile(regex)
+
+	if err != nil {
+		panic("error parsing regex: " + err.Error())
+	}
+
+	return re.FindAllStringSubmatchIndex(str, -1)
 }
 
 var regexReplaceFunc = modules.NewFunc("regexReplace", regexReplace)
