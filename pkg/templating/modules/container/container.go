@@ -2,6 +2,7 @@ package container
 
 import (
 	"reflect"
+	"strconv"
 
 	"github.com/codeshelldev/goplater/pkg/templating"
 	"github.com/codeshelldev/goplater/pkg/templating/modules"
@@ -48,19 +49,23 @@ func sliceCreate(_ *templating.Runtime, _ *templating.Context, value ...any) []a
 var mapCreateFunc = modules.NewFunc("mapCreate", mapCreate)
 
 func mapCreate(_ *templating.Runtime, _ *templating.Context, value ...any) map[string]any {
-	if len(value) <= 1 {
+	if len(value) == 0 {
 		return map[string]any{}
+	}
+
+	if len(value) % 2 != 0 {
+		panic("missing value for key '" + value[len(value) - 1].(string) + "'")
 	}
 
 	value = modules.UnpackArgs(value...)
 
 	out := map[string]any{}
 
-	for i := 1; i < len(value); i+=2 {
+	for i := 1; i < len(value); i += 2 {
 		key, ok := value[i - 1].(string)
 
 		if !ok {
-			continue
+			panic("item at index " + strconv.Itoa(i) + " is not of type string, map keys must be strings")
 		}
 
 		out[key] = value[i]
