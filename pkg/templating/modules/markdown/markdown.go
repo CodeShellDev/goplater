@@ -634,13 +634,9 @@ func markdownLinkURL(_ *templating.Runtime, _ *templating.Context, link *Link) s
 
 var markdownLinkSetURLFunc = modules.NewFunc("markdownLinkSetURL", markdownLinkSetURL)
 
-func markdownLinkSetURL(
-	_ *templating.Runtime,
-	_ *templating.Context,
-	link *Link,
-	url string,
-) {
+func markdownLinkSetURL(_ *templating.Runtime, _ *templating.Context, link *Link, url string) string {
 	link.Node.Node.(*ast.Link).Destination = []byte(url)
+	return ""
 }
 
 var markdownLinkTextFunc = modules.NewFunc("markdownLinkText", markdownLinkText)
@@ -685,13 +681,9 @@ func markdownImageURL(_ *templating.Runtime, _ *templating.Context, image *Image
 
 var markdownImageSetURLFunc = modules.NewFunc("markdownImageSetURL", markdownImageSetURL)
 
-func markdownImageSetURL(
-	_ *templating.Runtime,
-	_ *templating.Context,
-	image *Image,
-	url string,
-) {
+func markdownImageSetURL(_ *templating.Runtime, _ *templating.Context, image *Image, url string) string {
 	image.Node.Node.(*ast.Image).Destination = []byte(url)
+	return ""
 }
 
 var markdownImageAltFunc = modules.NewFunc("markdownImageAlt", markdownImageAlt)
