@@ -9,7 +9,7 @@ import (
 )
 
 var Module = modules.NewModule(
-	trimFunc,
+	trimSpaceFunc,
 
 	upperFunc, 
 	lowerFunc, 
@@ -41,9 +41,9 @@ var Module = modules.NewModule(
 	indexOfFunc,
 )
 
-var trimFunc = modules.NewFunc("trim", trim)
+var trimSpaceFunc = modules.NewFunc("trimSpace", trimSpace)
 
-func trim(_ *templating.Runtime, _ *templating.Context, str string) string  {
+func trimSpace(_ *templating.Runtime, _ *templating.Context, str string) string  {
 	return strings.TrimSpace(str)
 }
 
