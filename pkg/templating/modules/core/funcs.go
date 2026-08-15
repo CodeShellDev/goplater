@@ -51,7 +51,9 @@ func (s *FuncOutputStore) Keys() []string {
 
 func initCallStore(rt *templating.Runtime) {
 	if !rt.HasStore(funcOutputsStoreID) {
-		if err := rt.RegisterStore(funcOutputsStoreID, NewCallOutputStore()); err != nil {
+		err := rt.RegisterStore(funcOutputsStoreID, NewCallOutputStore())
+		
+		if err != nil {
 			panic("error registering call outputs store: " + err.Error())
 		}
 	}

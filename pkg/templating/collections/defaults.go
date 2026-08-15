@@ -10,6 +10,7 @@ import (
 	"github.com/codeshelldev/goplater/pkg/templating/modules/html"
 	"github.com/codeshelldev/goplater/pkg/templating/modules/http"
 	"github.com/codeshelldev/goplater/pkg/templating/modules/json"
+	"github.com/codeshelldev/goplater/pkg/templating/modules/markdown"
 	"github.com/codeshelldev/goplater/pkg/templating/modules/math"
 	"github.com/codeshelldev/goplater/pkg/templating/modules/regex"
 	"github.com/codeshelldev/goplater/pkg/templating/modules/strings"
@@ -30,4 +31,5 @@ var All = []modules.Module{
 	yaml.Module,
 	math.Module,
 	debug.Module,
+	markdown.Module,
 }

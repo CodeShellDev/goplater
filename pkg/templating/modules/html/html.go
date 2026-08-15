@@ -8,7 +8,7 @@ import (
 	"github.com/codeshelldev/goplater/pkg/templating/modules"
 )
 
-var Module = modules.NewModule(htmlDecodeFunc, htmlDocFindFunc, htmlFindFunc, htmlTextFunc, htmlAttrFunc, htmlInnerFunc)
+var Module = modules.NewModule(htmlDecodeFunc, htmlDocFindFunc, htmlFindFunc, htmlFindAllFunc, htmlTextFunc, htmlAttrFunc, htmlInnerFunc)
 
 var htmlDecodeFunc = modules.NewFunc("htmlDecode", htmlDecode)
 
@@ -22,6 +22,18 @@ var htmlDocFindFunc = modules.NewFunc("htmlDocFind", htmlDocFind)
 
 func htmlDocFind(_ *templating.Runtime, _ *templating.Context, doc *goquery.Document, selector string) *goquery.Selection  {
 	return doc.Find(selector).First()
+}
+
+var htmlFindAllFunc = modules.NewFunc("htmlFindAll", htmlFindAll)
+
+func htmlFindAll(_ *templating.Runtime, _ *templating.Context, el *goquery.Selection, selector string) []*goquery.Selection  {
+	all := []*goquery.Selection{}
+
+	el.Find(selector).Each(func(i int, s *goquery.Selection) {
+		all = append(all, s)
+	})
+
+	return all
 }
 
 var htmlFindFunc = modules.NewFunc("htmlFind", htmlFind)
