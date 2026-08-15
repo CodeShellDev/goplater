@@ -8,16 +8,16 @@ import (
 	"github.com/codeshelldev/goplater/internals/template/core"
 )
 
-func (t *Templater) Match(context context.TemplateContext) bool {
-    return matchFile(context)
+func (t *Templater) Match(ctx *context.TemplateContext) bool {
+    return matchFile(ctx)
 }
 
 var _ core.IMatcher = (*Templater)(nil)
 
-func matchFile(context context.TemplateContext) bool {
-	fileName := filepath.Base(context.Path)
+func matchFile(ctx *context.TemplateContext) bool {
+	fileName := filepath.Base(ctx.Path)
 
-	for _, reStr := range context.Options.Match {
+	for _, reStr := range ctx.Options.Match {
 		re, err := regexp.Compile(reStr)
 
 		if err == nil {

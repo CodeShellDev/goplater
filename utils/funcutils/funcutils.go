@@ -14,40 +14,37 @@ func BindContext(fn any, ctx ...any) any {
 		panic("bindContext: function must have at least as many parameters as context values")
 	}
 
-	newFuncType := reflect.FuncOf(
-		func() []reflect.Type {
-			ins := []reflect.Type{}
-			
-			for i := len(ctx); i < t.NumIn(); i++ {
-				ins = append(ins, t.In(i))
-			}
+	ins := make([]reflect.Type, t.NumIn() - len(ctx))
+	for i := range ins {
+		ins[i] = t.In(i + len(ctx))
+	}
 
-			return ins
-		}(),
+	outs := make([]reflect.Type, t.NumOut())
+	for i := range outs {
+		outs[i] = t.Out(i)
+	}
 
-		func() []reflect.Type {
-			outs := []reflect.Type{}
+	newFuncType := reflect.FuncOf(ins, outs, t.IsVariadic())
 
-			for out := range t.Outs() {
-				outs = append(outs, out)
-			}
+	ctxValues := make([]reflect.Value, len(ctx))
+	for i, c := range ctx {
+		ctxValues[i] = reflect.ValueOf(c)
+	}
 
-			return outs
-		}(),
+	return reflect.MakeFunc(newFuncType, func(args []reflect.Value) []reflect.Value {
+		if !t.IsVariadic() {
+			allArgs := make([]reflect.Value, 0, len(ctxValues)+len(args))
+			allArgs = append(allArgs, ctxValues...)
+			allArgs = append(allArgs, args...)
 
-		t.IsVariadic(),
-	)
-
-	newFunc := reflect.MakeFunc(newFuncType, func(args []reflect.Value) (results []reflect.Value) {
-		ctxValues := make([]reflect.Value, len(ctx))
-
-		for i, c := range ctx {
-			ctxValues[i] = reflect.ValueOf(c)
+			return v.Call(allArgs)
 		}
 
-		allArgs := append(ctxValues, args...)
-		return v.Call(allArgs)
-	})
+		// for a variadic MakeFunc, args contains the variadic args as the final []T value
+		allArgs := make([]reflect.Value, 0, len(ctxValues) + len(args))
+		allArgs = append(allArgs, ctxValues...)
+		allArgs = append(allArgs, args...)
 
-	return newFunc.Interface()
+		return v.CallSlice(allArgs)
+	}).Interface()
 }

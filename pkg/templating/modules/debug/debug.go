@@ -11,10 +11,10 @@ var Module = modules.NewModule(echoFunc)
 
 var echoFunc = modules.NewFunc("echo", echo)
 
-func echo(_ *templating.Runtime, _ templating.Context, data ...any) any {
+func echo(_ *templating.Runtime, _ *templating.Context, data ...any) any {
 	data = modules.UnpackArgs(data...)
 
 	fmt.Println(data...)
 
-	return nil
+	return ""
 }

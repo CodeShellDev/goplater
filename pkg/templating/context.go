@@ -6,12 +6,6 @@ type Context struct {
 	values	map[ContextKey]any
 }
 
-func (c *Context) Copy(dst *Context) {
-	dst.tryInit()
-
-	DeepCopyContextMap(c.values, dst.values)
-}
-
 func (c *Context) tryInit() {
 	if c.values == nil {
 		c.values = map[ContextKey]any{}
@@ -36,6 +30,12 @@ func (c *Context) Has(name ContextKey) bool {
 	_, exists := c.values[name]
 
 	return exists
+}
+
+func (c *Context) Delete(name ContextKey) {
+	c.tryInit()
+
+	delete(c.values, name)
 }
 
 const InputContextKey ContextKey = "templateInput"

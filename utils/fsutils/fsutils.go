@@ -81,9 +81,38 @@ func ResolveOutput(source, output string) string {
 	return output
 }
 
-func Relative(abs, rel string) string {
-	fullPath := filepath.Join(abs, rel)
-	fullPath = filepath.Clean(fullPath)
+func Relative(base, path string) (string, error) {
+	if !filepath.IsAbs(base) {
+		var err error
+		base, err = filepath.Abs(base)
+		
+		if err != nil {
+			return "", err
+		}
+	}
 
-	return fullPath
+	if filepath.IsAbs(path) {
+		return filepath.Clean(path), nil
+	}
+
+	return filepath.Join(base, path), nil
+}
+
+func IsInside(file, dir string) bool {
+	file, err := filepath.Abs(file)
+	if err != nil {
+		return false
+	}
+
+	dir, err = filepath.Abs(dir)
+	if err != nil {
+		return false
+	}
+
+	rel, err := filepath.Rel(dir, file)
+	if err != nil {
+		return false
+	}
+
+	return rel == "." || (rel != ".." && !strings.HasPrefix(rel, ".." + string(filepath.Separator)))
 }

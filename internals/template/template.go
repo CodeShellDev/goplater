@@ -10,41 +10,41 @@ import (
 
 type Templater struct{}
 
-func (Templater) Run(context context.TemplateContext) {
-	run(context)
+func (Templater) Run(ctx *context.TemplateContext) {
+	run(ctx)
 }
 
 func New() *Templater {
 	return &Templater{}
 }
 
-func run(context context.TemplateContext) {
-	fullPath, _ := filepath.Abs(context.Path)
+func run(ctx *context.TemplateContext) {
+	fullPath, _ := filepath.Abs(ctx.Path)
 	
 	isDir := fsutils.IsDir(fullPath)
 	isFile := fsutils.IsFile(fullPath)
 
-	context.Invoker = context.Path
+	ctx.Invoker = ctx.Path
 
 	if isDir {
-		filepath.WalkDir(context.Path, func(path string, d fs.DirEntry, err error) error {
+		filepath.WalkDir(ctx.Path, func(path string, d fs.DirEntry, err error) error {
 			if err != nil {
 				return err
 			}
 
 			if !d.IsDir() {
-				newContext := context
+				newContext := ctx
 				newContext.Path = path
 				newContext.Invoker = path
 
 				handleFile(newContext)
-			} else if path != context.Path && !context.Options.Recursive {
+			} else if path != ctx.Path && !ctx.Options.Recursive {
 				return filepath.SkipDir
 			}
 
 			return nil
 		})
 	} else if isFile {
-		handleFile(context)
+		handleFile(ctx)
 	}
 }

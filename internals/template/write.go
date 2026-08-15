@@ -18,12 +18,12 @@ func resolveOutput(source, output string, preserveStruct bool) string {
 	return fsutils.ResolveOutput(source, output)
 }
 
-func templateFile(context context.TemplateContext) (string, error) {
-	if !fsutils.IsFile(context.Path) {
+func templateFile(ctx *context.TemplateContext) (string, error) {
+	if !fsutils.IsFile(ctx.Path) {
 		return "", os.ErrNotExist
 	}
 
-	data, err := os.ReadFile(context.Path)
+	data, err := os.ReadFile(ctx.Path)
 
 	if err != nil {
 		return string(data), err
@@ -33,7 +33,7 @@ func templateFile(context context.TemplateContext) (string, error) {
 		return string(data), errors.New("empty file")
 	}
 
-	tmplStr, err := templateContent(string(data), context)
+	tmplStr, err := templateContent(string(data), ctx)
 
 	if err != nil {
 		return string(data), err
@@ -42,45 +42,58 @@ func templateFile(context context.TemplateContext) (string, error) {
 	return tmplStr, nil
 }
 
-func handleFile(context context.TemplateContext) {
-	if !matchFile(context) {
-		if context.Options.Verbose {
-			fmt.Println("skipped", context.Path)
+func handleFile(ctx *context.TemplateContext) {
+	if !matchFile(ctx) {
+		if ctx.Options.Verbose {
+			fmt.Println("skipped", ctx.Path)
 		}
-
 		return
 	}
 
-	if context.Options.Verbose {
-		fmt.Println("templating", context.Path)
+	if ctx.Options.Verbose {
+		fmt.Println("templating", ctx.Path)
 	}
 
-	content, err := templateFile(context)
+	ctx.OutputPath, _= filepath.Abs(resolveOutput(ctx.Path, ctx.Options.Output, !ctx.Options.Flatten))
 
-	if err != nil && !context.Options.Supress {
+	content, err := templateFile(ctx)
+
+	if err != nil && !ctx.Options.Supress {
 		fmt.Println("error templating:", err.Error())
-
 		return
 	}
 
-	handleFileWrite(content, context)
+	handleFileWrite(content, ctx)
 }
 
-func handleFileWrite(content string, context context.TemplateContext) error {
-	fullPath := resolveOutput(context.Path, context.Options.Output, !context.Options.Flatten)
+func handleFileWrite(content string, ctx *context.TemplateContext) error {
+	filePathAbs, _ := filepath.Abs(ctx.OutputPath)
 
-	if context.Options.Verbose {
-		fmt.Println("writing to", fullPath)
+	allowed := false
+	for _, try := range ctx.Options.AllowedOutputFolders {
+		if fsutils.IsInside(filePathAbs, try) {
+			allowed = true
+		}
 	}
 
-	dir := filepath.Dir(fullPath)
+	if !allowed {
+		absPath, _ := filepath.Abs(ctx.Path)
+		fmt.Println("error outputting " + absPath + " to " + filePathAbs)
+		return nil
+	}
+
+	if ctx.Options.Verbose {
+		fmt.Println("writing to", filePathAbs)
+	}
+
+	dir := filepath.Dir(filePathAbs)
 	err := os.MkdirAll(dir, 0755);
 
 	if err != nil {
 		return err
 	}
 
-	err = os.WriteFile(fullPath, []byte(content), 0644)
+	err = os.WriteFile(filePathAbs, []byte(content), 0644)
 
 	if err != nil {
 		return err

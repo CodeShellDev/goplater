@@ -10,12 +10,12 @@ var Module = modules.NewModule(jsonEncodeFunc, jsonDecodeFunc)
 
 var jsonEncodeFunc = modules.NewFunc("jsonEncode", jsonEncode)
 
-func jsonEncode(_ *templating.Runtime, _ templating.Context, obj any) (string, error)  {
+func jsonEncode(_ *templating.Runtime, _ *templating.Context, obj any) (string, error)  {
 	return jsonutils.ToJsonSafe(obj)
 }
 
 var jsonDecodeFunc = modules.NewFunc("jsonDecode", jsonDecode)
 
-func jsonDecode(_ *templating.Runtime, _ templating.Context, str string) (map[string]any, error)  {
+func jsonDecode(_ *templating.Runtime, _ *templating.Context, str string) (map[string]any, error)  {
 	return jsonutils.GetJsonSafe[map[string]any](str)
 }

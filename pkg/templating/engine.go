@@ -4,62 +4,62 @@ import (
 	"text/template"
 
 	"github.com/codeshelldev/goplater/pkg/templating/modules"
+	"github.com/codeshelldev/goplater/pkg/templating/types"
 )
 
 type Engine struct {
-	modules []modules.Module
-	template *template.Template
+	modules 	[]modules.Module
+	safeModules []modules.Module // modules that are safe to be called from imported resources
+	resolver 	*ResolverChain
 }
 
 type EngineOptions struct {
-	Delims 		Delims
-	FuncDelims 	Delims
+	Delims types.Delims
 }
 
-type Delims struct {
-	Left string
-	Right string
+func NewEngine() *Engine { 
+	return &Engine{} 
 }
 
-func NewEngine() *Engine {
-	return &Engine{}
+func (e *Engine) Use(m modules.Module) { 
+	e.modules = append(e.modules, m) 
 }
 
-func (e *Engine) Use(m modules.Module) {
-	e.modules = append(e.modules, m)
+func (e *Engine) UseModules(m ...modules.Module) { 
+	e.modules = append(e.modules, m...) 
 }
 
-func (e *Engine) UseModules(m ...modules.Module) {
-	e.modules = append(e.modules, m...)
+func (e *Engine) GetModules() []modules.Module { 
+	return modules.UniqueModules(e.modules) 
 }
 
-func (e *Engine) GetModules() []modules.Module {
-	return modules.UniqueModules(e.modules)
+func (e *Engine) UseSafe(m modules.Module) { 
+	e.safeModules = append(e.safeModules, m) 
 }
 
-func (e *Engine) NewTemplate(name string, delims Delims) *template.Template {
-	if e.template != nil {
-		name = e.template.Name() + name
-	}
+func (e *Engine) UseSafeModules(m ...modules.Module) { 
+	e.safeModules = append(e.safeModules, m...) 
+}
 
+func (e *Engine) GetSafeModules() []modules.Module { 
+	return modules.UniqueModules(e.safeModules) 
+}
+
+
+func (e *Engine) SetResolver(r *ResolverChain) {
+	e.resolver = r
+}
+
+func (e *Engine) NewTemplate(name string, delims types.Delims) *template.Template {
 	t := template.New(name)
+
 	t.Delims(delims.Left, delims.Right)
 
 	return t
 }
 
-func (e *Engine) Execute(name, body string, data any, options EngineOptions, context Context) (string, error) {
-	rt := &Runtime{
-		engine: e,
-		engineOptions: options,
-		store: map[string]StoreContainer{},
-	}
-
-	return rt.Render(name, body, data, options.Delims, context)
-}
-
-func (e *Engine) ExecuteWithRuntime(name, body string, data any, delims Delims, context Context, rt *Runtime) (string, error) {
-	rt.engine = e
-
-	return rt.Render(name, body, data, delims, context)
+func (e *Engine) Execute(name, body string, data any, options EngineOptions, ctx *Context) (string, error) {
+	rt := &Runtime{engine: e, engineOptions: options, store: map[string]StoreContainer{}}
+	
+	return rt.Render(name, body, data, ctx)
 }

@@ -1,228 +1,150 @@
 package core
 
 import (
-	"errors"
+	"bytes"
+	"fmt"
 
 	"github.com/codeshelldev/goplater/pkg/templating"
 	"github.com/codeshelldev/goplater/pkg/templating/modules"
 	"github.com/google/uuid"
 )
 
-type FuncStore struct {
-	funcTmpls 	map[string]string
+type FuncOutputStore struct { 
+	outputs map[string][]any 
 }
 
-type FuncOutputStore struct {
-	funcOutput 	map[string][]any
-}
-
-const funcStoreID = "funcStore"
 const funcOutputsStoreID = "funcOutputsStore"
 
-func NewFuncStore() *FuncStore {
-	return &FuncStore{
-		funcTmpls: map[string]string{},
-	}
-}
-
-func NewFuncOutputsStore() *FuncOutputStore {
-	return &FuncOutputStore{
-		funcOutput: map[string][]any{},
-	}
-}
-
-func (s *FuncStore) Set(key string, value any) {
-	s.funcTmpls[key] = value.(string)
-}
-
-func (s *FuncStore) Get(key string) any {
-	return s.funcTmpls[key]
-}
-
-func (s *FuncStore) Delete(key string) bool {
-	delete(s.funcTmpls, key)
-
-	return true
-}
-
-func (s *FuncStore) Has(key string) bool {
-	_, exists := s.funcTmpls[key]
-	
-	return exists
-}
-
-func (s *FuncStore) Keys() []string {
-	keys := make([]string, 0, len(s.funcTmpls))
-
-	for k := range s.funcTmpls {
-		keys = append(keys, k)
-	}
-
-	return keys
+func NewCallOutputStore() *FuncOutputStore { 
+	return &FuncOutputStore{outputs: map[string][]any{}}
 }
 
 func (s *FuncOutputStore) Set(key string, value any) {
-	s.funcOutput[key] = value.([]any)
+	s.outputs[key] = value.([]any)
 }
 
 func (s *FuncOutputStore) Get(key string) any {
-	return s.funcOutput[key]
+	return s.outputs[key]
 }
 
 func (s *FuncOutputStore) Delete(key string) bool {
-	delete(s.funcOutput, key)
+	delete(s.outputs, key)
 
 	return true
 }
 
 func (s *FuncOutputStore) Has(key string) bool {
-	_, exists := s.funcOutput[key]
+	_, exists := s.outputs[key]
 	
 	return exists
 }
 
 func (s *FuncOutputStore) Keys() []string {
-	keys := make([]string, 0, len(s.funcOutput))
+	keys := make([]string, 0, len(s.outputs))
 
-	for k := range s.funcOutput {
+	for k := range s.outputs {
 		keys = append(keys, k)
 	}
 
 	return keys
 }
 
-func SetOutput(rt *templating.Runtime, callerID string, value []any) {
-	s := rt.GetStore(funcOutputsStoreID)
+func initCallStore(rt *templating.Runtime) {
+	if !rt.HasStore(funcOutputsStoreID) {
+		if err := rt.RegisterStore(funcOutputsStoreID, NewCallOutputStore()); err != nil {
+			panic("error registering call outputs store: " + err.Error())
+		}
+	}
+}
 
-	s.Set(callerID, value)
+func SetOutput(rt *templating.Runtime, callerID string, value []any) {
+	rt.GetStore(funcOutputsStoreID).Set(callerID, value)
 }
 
 func GetOutputs(rt *templating.Runtime, callerID string) []any {
-	s := rt.GetStore(funcOutputsStoreID)
-
-	return s.Get(callerID).([]any)
-}
-
-func InitStores(rt *templating.Runtime) {
-	if !rt.HasStore(funcStoreID) {
-		err := rt.RegisterStore(funcStoreID, NewFuncStore())
-
-		if err != nil {
-			panic("error registering func store: " + err.Error())
-		}
-	}
-
-	if !rt.HasStore(funcOutputsStoreID) {
-		err := rt.RegisterStore(funcOutputsStoreID, NewFuncOutputsStore())
-
-		if err != nil {
-			panic("error registering func outputs store: " + err.Error())
-		}
-	}
+	out, _ := rt.GetStore(funcOutputsStoreID).Get(callerID).([]any)
+	return out
 }
 
 type FuncContext struct {
-	CallerID	string
-	Name		string
+	CallerID string
+	Name     string
 }
 
 const FuncContextKey templating.ContextKey = "funcContext"
 
-var funcDefineFunc = modules.NewFunc("funcDefine", funcDefine)
+var callFunc = modules.NewFunc("call", callFn)
 
-func funcDefine(rt *templating.Runtime, _ templating.Context, name string, tmplBody string) any {
-	InitStores(rt)
-
-	createFunc(rt, name, tmplBody)
-
-	return nil
-}
-
-var funcCallFunc = modules.NewFunc("funcCall", funcCall)
-
-func funcCall(rt *templating.Runtime, ctx templating.Context, name string) any {
-	InitStores(rt)
-
-	outputs, err := callFunc(rt, ctx, name, nil)
-
-	if err != nil {
-		panic("could not call func: " + err.Error())
-	}
-
-	return outputs
-}
-
-var funcCallWithArgsFunc = modules.NewFunc("funcCallArgs", funcCallArgs)
-
-func funcCallArgs(rt *templating.Runtime, ctx templating.Context, name string, args ...any) any {
-	InitStores(rt)
+func callFn(rt *templating.Runtime, ctx *templating.Context, name string, args ...any) any {
+	initCallStore(rt)
 
 	args = modules.UnpackArgs(args...)
 
-	outputs, err := callFunc(rt, ctx, name, args...)
+	output, err := call(rt, ctx, name, args...)
 
 	if err != nil {
-		panic("could not call func: " + err.Error())
+		panic("could not call \"" + name + "\": " + err.Error())
 	}
 
-	return outputs
+	return output
 }
 
-func createFunc(rt *templating.Runtime, name, tmplBody string) any {
-	s := rt.GetStore(funcStoreID)
+func call(rt *templating.Runtime, ctx *templating.Context, name string, args ...any) (any, error) {
+	scope, _ := ctx.Get(templating.CurrentTreeKey).(templating.TreeScope)
 
-    s.Set(name, tmplBody)
+	tmpl := rt.GetRegistry().Lookup(scope.Name, name)
 
-    return ""
-}
-
-func callFunc(rt *templating.Runtime, ctx templating.Context, name string, args ...any) (any, error) {
-	s := rt.GetStore(funcStoreID)
-	
-	exists := s.Has(name)
-	
-	if !exists {
-		return nil, errors.New("function \"" + name + "\" not defined")
+	if tmpl == nil {
+		return nil, fmt.Errorf("function %q is not defined or not accessible", name)
 	}
 
-	tmplBody := s.Get(name).(string)
-
-	data := map[string]any{
-		"args": args,
-	}
+	params, _ := rt.Params(name)
+	data := bindParams(params, args)
 
 	callerID := uuid.NewString()
 
-	newEngine := templating.NewEngine()
+	previous, existsPrevious := ctx.Get(FuncContextKey), ctx.Has(FuncContextKey)
 
-	newEngine.Use(FuncModule)
+	ctx.Set(FuncContextKey, FuncContext{CallerID: callerID, Name: name})
 
-	newEngine.UseModules(rt.GetEngine().GetModules()...)
+	defer func() {
+		if existsPrevious {
+			ctx.Set(FuncContextKey, previous)
+		} else {
+			ctx.Delete(FuncContextKey)
+		}
+		
+		rt.GetStore(funcOutputsStoreID).Delete(callerID)
+	}()
 
-	var newContext templating.Context
+	var buf bytes.Buffer
 
-	funcContext := FuncContext{
-		CallerID: callerID,
-		Name: name,
-	}
-	
-	ctx.Copy(&newContext)
-
-	newContext.Set(FuncContextKey, funcContext)
-
-	_, err := newEngine.ExecuteWithRuntime(":func:" + name, tmplBody, data, rt.GetEngineOptions().FuncDelims, newContext, rt)
-
+	err := tmpl.Execute(&buf, data)
 	if err != nil {
 		return nil, err
 	}
 
 	outputs := GetOutputs(rt, callerID)
 
-	s.Delete(callerID)
-
-	if len(outputs) == 1 {
+	switch len(outputs) {
+	case 0:
+		// no return -> just render text
+		return buf.String(), nil
+	case 1:
 		return outputs[0], nil
+	default:
+		return outputs, nil
+	}
+}
+
+func bindParams(params []string, args []any) map[string]any {
+	data := map[string]any{}
+	
+	for i, p := range params {
+		if i < len(args) {
+			data[p] = args[i]
+		}
 	}
 
-	return outputs, nil
+	return data
 }

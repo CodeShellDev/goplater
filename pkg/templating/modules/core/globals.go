@@ -49,14 +49,14 @@ const globalStoreID = "globalStore"
 
 var globalSetFunc = modules.NewFunc("globalSet", globalSet)
 
-func globalSet(rt *templating.Runtime, _ templating.Context, key string, value any) any  {
+func globalSet(rt *templating.Runtime, _ *templating.Context, key string, value any) any  {
 	SetGlobal(rt, key, value)
-	return nil
+	return ""
 }
 
 var globalGetFunc = modules.NewFunc("globalGet", globalGet)
 
-func globalGet(rt *templating.Runtime, _ templating.Context, key string) any  {
+func globalGet(rt *templating.Runtime, _ *templating.Context, key string) any  {
 	return GetGlobal(rt, key)
 }
 

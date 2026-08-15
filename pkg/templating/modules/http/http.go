@@ -13,7 +13,7 @@ var Module = modules.NewModule(fetchFunc)
 
 var fetchFunc = modules.NewFunc("fetch", fetch)
 
-func fetch(_ *templating.Runtime, _ templating.Context, urlStr string) string {
+func fetch(_ *templating.Runtime, _ *templating.Context, urlStr string) string {
 	_, err := url.Parse(urlStr)
 
 	if err != nil {

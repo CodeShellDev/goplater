@@ -6,38 +6,43 @@ import (
 	"github.com/codeshelldev/goplater/internals/template/funcs"
 	"github.com/codeshelldev/goplater/pkg/templating"
 	"github.com/codeshelldev/goplater/pkg/templating/collections"
+	"github.com/codeshelldev/goplater/pkg/templating/resolvers"
+	"github.com/codeshelldev/goplater/pkg/templating/types"
 )
 
-func (t *Templater) Render(content string, context context.TemplateContext) (string, error) {
-    return templateContent(content, context)
+func (t *Templater) Render(content string, ctx *context.TemplateContext) (string, error) {
+    return templateContent(content, ctx)
 }
 
 var _ core.IRenderer = (*Templater)(nil)
 
-func templateContent(content string, context context.TemplateContext) (string, error) {
+func templateContent(content string, ctx *context.TemplateContext) (string, error) {
 	normalized := content
 
-	tmplStr, err := templateStr(normalized, context)
+	tmplStr, err := templateStr(normalized, ctx)
 
 	return tmplStr, err
 }
 
-func templateStr(str string, tmplContext context.TemplateContext) (string, error) {
+func templateStr(str string, tmplContext *context.TemplateContext) (string, error) {
 	e := templating.NewEngine()
 
 	e.Use(funcs.Module)
 
-	e.UseModules(collections.All...)
+	e.UseSafeModules(collections.All...)
+	e.SetResolver(
+		templating.NewResolverChain(
+			funcs.NewFsResolver(tmplContext),
+			resolvers.NewHttpResolver(),
+		),
+	)
 
-	ctx := templating.Context{}
+	ctx := &templating.Context{}
 	ctx.Set(context.TemplateContextKey, tmplContext)
 
 	return e.Execute(tmplContext.Path, str, nil, templating.EngineOptions{
-		Delims: templating.Delims{
+		Delims: types.Delims{
 			Left: "+{{{", Right: "}}}",
-		},
-		FuncDelims: templating.Delims{
-			Left: "{{{", Right: "}}}",
 		},
 	}, ctx)
 }

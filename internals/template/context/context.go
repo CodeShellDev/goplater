@@ -6,6 +6,8 @@ type TemplateOptions struct {
 	Output string
 	Source string
 
+	AllowedOutputFolders []string
+
 	Whitespace []string
 	Match []string
 
@@ -19,11 +21,12 @@ type TemplateOptions struct {
 type TemplateContext struct {
 	Invoker 	string
 	Path 		string
-	Options		TemplateOptions
+	OutputPath	string
+	Options		*TemplateOptions
 }
 
 const TemplateContextKey templating.ContextKey = "templateContext"
 
-func New() TemplateContext {
-	return TemplateContext{ Options: TemplateOptions{ } }
+func New(options *TemplateOptions) *TemplateContext {
+	return &TemplateContext{ Options: options }
 }

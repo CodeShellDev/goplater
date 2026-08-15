@@ -11,7 +11,7 @@ var Module = modules.NewModule(regexMatchFunc, regexFindFunc, regexFindGroupsFun
 
 var regexMatchFunc = modules.NewFunc("regexMatch", regexMatch)
 
-func regexMatch(_ *templating.Runtime, _ templating.Context, regex string, str string) bool  {
+func regexMatch(_ *templating.Runtime, _ *templating.Context, regex string, str string) bool  {
 	re, err := regexp.Compile(regex)
 
 	if err != nil {
@@ -23,7 +23,7 @@ func regexMatch(_ *templating.Runtime, _ templating.Context, regex string, str s
 
 var regexFindFunc = modules.NewFunc("regexFind", regexFind)
 
-func regexFind(_ *templating.Runtime, _ templating.Context, regex string, str string) []string  {
+func regexFind(_ *templating.Runtime, _ *templating.Context, regex string, str string) []string  {
 	re, err := regexp.Compile(regex)
 
 	if err != nil {
@@ -35,7 +35,7 @@ func regexFind(_ *templating.Runtime, _ templating.Context, regex string, str st
 
 var regexFindGroupsFunc = modules.NewFunc("regexFindGroups", regexFindGroups)
 
-func regexFindGroups(_ *templating.Runtime, _ templating.Context, regex string, str string) [][]string  {
+func regexFindGroups(_ *templating.Runtime, _ *templating.Context, regex string, str string) [][]string  {
 	re, err := regexp.Compile(regex)
 
 	if err != nil {
@@ -47,7 +47,7 @@ func regexFindGroups(_ *templating.Runtime, _ templating.Context, regex string, 
 
 var regexReplaceFunc = modules.NewFunc("regexReplace", regexReplace)
 
-func regexReplace(_ *templating.Runtime, _ templating.Context, str string, regex string, replaceWith string) string  {
+func regexReplace(_ *templating.Runtime, _ *templating.Context, str string, regex string, replaceWith string) string  {
 	re, err := regexp.Compile(regex)
 
 	if err != nil {

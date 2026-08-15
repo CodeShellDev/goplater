@@ -1,6 +1,8 @@
 package modules
 
 import (
+	"maps"
+	"slices"
 	"sort"
 	"strings"
 )
@@ -62,6 +64,16 @@ func ModuleKey(m Module) string {
 	sort.Strings(keys)
 
 	return strings.Join(keys, ",")
+}
+
+func MergeModules(modules ...Module) Module {
+	funcs := []Func{}
+
+	for _, m := range modules {
+		funcs = slices.AppendSeq(funcs, maps.Values(m.funcs))
+	}
+
+	return NewModule(funcs...)
 }
 
 func UniqueModules(modules []Module) []Module {
