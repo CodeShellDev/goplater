@@ -17,6 +17,7 @@ var Module = modules.NewModule(
 	isDirFunc,
 
 	listDirFunc,
+	walkDirFunc,
 	mkdirFunc,
 	fsRemoveFunc,
 
