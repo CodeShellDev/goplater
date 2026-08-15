@@ -2,6 +2,7 @@ package strings
 
 import (
 	"fmt"
+	"strconv"
 	"strings"
 
 	"github.com/codeshelldev/goplater/pkg/templating"
@@ -37,8 +38,6 @@ var Module = modules.NewModule(
 	repeatFunc, 
 
 	concatFunc, 
-
-	appendFunc, 
 
 	indexOfFunc,
 )
@@ -145,8 +144,12 @@ func slice(_ *templating.Runtime, _ templating.Context, str string, start int, e
 
 var joinFunc = modules.NewFunc("join", join)
 
-func join(_ *templating.Runtime, _ templating.Context, str []any, sep string) string  {
-	return strings.Join(toStringSlice(str), sep)
+func join(_ *templating.Runtime, _ templating.Context, sep string, args ...any) string  {
+	if len(args) <= 1 {
+		panic("wrong number of args for join: want at least 2 got " + strconv.Itoa(len(args)))
+	}
+
+	return strings.Join(toStringSlice(args), sep)
 }
 
 var repeatFunc = modules.NewFunc("repeat", repeat)
@@ -172,12 +175,6 @@ func concat(_ *templating.Runtime, _ templating.Context, args ...any) string  {
 	str := toStringSlice(args)
 
 	return strings.Join(str, "")
-}
-
-var appendFunc = modules.NewFunc("append", append)
-
-func append(_ *templating.Runtime, _ templating.Context, str string, append string) string  {
-	return str + append
 }
 
 var indexOfFunc = modules.NewFunc("indexOf", indexOf)
