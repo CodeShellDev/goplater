@@ -2,7 +2,6 @@ package strings
 
 import (
 	"fmt"
-	"strconv"
 	"strings"
 
 	"github.com/codeshelldev/goplater/pkg/templating"
@@ -146,8 +145,10 @@ var joinFunc = modules.NewFunc("join", join)
 
 func join(_ *templating.Runtime, _ *templating.Context, sep string, args ...any) string  {
 	if len(args) <= 1 {
-		panic("wrong number of args for join: want at least 2 got " + strconv.Itoa(len(args)))
+		args = modules.UnpackArgs(args...)
 	}
+
+	fmt.Println(args)
 
 	return strings.Join(toStringSlice(args), sep)
 }

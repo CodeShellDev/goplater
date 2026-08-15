@@ -7,7 +7,7 @@ import (
 	"github.com/codeshelldev/goplater/pkg/templating/modules"
 )
 
-var Module = modules.NewModule(containerDeleteFunc, containerSetFunc, containerHasFunc, containerIncludesFunc, slicePushFunc, sliceCreateWithFunc, sliceCreateFunc, mapCreateFunc, mapCreateWithFunc)
+var Module = modules.NewModule(containerDeleteFunc, containerSetFunc, containerHasFunc, containerIncludesFunc, slicePushFunc, sliceCreateFunc, mapCreateFunc, mapCreateWithFunc)
 
 var containerDeleteFunc = modules.NewFunc("delete", delete)
 
@@ -42,14 +42,6 @@ func slicePush(_ *templating.Runtime, _ *templating.Context, container []any, va
 var sliceCreateFunc = modules.NewFunc("sliceCreate", sliceCreate)
 
 func sliceCreate(_ *templating.Runtime, _ *templating.Context, value ...any) []any {
-	return []any{}
-}
-
-var sliceCreateWithFunc = modules.NewFunc("sliceCreateWith", sliceCreateWith)
-
-func sliceCreateWith(_ *templating.Runtime, _ *templating.Context, value ...any) []any {
-	value = modules.UnpackArgs(value...)
-
 	return value
 }
 
