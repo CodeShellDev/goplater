@@ -29,6 +29,12 @@ func (r *FsResolver) CanResolve(path string) bool {
 func (r *FsResolver) Resolve(path string) (string, error) {
 	filePathAbs := resolvePath(*r.ctx, path)
 
+	exists, _ := fsutils.Exists(filePathAbs)
+
+	if !exists {
+		filePathAbs = filePathAbs + ".gplt"
+	}
+
 	return readFile(filePathAbs)
 }
 
