@@ -1,0 +1,241 @@
++{{ define "renderCommandDocs" }}
+    +{{- $files := walkDir "~/" -}}
+    +{{- range $files -}}
+        +{{- if eq (fileExt .) ".go" -}}
+            +{{- $source := readRaw . -}}
+            +{{- $decls := call "parseFuncDeclarations" $source -}}
+            +{{- if eq (len $decls) 0 -}}
+                +{{- continue -}}
+            +{{- end -}}
+            +{{- call "renderCommandSection" . $decls -}}
+        +{{- end -}}
+    +{{- end -}}
++{{ end }}
+
++{{ define "renderCommandSection(path, declarations)" }}
++{{- $filename := basePath .path -}}
++{{- $decls := .declarations }}
+### [`+{{ $filename }}`](+{{ concat "https://pkg.go.dev/github.com/codeshelldev/goplater/" (after .path "goplater/" ) }})
++{{ range $decl := $decls -}}
+    +{{ call "renderCommand" $decl }}
++{{- end -}}
++{{ end }}
+
++{{ define "renderCommand(declaration)" }}
++{{- $decl := .declaration }}
+#### `+{{ index $decl "name" }}
+
++{{- $paramsStr := "" -}}
++{{- if gt (len (index $decl "params")) 0 -}}
+    +{{- $params := sliceCreate -}}
+    +{{- range $param := index $decl "params" -}}
+        +{{- $param = join " " (index $param "name") (index $param "type") }}
+        +{{- $params = slicePush $params $param -}}
+    +{{- end -}}
+    +{{- $paramsStr = join ", " $params -}}
++{{- end -}}
+(+{{- $paramsStr -}})
+
++{{- $returns := (index $decl "returns") -}}
++{{- if gt (len $returns) 0 -}}
+    +{{- $returnStr := join ", " $returns -}}
+    +{{- if gt (len $returns) 1 -}}
+        +{{- $returnStr = concat "(" $returnStr ")" -}}
+    +{{- end }} +{{ $returnStr -}}
++{{- end}}`
+
++{{ index $decl "summary" }}
++{{ range $i, $example := index $decl "examples" }}
+**Example**:
+```
++{{ $example }}
+```
++{{- $outputs := (index $decl "outputs") -}}
++{{- if gt (len $outputs) $i }}
+**Output**:
+```
++{{ index $outputs $i }}
+```
++{{ end -}}
++{{- end -}}
++{{ end }}
+
++{{ define "parseFuncDeclarations(content)" }}
+    +{{ $pattern := `(?ms)((?:^[ \t]*//[^\r\n]*(?:\r?\n|$))+)[ \t]*var[ \t]+[a-zA-Z_][a-zA-Z0-9_]*[ \t]*=[ \t]*modules\.NewFunc\([ \t]*"([a-zA-Z_][a-zA-Z0-9_]*)"[ \t]*,[^)]*\)` }}
+    +{{ $matches := regexFindGroups $pattern .content }}
+    +{{ $entries := sliceCreate }}
+    +{{ range $match := $matches }}
+        +{{ $entry := call "parseFuncDeclaration" (index $match 2) (index $match 1) }}
+        +{{ $entries = slicePush $entries $entry }}
+    +{{ end }}
+
+    +{{ returnNext $entries }}
++{{ end }}
+
++{{ define "parseFuncDeclaration(name, comment)"}}
+    +{{ $summary := call "parseFuncSummary" .comment }}
+    +{{ $params := call "parseFuncParams" .comment }}
+    +{{ $returns := call "parseFuncReturns" .comment }}
+    +{{ $examples := call "parseFuncExamples" .comment }}
+    +{{ $outputs := call "parseFuncOutputs" .comment }}
+
+    +{{ returnNext (mapCreate "name" .name "summary" $summary "params" $params "returns" $returns "examples" $examples "outputs" $outputs) }}
++{{ end }}
+
++{{ define "parseFuncSummary(content)" }}
+    +{{ $lines := split .content "\n" }}
+    +{{ $summary := sliceCreate }}
+    +{{ range $line := $lines }}
+        +{{ $line = after $line "//"}}
+        +{{ $line = trimSpace $line }}
+
+        +{{ if eq $line "" }}
+            +{{ break }}
+        +{{ end }}
+
+        +{{ if regexMatch `^@(param|throws|returns|example|output)\b` $line }}
+            +{{ break }}
+        +{{ end }}
+
+        +{{ $summary = slicePush $summary $line }}
+    +{{ end }}
+
+    +{{ returnNext (join "\n" $summary) }}
++{{ end }}
+
++{{ define "parseFuncParams(content)"}}
+    +{{ $lines := split .content "\n" }}
+    +{{ $params := sliceCreate }}
+    +{{ $pattern := `^@param\s+(\S+)\s+(.*)$` }}
+    +{{ range $line := $lines }}
+        +{{ $line = after $line "//"}}
+        +{{ $line = trimSpace $line }}
+
+        +{{ if eq $line "" }}
+            +{{ continue }}
+        +{{ end }}
+
+        +{{ if regexMatch $pattern $line }}
+            +{{ $match := index (regexFindGroups $pattern $line) 0 }}
+            +{{ $entry := mapCreate "name" (index $match 1) "type" (index $match 2) }}
+            +{{ $params = slicePush $params $entry }}
+        +{{ end }}
+    +{{ end }}
+
+    +{{ returnNext $params }}
++{{ end }}
+
++{{ define "parseFuncReturns(content)"}}
+    +{{ $lines := split .content "\n" }}
+    +{{ $returns := sliceCreate }}
+    +{{ $pattern := `^@returns\s+(.*)$` }}
+    +{{ range $line := $lines }}
+        +{{ $line = after $line "//"}}
+        +{{ $line = trimSpace $line }}
+
+        +{{ if eq $line "" }}
+            +{{ continue }}
+        +{{ end }}
+
+        +{{ if regexMatch $pattern $line }}
+            +{{ $match := index (regexFindGroups $pattern $line) 0 }}
+            +{{ $type := index $match 1 }}
+            +{{ if eq $type "error" }}
+                +{{ $type = "throws error" }}
+            +{{ end }}
+            +{{ $returns = slicePush $returns $type }}
+        +{{ end }}
+    +{{ end }}
+
+    +{{ returnNext $returns }}
++{{ end }}
+
++{{ define "parseFuncExamples(content)" }}
+    +{{ $lines := split .content "\n" }}
+    +{{ $examples := sliceCreate }}
+    +{{ $i := 0 }}
+    +{{ $inExample := false }}
+    +{{ range $line := $lines }}
+        +{{ $line = after $line "//"}}
+        +{{ $line = trimSpace $line }}
+
+        +{{ if eq $line "" }}
+            +{{ if eq $inExample true }}
+                +{{ $i = add $i 1 }}
+            +{{ end }}
+            +{{ $inExample = false }}
+            +{{ continue }}
+        +{{ end }}
+
+        +{{ if regexMatch `^@(param|returns|output)\b` $line }}
+            +{{ if eq $inExample true }}
+                +{{ $i = add $i 1 }}
+            +{{ end }}
+            +{{ $inExample = false }}
+            +{{ continue }}
+        +{{ end }}
+
+        +{{ if regexMatch `^@example\b` $line }}
+            +{{ $inExample = true }}
+            +{{ continue }}
+        +{{ end }}
+
+        +{{ if eq $inExample false }}
+            +{{ continue }}
+        +{{ end }}
+
+        +{{ if lt $i (len $examples) }}
+            +{{ $collected := index $examples $i }}
+            +{{ $examples = set $examples $i (join "\n" $collected $line) }}
+        +{{ else }}
+            +{{ $examples = slicePush $examples $line }}
+        +{{ end }}
+    +{{ end }}
+
+    +{{ returnNext $examples }}
++{{ end }}
+
++{{ define "parseFuncOutputs(content)" }}
+    +{{ $lines := split .content "\n" }}
+    +{{ $outputs := sliceCreate }}
+    +{{ $i := 0 }}
+    +{{ $inOutput := false }}
+    +{{ range $line := $lines }}
+        +{{ $line = after $line "//"}}
+        +{{ $line = trimSpace $line }}
+
+        +{{ if eq $line "" }}
+            +{{ if eq $inOutput true }}
+                +{{ $i = add $i 1 }}
+            +{{ end }}
+            +{{ $inOutput = false }}
+            +{{ continue }}
+        +{{ end }}
+
+        +{{ if regexMatch `^@(param|returns|example)\b` $line }}
+            +{{ if eq $inOutput true }}
+                +{{ $i = add $i 1 }}
+            +{{ end }}
+            +{{ $inOutput = false }}
+            +{{ continue }}
+        +{{ end }}
+
+        +{{ if regexMatch `^@output\b` $line }}
+            +{{ $inOutput = true }}
+            +{{ continue }}
+        +{{ end }}
+
+        +{{ if eq $inOutput false }}
+            +{{ continue }}
+        +{{ end }}
+
+        +{{ if lt $i (len $outputs) }}
+            +{{ $collected := index $outputs $i }}
+            +{{ $outputs = set $outputs $i (join "\n" $collected $line) }}
+        +{{ else }}
+            +{{ $outputs = slicePush $outputs $line }}
+        +{{ end }}
+    +{{ end }}
+
+    +{{ returnNext $outputs }}
++{{ end }}
