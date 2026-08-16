@@ -1,10 +1,14 @@
 package templating
 
-import "text/template"
+import (
+	"strings"
+	"text/template"
+)
 
 type treeEntry struct {
 	tmpl    *template.Template
 	trusted bool
+	alias   string
 }
 
 const CurrentTreeKey ContextKey = "currentTree"
@@ -33,8 +37,8 @@ func (r *ModuleRegistry) Loaded(name string) bool {
 	return ok
 }
 
-func (r *ModuleRegistry) Register(name string, tmpl *template.Template, trusted bool) {
-	r.trees[name] = &treeEntry{tmpl: tmpl, trusted: trusted}
+func (r *ModuleRegistry) Register(name string, tmpl *template.Template, trusted bool, alias string) {
+	r.trees[name] = &treeEntry{tmpl: tmpl, trusted: trusted, alias: alias}
 }
 
 func (r *ModuleRegistry) Trusted(name string) bool {
@@ -64,9 +68,9 @@ func (r *ModuleRegistry) Lookup(callerScope, name string) *template.Template {
 	}
 	
 	if callerScope != "root" {
-		entry, ok := r.trees[callerScope]
+		entry, exists := r.trees[callerScope]
 
-		if ok {
+		if exists {
 			tmplt := entry.tmpl.Lookup(name)
 			if tmplt != nil {
 				return tmplt
@@ -75,13 +79,20 @@ func (r *ModuleRegistry) Lookup(callerScope, name string) *template.Template {
 	}
 
 	for imported := range r.reachable[callerScope] {
-		entry, ok := r.trees[imported]
-		
-		if ok {
-			t := entry.tmpl.Lookup(name)
-			if t != nil {
-				return t
-			}
+		entry, exists := r.trees[imported]
+		if !exists {
+			continue
+		}
+
+		// external must use fq "alias.name" form
+		// prevents bare-name collisions between unrelated imports
+		if !strings.HasPrefix(name, entry.alias + ".") {
+			continue
+		}
+
+		t := entry.tmpl.Lookup(name)
+		if t != nil {
+			return t
 		}
 	}
 
@@ -94,9 +105,9 @@ func (r *ModuleRegistry) ScopeOf(tmpl *template.Template) TreeScope {
 		return TreeScope{Name: "root", Trusted: true}
 	}
 
-	for name, e := range r.trees {
+	for path, e := range r.trees {
 		if e.tmpl.Lookup(tmpl.Name()) == tmpl {
-			return TreeScope{Name: name, Trusted: e.trusted}
+			return TreeScope{Name: path, Trusted: e.trusted}
 		}
 	}
 

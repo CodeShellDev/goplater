@@ -3,7 +3,6 @@ package core
 import (
 	"bytes"
 	"errors"
-	"fmt"
 
 	"github.com/codeshelldev/goplater/pkg/templating"
 	"github.com/codeshelldev/goplater/pkg/templating/modules"
@@ -120,7 +119,7 @@ func call(rt *templating.Runtime, ctx *templating.Context, name string, args ...
 	tmpl := rt.GetRegistry().Lookup(scope.Name, name)
 
 	if tmpl == nil {
-		return nil, fmt.Errorf("function %q is not defined or not accessible", name)
+		return nil, errors.New("function " + name + " is not defined or not accessible")
 	}
 
 	params, _ := rt.Params(name)
@@ -128,17 +127,21 @@ func call(rt *templating.Runtime, ctx *templating.Context, name string, args ...
 
 	callerID := uuid.NewString()
 
-	previous, existsPrevious := ctx.Get(FuncContextKey), ctx.Has(FuncContextKey)
+	previousFunc, existsPreviousFunc := ctx.Get(FuncContextKey), ctx.Has(FuncContextKey)
+	previousScope := scope
 
 	ctx.Set(FuncContextKey, FuncContext{CallerID: callerID, Name: name})
+	ctx.Set(templating.CurrentTreeKey, rt.GetRegistry().ScopeOf(tmpl))
 
 	defer func() {
-		if existsPrevious {
-			ctx.Set(FuncContextKey, previous)
+		if existsPreviousFunc {
+			ctx.Set(FuncContextKey, previousFunc)
 		} else {
 			ctx.Delete(FuncContextKey)
 		}
-		
+
+		ctx.Set(templating.CurrentTreeKey, previousScope)
+
 		rt.GetStore(funcOutputsStoreID).Delete(callerID)
 	}()
 
@@ -153,7 +156,6 @@ func call(rt *templating.Runtime, ctx *templating.Context, name string, args ...
 
 	switch len(outputs) {
 	case 0:
-		// no return -> just render text
 		return buf.String(), nil
 	case 1:
 		return outputs[0], nil

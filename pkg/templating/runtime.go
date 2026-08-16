@@ -3,7 +3,6 @@ package templating
 import (
 	"bytes"
 	"errors"
-	"fmt"
 	"maps"
 	"strings"
 	"text/template"
@@ -99,7 +98,7 @@ func (rt *Runtime) Import(callerScope, path string, aliasOverride string, ctx *C
 	}
 	
 	if name == "" {
-		return fmt.Errorf("module %q: resolver returned no alias and none was provided", name)
+		return errors.New("module " + name + ": resolver returned no alias and none was provided")
 	}
 
 	funcMap := rt.FuncMap(ctx, resolved.Trusted)
@@ -122,7 +121,7 @@ func (rt *Runtime) Import(callerScope, path string, aliasOverride string, ctx *C
 		return errors.New("module " + path + ": " + err.Error())
 	}
 
-	rt.registry.Register(path, t, resolved.Trusted)
+	rt.registry.Register(path, t, resolved.Trusted, name)
 	rt.registry.AllowReach(callerScope, path)
 
 	maps.Copy(rt.signatures, sigs)

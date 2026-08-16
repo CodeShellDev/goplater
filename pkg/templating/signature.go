@@ -1,40 +1,50 @@
 package templating
 
 import (
-	"fmt"
+	"errors"
 	"strings"
 	"text/template"
 )
 
-// ExtractSignatures walks all defines already parsed onto t and, for any whose
-// name looks like "name(params)", re-registers that tree under the plain name.
-// If prefix is non-empty, every define (signature or not) is also namespaced.
+// walks all defines already parsed, searches for "name(params)" pattern, re-registers that tree under plan name.
+// if prefix is not empty, every define is also namespaced
 func ExtractSignatures(t *template.Template, prefix string) (map[string][]string, error) {
 	signatures := map[string][]string{}
 
 	for _, tmpl := range t.Templates() {
 		if tmpl.Name() == t.Name() {
-			continue // this is the top-level body itself, not a define
+			continue
 		}
 
 		base, params, hasSig := parseSignature(tmpl.Name())
-
-		fullName := tmpl.Name()
-		if hasSig {
-			fullName = base
-		}
-		if prefix != "" {
-			fullName = prefix + "." + fullName
+		if !hasSig {
+			base = tmpl.Name()
 		}
 
-		if fullName != tmpl.Name() {
-			if _, err := t.AddParseTree(fullName, tmpl.Tree); err != nil {
-				return nil, fmt.Errorf("define %q: %w", tmpl.Name(), err)
+		// always register the clean bare name (signature-stripped, for self-reference)
+		if base != tmpl.Name() {
+			_, err := t.AddParseTree(base, tmpl.Tree)
+			if err != nil {
+				return nil, errors.New("define " + tmpl.Name() + ": " + err.Error())
 			}
 		}
 
 		if hasSig {
-			signatures[fullName] = params
+			signatures[base] = params
+		}
+
+		// additionally register the prefixed name (for external callers)
+		if prefix != "" {
+			prefixed := prefix + "." + base
+
+			_, err := t.AddParseTree(prefixed, tmpl.Tree)
+			if err != nil {
+				return nil, errors.New("define " + tmpl.Name() + ": " + err.Error())
+			}
+
+			if hasSig {
+				signatures[prefixed] = params
+			}
 		}
 	}
 
