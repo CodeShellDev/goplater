@@ -74,10 +74,14 @@ func (n *Node) searchRoot() (ast.Node, *Document) {
 	return n.Node, n.Document 
 }
 
+// Decodes markdown into a document.
+//
+// @param md string
+// @returns *Document
 var markdownDecodeFunc = modules.NewFunc("markdownDecode", markdownDecode)
 
-func markdownDecode(_ *templating.Runtime, _ *templating.Context, str string) *Document {
-	doc := newDocument([]byte(str))
+func markdownDecode(_ *templating.Runtime, _ *templating.Context, md string) *Document {
+	doc := newDocument([]byte(md))
 	return doc
 }
 
@@ -116,6 +120,10 @@ func (d *Document) registerSources(root ast.Node, source []byte) {
 	})
 }
 
+// Encodes a document into markdown.
+//
+// @param doc *Document
+// @returns string
 var markdownEncodeFunc = modules.NewFunc("markdownEncode", markdownEncode)
 
 func markdownEncode(_ *templating.Runtime, _ *templating.Context, doc *Document) string {
@@ -376,7 +384,7 @@ func parseSelector(sel string) (base, attr, val string, hasAttr bool) {
 func nodeMatches(doc *Document, node ast.Node, selector string) bool {
 	base, attr, val, hasAttr := parseSelector(selector)
 
-	if !typeMatches(node, base) {
+	if !TypeMatches(node, base) {
 		return false
 	}
 
@@ -387,7 +395,7 @@ func nodeMatches(doc *Document, node ast.Node, selector string) bool {
 	return attrMatches(doc, node, attr, val)
 }
 
-func typeMatches(node ast.Node, selector string) bool {
+func TypeMatches(node ast.Node, selector string) bool {
 	switch selector {
 	case "document":
 		_, ok := node.(*ast.Document)
@@ -480,6 +488,11 @@ func attrMatches(doc *Document, node ast.Node, attr, val string) bool {
 	return false
 }
 
+// Find elements in target by selector (using [custom](https://pkg.go.dev/github.com/PuerkitoBio/goquery#Selection.Find)).
+//
+// @param doc *goquery.Document
+// @returns []*goquery.Selection
+// @returns error
 var markdownFindAllFunc = modules.NewFunc("markdownFindAll", markdownFindAll)
 
 func markdownFindAll(_ *templating.Runtime, _ *templating.Context, target Searchable, selector string) []*Node {
