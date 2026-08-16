@@ -159,13 +159,13 @@ func split(_ *templating.Runtime, _ *templating.Context, str string, sep string)
 var afterFunc = modules.NewFunc("after", after)
 
 func after(_ *templating.Runtime, _ *templating.Context, str string, sub string) string  {
-	substrings := strings.SplitN(str, sub, 1)
+	substrings := strings.SplitN(str, sub, 2)
 
-	if len(substrings) == 0 {
-		return substrings[1]
+	if len(substrings) < 2 {
+		return str
 	}
 
-	return str
+	return substrings[1]
 }
 
 // Returns the string before the given substring in a string.
@@ -176,13 +176,13 @@ func after(_ *templating.Runtime, _ *templating.Context, str string, sub string)
 var beforeFunc = modules.NewFunc("before", before)
 
 func before(_ *templating.Runtime, _ *templating.Context, str string, sub string) string  {
-	substrings := strings.SplitN(str, sub, 1)
+	substrings := strings.SplitN(str, sub, 2)
 
-	if len(substrings) == 0 {
-		return substrings[0]
+	if len(substrings) < 2 {
+		return str
 	}
 
-	return str
+	return substrings[1]
 }
 
 // Returns the substring between the start and end substring.
