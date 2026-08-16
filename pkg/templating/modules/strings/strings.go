@@ -30,6 +30,9 @@ var Module = modules.NewModule(
 	beforeFunc, 
 	betweenFunc, 
 
+	cutPrefixFunc,
+	cutSuffixFunc,
+
 	sliceFunc, 
 
 	joinFunc, 
@@ -148,7 +151,7 @@ func split(_ *templating.Runtime, _ *templating.Context, str string, sep string)
 	return strings.Split(str, sep)
 }
 
-// Removes a substring at the end of the given string.
+// Returns the string after the given substring in a string.
 //
 // @param str string
 // @param sub string
@@ -156,12 +159,16 @@ func split(_ *templating.Runtime, _ *templating.Context, str string, sep string)
 var afterFunc = modules.NewFunc("after", after)
 
 func after(_ *templating.Runtime, _ *templating.Context, str string, sub string) string  {
-	after, _ := strings.CutPrefix(str, sub)
+	substrings := strings.SplitN(str, sub, 1)
 
-	return after
+	if len(substrings) == 0 {
+		return substrings[1]
+	}
+
+	return str
 }
 
-// Removes a substring at the start of the given string.
+// Returns the string before the given substring in a string.
 //
 // @param str string
 // @param sub string
@@ -169,12 +176,16 @@ func after(_ *templating.Runtime, _ *templating.Context, str string, sub string)
 var beforeFunc = modules.NewFunc("before", before)
 
 func before(_ *templating.Runtime, _ *templating.Context, str string, sub string) string  {
-	before, _ := strings.CutSuffix(str, sub)
+	substrings := strings.SplitN(str, sub, 1)
 
-	return before
+	if len(substrings) == 0 {
+		return substrings[0]
+	}
+
+	return str
 }
 
-// Removes a prefix and a suffix from the given string.
+// Returns the substring between the start and end substring.
 //
 // @param str string
 // @param startSub string
@@ -197,6 +208,33 @@ func between(_ *templating.Runtime, _ *templating.Context, str string, startSub,
 
 	return before
 }
+
+// Removes a substring at the start of the given string.
+//
+// @param str string
+// @param sub string
+// @returns string
+var cutPrefixFunc = modules.NewFunc("cutPrefix", cutPrefix)
+
+func cutPrefix(_ *templating.Runtime, _ *templating.Context, str string, sub string) string  {
+	after, _ := strings.CutPrefix(str, sub)
+
+	return after
+}
+
+// Removes a substring at the end of the given string.
+//
+// @param str string
+// @param sub string
+// @returns string
+var cutSuffixFunc = modules.NewFunc("cutSuffix", cutSuffix)
+
+func cutSuffix(_ *templating.Runtime, _ *templating.Context, str string, sub string) string  {
+	before, _ := strings.CutSuffix(str, sub)
+
+	return before
+}
+
 
 // Slices a string based on start and end index.
 //
