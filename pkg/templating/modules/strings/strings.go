@@ -148,8 +148,6 @@ func join(_ *templating.Runtime, _ *templating.Context, sep string, args ...any)
 		args = modules.UnpackArgs(args...)
 	}
 
-	fmt.Println(args)
-
 	return strings.Join(toStringSlice(args), sep)
 }
 
