@@ -64,6 +64,14 @@ type Node struct {
 	Node     ast.Node
 }
 
+type Nodeish interface {
+	asNode() *Node
+}
+
+func (n *Node) asNode() *Node { 
+	return n 
+}
+
 type Searchable interface {
 	searchRoot() (ast.Node, *Document)
 }
@@ -541,7 +549,9 @@ func markdownFind(rt *templating.Runtime, ctx *templating.Context, target Search
 // @returns bool
 var markdownIsFunc = modules.NewFunc("markdownIs", markdownIs)
 
-func markdownIs(_ *templating.Runtime, _ *templating.Context, node *Node, selector string) bool {
+func markdownIs(_ *templating.Runtime, _ *templating.Context, n Nodeish, selector string) bool {
+	node := n.asNode()
+
 	if node == nil || node.Node == nil {
 		return false
 	}
@@ -574,7 +584,9 @@ func markdownHTML(_ *templating.Runtime, _ *templating.Context, doc *Document) (
 // @returns string
 var markdownTextFunc = modules.NewFunc("markdownText", markdownText)
 
-func markdownText(_ *templating.Runtime, _ *templating.Context, node *Node) string {
+func markdownText(_ *templating.Runtime, _ *templating.Context, n Nodeish) string {
+	node := n.asNode()
+
 	return nodeText(node.Document, node.Node)
 }
 
@@ -881,7 +893,9 @@ func markdownBlockquotes(_ *templating.Runtime, _ *templating.Context, doc *Docu
 // @param node *Node
 var markdownRemoveFunc = modules.NewFunc("markdownRemove", markdownRemove)
 
-func markdownRemove(_ *templating.Runtime, _ *templating.Context, node *Node) string {
+func markdownRemove(_ *templating.Runtime, _ *templating.Context, n Nodeish) string {
+	node := n.asNode()
+
 	if node == nil || node.Node == nil {
 		return ""
 	}
