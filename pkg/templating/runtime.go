@@ -43,7 +43,7 @@ type Runtime struct {
 
 type StoreContainer interface {
 	Set(key string, value any)
-	Get(key string) any
+	Get(key string) (any, error)
 	Delete(key string) bool
 	Has(key string) bool
 	Keys() []string

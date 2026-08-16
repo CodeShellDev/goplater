@@ -1,6 +1,8 @@
 package core
 
 import (
+	"errors"
+
 	"github.com/codeshelldev/goplater/pkg/templating"
 	"github.com/codeshelldev/goplater/pkg/templating/modules"
 )
@@ -19,8 +21,14 @@ func (s *GlobalStore) Set(key string, value any) {
 	s.data[key] = value.(string)
 }
 
-func (s *GlobalStore) Get(key string) any {
-	return s.data[key]
+func (s *GlobalStore) Get(key string) (any, error) {
+	value, exists := s.data[key]
+	
+	if !exists {
+		return nil, errors.New("global '" + key + "' does not exist")
+	}
+	
+	return value, nil
 }
 
 func (s *GlobalStore) Delete(key string) bool {
@@ -47,17 +55,36 @@ func (s *GlobalStore) Has(key string) bool {
 
 const globalStoreID = "globalStore"
 
+// Defines a global value with a key.
+//
+// @param key string
+// @param value any
 var globalSetFunc = modules.NewFunc("globalSet", globalSet)
 
-func globalSet(rt *templating.Runtime, _ *templating.Context, key string, value any) any  {
+func globalSet(rt *templating.Runtime, _ *templating.Context, key string, value any) string {
 	SetGlobal(rt, key, value)
 	return ""
 }
 
+// Tries to retrieve a global value with a key.
+//
+// @param key string
+// @returns any
+// @returns error
 var globalGetFunc = modules.NewFunc("globalGet", globalGet)
 
-func globalGet(rt *templating.Runtime, _ *templating.Context, key string) any  {
+func globalGet(rt *templating.Runtime, _ *templating.Context, key string) (any, error)  {
 	return GetGlobal(rt, key)
+}
+
+// Returns whether a given global variable exists.
+//
+// @param key string
+// @returns bool
+var globalHasFunc = modules.NewFunc("globalHas", globalHas)
+
+func globalHas(rt *templating.Runtime, _ *templating.Context, key string) bool  {
+	return HasGlobal(rt, key)
 }
 
 func SetGlobal(rt *templating.Runtime, key string, value any) {
@@ -74,8 +101,14 @@ func SetGlobal(rt *templating.Runtime, key string, value any) {
 	s.Set(key, value)
 }
 
-func GetGlobal(rt *templating.Runtime, key string) any {
+func GetGlobal(rt *templating.Runtime, key string) (any, error) {
 	s := rt.GetStore(globalStoreID)
 
 	return s.Get(key)
+}
+
+func HasGlobal(rt *templating.Runtime, key string) bool {
+	s := rt.GetStore(globalStoreID)
+
+	return s.Has(key)
 }

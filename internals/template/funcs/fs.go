@@ -23,6 +23,13 @@ func isPathAllowed(path string, tmplContext *context.TemplateContext) bool {
 	return allowed
 }
 
+// Reads and templates file.
+//
+// @param path string
+// @returns string
+//
+// @example
+//   +{{ read "/path/to/file" }}
 var readFunc = modules.NewFunc("read", read)
 
 func read(rt *templating.Runtime, ctx *templating.Context, path string) string {
@@ -37,6 +44,13 @@ func read(rt *templating.Runtime, ctx *templating.Context, path string) string {
 	return str
 }
 
+// Reads file (without templating).
+//
+// @param path string
+// @returns string
+//
+// @example
+//   +{{ readRaw "/path/to/file" }}
 var readRawFunc = modules.NewFunc("readRaw", readRaw)
 
 func readRaw(_ *templating.Runtime, ctx *templating.Context, path string) string {
@@ -53,11 +67,17 @@ func readRaw(_ *templating.Runtime, ctx *templating.Context, path string) string
 	return res
 }
 
+// Reads file and passes arguments to it.
+//
+// @param path string
+// @param args any
+// @returns string
+//
+// @example
+//   +{{ read "/path/to/file" }}
 var readArgsFunc = modules.NewFunc("readArgs", readArgs)
 
-func readArgs(rt *templating.Runtime, ctx *templating.Context, path string, args ...any) string {
-	args = modules.UnpackArgs(args...)
-
+func readArgs(rt *templating.Runtime, ctx *templating.Context, path string, args any) string {
 	str, newContext := readHandler(ctx, path)
 
 	data := map[string]any{
@@ -93,6 +113,14 @@ func readHandler(ctx *templating.Context, path string) (string, *templating.Cont
 	return res, newContext
 }
 
+// Writes to a file path.
+//
+// @param path string
+// @param content string
+// @returns error
+//
+// @example
+//   +{{ write "/path/to/file" "Hello" }}
 var writeFunc = modules.NewFunc("write", write)
 
 func write(_ *templating.Runtime, ctx *templating.Context, path string, content string) error {
@@ -112,28 +140,43 @@ func write(_ *templating.Runtime, ctx *templating.Context, path string, content 
 	return nil
 }
 
+// Creates directory at path.
+//
+// @param path string
+// @returns error
+//
+// @example
+//   +{{ read "/path/to/somewhere/" }}
 var mkdirFunc = modules.NewFunc("mkdir", mkdir)
 
-func mkdir(_ *templating.Runtime, ctx *templating.Context, path string) error {
+func mkdir(_ *templating.Runtime, ctx *templating.Context, path string) string {
 	tmplContext := ctx.Get(context.TemplateContextKey).(*context.TemplateContext)
 
-	filePathAbs := resolvePath(*tmplContext, path)
+	folderPathAbs := resolvePath(*tmplContext, path)
 
-	if !isPathAllowed(filePathAbs, tmplContext) {
-		panic("creating folder " + filePathAbs + " is not allowed as it is not inside of the allowed scope")
+	if !isPathAllowed(folderPathAbs, tmplContext) {
+		panic("creating folder " + folderPathAbs + " is not allowed as it is not inside of the allowed scope")
 	}
 
-	err := os.MkdirAll(filePathAbs, 0755)
+	err := os.MkdirAll(folderPathAbs, 0755)
 	if err != nil {
-		return err
+		panic(err.Error())
 	}
 
-	return nil
+	return ""
 }
 
+// Appends to an existing file.
+//
+// @param path string
+// @param content string
+// @returns error
+//
+// @example
+//   +{{ appendFile "/path/to/somewhere/" "Goodbye" }}
 var appendFileFunc = modules.NewFunc("appendFile", appendFile)
 
-func appendFile(_ *templating.Runtime, ctx *templating.Context, path string, content string) error {
+func appendFile(_ *templating.Runtime, ctx *templating.Context, path string, content string) string {
 	tmplContext := ctx.Get(context.TemplateContextKey).(*context.TemplateContext)
 
 	filePathAbs := resolvePath(*tmplContext, path)
@@ -144,18 +187,27 @@ func appendFile(_ *templating.Runtime, ctx *templating.Context, path string, con
 
 	f, err := os.OpenFile(filePathAbs, os.O_WRONLY|os.O_CREATE|os.O_APPEND, 0644)
 	if err != nil {
-		return err
+		panic(err.Error())
 	}
 	defer f.Close()
 
 	_, err = f.WriteString(content)
 	if err != nil {
-		return err
+		panic(err.Error())
 	}
 
-	return nil
+	return ""
 }
 
+// Returns if a file or folder exists at a given path.
+//
+// @param path string
+// @returns bool
+//
+// @example
+//   +{{ if (fsExists "/path/to/somewhere") }}
+//		Path exists!
+//	 +{{ end }}
 var fsExistsFunc = modules.NewFunc("fsExists", fsExists)
 
 func fsExists(_ *templating.Runtime, ctx *templating.Context, path string) bool {
@@ -171,6 +223,15 @@ func fsExists(_ *templating.Runtime, ctx *templating.Context, path string) bool 
 	return true
 }
 
+// Returns if a file exists at a given path.
+//
+// @param path string
+// @returns bool
+//
+// @example
+//   +{{ if (isFile "/path/to/file") }}
+//		Path is a file!
+//	 +{{ end }}
 var isFileFunc = modules.NewFunc("isFile", isFile)
 
 func isFile(_ *templating.Runtime, ctx *templating.Context, path string) bool {
@@ -186,6 +247,15 @@ func isFile(_ *templating.Runtime, ctx *templating.Context, path string) bool {
 	return info.Mode().IsRegular()
 }
 
+// Returns if a folder exists at a given path.
+//
+// @param path string
+// @returns bool
+//
+// @example
+//   +{{ if (fsExists "/path/to/somewhere") }}
+//		Path is a folder!
+//	 +{{ end }}
 var isDirFunc = modules.NewFunc("isDir", isDir)
 
 func isDir(_ *templating.Runtime, ctx *templating.Context, path string) bool {
@@ -201,6 +271,16 @@ func isDir(_ *templating.Runtime, ctx *templating.Context, path string) bool {
 	return info.IsDir()
 }
 
+// Returns all files and folders inside of a given directory.
+//
+// @param path string
+// @returns []string
+// @returns error
+//
+// @example
+//   +{{ join ", " (listDir "/path/to") }}
+// @output
+//	 /path/to/file1.txt, /path/to/file2.txt, /path/to/folder
 var listDirFunc = modules.NewFunc("listDir", listDir)
 
 func listDir(_ *templating.Runtime, ctx *templating.Context, path string) ([]string, error) {
@@ -222,6 +302,16 @@ func listDir(_ *templating.Runtime, ctx *templating.Context, path string) ([]str
 	return result, nil
 }
 
+// Returns all files and folders recursively under a given directory.
+//
+// @param path string
+// @returns []string
+// @returns error
+//
+// @example
+//   +{{ join ", " (walkDir "/path/to") }}
+// @output
+//	 /path/to/file1.txt, /path/to/file2.txt, /path/to/folder, /path/to/folder/file3.txt
 var walkDirFunc = modules.NewFunc("walkDir", walkDir)
 
 func walkDir(_ *templating.Runtime, ctx *templating.Context, path string) ([]string, error) {
@@ -243,9 +333,16 @@ func walkDir(_ *templating.Runtime, ctx *templating.Context, path string) ([]str
 }
 
 
+// Removes a file or folder at a given path.
+//
+// @param path string
+// @returns error
+//
+// @example
+//   +{{ fsRemove "/path/to/file/or/folder" }}
 var fsRemoveFunc = modules.NewFunc("fsRemove", fsRemove)
 
-func fsRemove(_ *templating.Runtime, ctx *templating.Context, path string) error {
+func fsRemove(_ *templating.Runtime, ctx *templating.Context, path string) string {
 	tmplContext := ctx.Get(context.TemplateContextKey).(*context.TemplateContext)
 
 	filePathAbs := resolvePath(*tmplContext, path)
@@ -256,36 +353,58 @@ func fsRemove(_ *templating.Runtime, ctx *templating.Context, path string) error
 
 	err := os.RemoveAll(path)
 	if err != nil {
-		return err
+		panic(err.Error())
 	}
 
-	return nil
+	return ""
 }
 
+// Joins paths together.
+//
+// @param paths []string
+// @returns string
 var joinPathFunc = modules.NewFunc("joinPath", joinPath)
 
 func joinPath(_ *templating.Runtime, _ *templating.Context, paths ...string) string {
 	return filepath.Join(paths...)
 }
 
+// Returns the last element of a path.
+//
+// @param path string
+// @returns string
 var basePathFunc = modules.NewFunc("basePath", basePath)
 
 func basePath(_ *templating.Runtime, _ *templating.Context, path string) string {
 	return filepath.Base(path)
 }
 
+// Returns all but the last element of a path.
+//
+// @param path string
+// @returns string
 var pathDirFunc = modules.NewFunc("pathDir", pathDir)
 
 func pathDir(_ *templating.Runtime, _ *templating.Context, path string) string {
 	return filepath.Dir(path)
 }
 
+// Returns the file name extension of a file path.
+//
+// @param path string
+// @returns string
 var fileExtFunc = modules.NewFunc("fileExt", fileExt)
 
 func fileExt(_ *templating.Runtime, _ *templating.Context, path string) string {
 	return filepath.Ext(path)
 }
 
+// Returns an absolute representation of a given path. 
+// If the path is not absolute it will be joined with the current working directory to turn it into an absolute path.
+//
+// @param path string
+// @returns string
+// @returns error
 var absPathFunc = modules.NewFunc("absPath", absPath)
 
 func absPath(_ *templating.Runtime, _ *templating.Context, path string) (string, error) {
@@ -297,10 +416,17 @@ func absPath(_ *templating.Runtime, _ *templating.Context, path string) (string,
 	return abs, nil
 }
 
+// Returns a relative path that is lexically equivalent to targetPath when joined to basePath with an intervening separator.
+// The returned path will always be relative to basePath, even if basePath and targetPath share no elements.
+//
+// @param basePath string
+// @param targetPath string
+// @returns string
+// @returns error
 var relPathFunc = modules.NewFunc("relPath", relPath)
 
-func relPath(_ *templating.Runtime, _ *templating.Context, base string, target string) (string, error) {
-	rel, err := filepath.Rel(base, target)
+func relPath(_ *templating.Runtime, _ *templating.Context, basePath string, targetPath string) (string, error) {
+	rel, err := filepath.Rel(basePath, targetPath)
 	if err != nil {
 		return "", err
 	}

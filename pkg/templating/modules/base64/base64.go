@@ -9,14 +9,23 @@ import (
 
 var Module = modules.NewModule(base64EncodeFunc, base64DecodeFunc)
 
+// Encodes strings with base64.
+//
+// @param encode string
+// @returns string
 var base64EncodeFunc = modules.NewFunc("base64Encode", base64Encode)
 
-func base64Encode(_ *templating.Runtime, _ *templating.Context, decoded string) string {
-	encoded := base64.StdEncoding.EncodeToString([]byte(decoded))
+func base64Encode(_ *templating.Runtime, _ *templating.Context, str string) string {
+	encoded := base64.StdEncoding.EncodeToString([]byte(str))
 
 	return encoded
 }
 
+// Decodes a base64 string.
+//
+// @param decode string
+// @returns string
+// @returns error
 var base64DecodeFunc = modules.NewFunc("base64Decode", base64Decode)
 
 func base64Decode(_ *templating.Runtime, _ *templating.Context, encoded string) (string, error) {

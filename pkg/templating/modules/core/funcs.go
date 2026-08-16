@@ -2,6 +2,7 @@ package core
 
 import (
 	"bytes"
+	"errors"
 	"fmt"
 
 	"github.com/codeshelldev/goplater/pkg/templating"
@@ -23,8 +24,14 @@ func (s *FuncOutputStore) Set(key string, value any) {
 	s.outputs[key] = value.([]any)
 }
 
-func (s *FuncOutputStore) Get(key string) any {
-	return s.outputs[key]
+func (s *FuncOutputStore) Get(key string) (any, error) {
+	outputs, exists := s.outputs[key]
+	
+	if !exists {
+		return nil, errors.New("outputs for func '" + key + "' do not exist")
+	}
+	
+	return outputs, nil
 }
 
 func (s *FuncOutputStore) Delete(key string) bool {
@@ -64,7 +71,9 @@ func SetOutput(rt *templating.Runtime, callerID string, value []any) {
 }
 
 func GetOutputs(rt *templating.Runtime, callerID string) []any {
-	out, _ := rt.GetStore(funcOutputsStoreID).Get(callerID).([]any)
+	raw, _ := rt.GetStore(funcOutputsStoreID).Get(callerID)
+	out, _ := raw.([]any)
+
 	return out
 }
 
@@ -77,18 +86,32 @@ const FuncContextKey templating.ContextKey = "funcContext"
 
 var callFunc = modules.NewFunc("call", callFn)
 
-func callFn(rt *templating.Runtime, ctx *templating.Context, name string, args ...any) any {
+// Tries to call a func by name with args, optionally with a namespace handle.
+// Fails if func is not accessible or undefined.
+//
+// @param name string
+// @param args []any
+// @returns any
+// @returns error
+//
+// @example
+//	 +{{ define "greet(name)" }}
+//		 +{{ echo (printf "Hello %s!" .name) }}
+//	 +{{ end }}
+// 	 
+//	 +{{ call "greet" "John" }}
+// @output
+//	 Hello John!
+func callFn(rt *templating.Runtime, ctx *templating.Context, name string, args ...any) (any, error) {
 	initCallStore(rt)
-
-	args = modules.UnpackArgs(args...)
 
 	output, err := call(rt, ctx, name, args...)
 
 	if err != nil {
-		panic("could not call \"" + name + "\": " + err.Error())
+		return nil, errors.New("could not call \"" + name + "\": " + err.Error())
 	}
 
-	return output
+	return output, nil
 }
 
 func call(rt *templating.Runtime, ctx *templating.Context, name string, args ...any) (any, error) {

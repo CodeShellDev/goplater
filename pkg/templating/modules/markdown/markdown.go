@@ -30,10 +30,12 @@ var Module = modules.NewModule(
 	markdownLinkURLFunc,
 	markdownLinkSetURLFunc,
 	markdownLinkTextFunc,
+	markdownLinkSetTitleFunc,
 
 	markdownImageURLFunc,
 	markdownImageSetURLFunc,
 	markdownImageAltFunc,
+	markdownImageSetAltFunc,
 
 	markdownRemoveFunc,
 	markdownAppendFunc,
@@ -488,11 +490,11 @@ func attrMatches(doc *Document, node ast.Node, attr, val string) bool {
 	return false
 }
 
-// Find elements in target by selector (using [custom](https://pkg.go.dev/github.com/PuerkitoBio/goquery#Selection.Find)).
+// Finds elements in target by selector (using [custom](https://pkg.go.dev/github.com/codeshelldev/goplater/pkg/templating/modules/markdown#TypeMatches)).
 //
-// @param doc *goquery.Document
-// @returns []*goquery.Selection
-// @returns error
+// @param target Searchable
+// @param selector string
+// @returns []*Node
 var markdownFindAllFunc = modules.NewFunc("markdownFindAll", markdownFindAll)
 
 func markdownFindAll(_ *templating.Runtime, _ *templating.Context, target Searchable, selector string) []*Node {
@@ -515,6 +517,11 @@ func markdownFindAll(_ *templating.Runtime, _ *templating.Context, target Search
 	return result
 }
 
+// Finds element in target by selector (using [custom](https://pkg.go.dev/github.com/codeshelldev/goplater/pkg/templating/modules/markdown#TypeMatches)).
+//
+// @param target Searchable
+// @param selector string
+// @returns *Node
 var markdownFindFunc = modules.NewFunc("markdownFind", markdownFind)
 
 func markdownFind(rt *templating.Runtime, ctx *templating.Context, target Searchable, selector string) *Node {
@@ -527,6 +534,11 @@ func markdownFind(rt *templating.Runtime, ctx *templating.Context, target Search
 	return all[0]
 }
 
+// Returns whether node matches selector (using [custom](https://pkg.go.dev/github.com/codeshelldev/goplater/pkg/templating/modules/markdown#TypeMatches)).
+//
+// @param node *Node
+// @param selector string
+// @returns bool
 var markdownIsFunc = modules.NewFunc("markdownIs", markdownIs)
 
 func markdownIs(_ *templating.Runtime, _ *templating.Context, node *Node, selector string) bool {
@@ -536,6 +548,11 @@ func markdownIs(_ *templating.Runtime, _ *templating.Context, node *Node, select
 	return nodeMatches(node.Document, node.Node, selector)
 }
 
+// Returns html markdown representation.
+//
+// @param doc *Document
+// @returns string
+// @returns error
 var markdownHTMLFunc = modules.NewFunc("markdownHTML", markdownHTML)
 
 func markdownHTML(_ *templating.Runtime, _ *templating.Context, doc *Document) (string, error) {
@@ -551,6 +568,10 @@ func markdownHTML(_ *templating.Runtime, _ *templating.Context, doc *Document) (
 	return buf.String(), nil
 }
 
+// Returns all raw markdown text in a node recursively.
+//
+// @param node *Node
+// @returns string
 var markdownTextFunc = modules.NewFunc("markdownText", markdownText)
 
 func markdownText(_ *templating.Runtime, _ *templating.Context, node *Node) string {
@@ -582,6 +603,11 @@ func nodeText(doc *Document, root ast.Node) string {
 	return buf.String()
 }
 
+
+// Returns all markdown headings.
+//
+// @param doc *Document
+// @returns []*Heading
 var markdownHeadingsFunc = modules.NewFunc("markdownHeadings", markdownHeadings)
 
 func markdownHeadings(_ *templating.Runtime, _ *templating.Context, doc *Document) []*Heading {
@@ -611,6 +637,10 @@ func markdownHeadings(_ *templating.Runtime, _ *templating.Context, doc *Documen
 	return result
 }
 
+// Returns all markdown links.
+//
+// @param doc *Document
+// @returns []*Link
 var markdownLinksFunc = modules.NewFunc("markdownLinks", markdownLinks)
 
 func markdownLinks(_ *templating.Runtime, _ *templating.Context, doc *Document) []*Link {
@@ -639,12 +669,20 @@ func markdownLinks(_ *templating.Runtime, _ *templating.Context, doc *Document) 
 	return result
 }
 
+// Returns the url of a markdown link node.
+//
+// @param link *Link
+// @returns string
 var markdownLinkURLFunc = modules.NewFunc("markdownLinkURL", markdownLinkURL)
 
 func markdownLinkURL(_ *templating.Runtime, _ *templating.Context, link *Link) string {
 	return string(link.Node.Node.(*ast.Link).Destination)
 }
 
+// Sets a link node's url.
+//
+// @param link *Link
+// @param url string
 var markdownLinkSetURLFunc = modules.NewFunc("markdownLinkSetURL", markdownLinkSetURL)
 
 func markdownLinkSetURL(_ *templating.Runtime, _ *templating.Context, link *Link, url string) string {
@@ -652,12 +690,32 @@ func markdownLinkSetURL(_ *templating.Runtime, _ *templating.Context, link *Link
 	return ""
 }
 
+// Sets a link node's title.
+//
+// @param link *Link
+// @param title string
+var markdownLinkSetTitleFunc = modules.NewFunc("markdownLinkSetTitle", markdownLinkSetTitle)
+
+func markdownLinkSetTitle(_ *templating.Runtime, _ *templating.Context, link *Link, title string) string {
+	link.Node.Node.(*ast.Link).Title = []byte(title)
+	return ""
+}
+
+
+// Returns the text of a markdown link node.
+//
+// @param link *Link
+// @returns string
 var markdownLinkTextFunc = modules.NewFunc("markdownLinkText", markdownLinkText)
 
 func markdownLinkText(_ *templating.Runtime, _ *templating.Context, link *Link) string {
 	return nodeText(link.Node.Document, link.Node.Node)
 }
 
+// Returns all markdown images.
+//
+// @param doc *Document
+// @returns []*Image
 var markdownImagesFunc = modules.NewFunc("markdownImages", markdownImages)
 
 func markdownImages(_ *templating.Runtime, _ *templating.Context, doc *Document) []*Image {
@@ -686,12 +744,20 @@ func markdownImages(_ *templating.Runtime, _ *templating.Context, doc *Document)
 	return result
 }
 
+// Returns the url of a markdown image node.
+//
+// @param image *Image
+// @returns string
 var markdownImageURLFunc = modules.NewFunc("markdownImageURL", markdownImageURL)
 
 func markdownImageURL(_ *templating.Runtime, _ *templating.Context, image *Image) string {
 	return string(image.Node.Node.(*ast.Image).Destination)
 }
 
+// Sets a image node's url.
+//
+// @param image *Image
+// @param url string
 var markdownImageSetURLFunc = modules.NewFunc("markdownImageSetURL", markdownImageSetURL)
 
 func markdownImageSetURL(_ *templating.Runtime, _ *templating.Context, image *Image, url string) string {
@@ -705,6 +771,21 @@ func markdownImageAlt(_ *templating.Runtime, _ *templating.Context, image *Image
 	return nodeText(image.Node.Document, image.Node.Node)
 }
 
+// Sets a image node's alt.
+//
+// @param image *Image
+// @param alt string
+var markdownImageSetAltFunc = modules.NewFunc("markdownImageSetAlt", markdownImageSetAlt)
+
+func markdownImageSetAlt(_ *templating.Runtime, _ *templating.Context, image *Image, alt string) string {
+	image.Node.Node.(*ast.Image).Title = []byte(alt)
+	return ""
+}
+
+// Returns all markdown paragraphs.
+//
+// @param doc *Document
+// @returns []*Paragraph
 var markdownParagraphsFunc = modules.NewFunc("markdownParagraphs", markdownParagraphs)
 
 func markdownParagraphs(_ *templating.Runtime, _ *templating.Context, doc *Document) []*Paragraph {
@@ -733,6 +814,10 @@ func markdownParagraphs(_ *templating.Runtime, _ *templating.Context, doc *Docum
 	return result
 }
 
+// Returns all markdown code blocks.
+//
+// @param doc *Document
+// @returns []*CodeBlock
 var markdownCodeBlocksFunc = modules.NewFunc("markdownCodeBlocks", markdownCodeBlocks)
 
 func markdownCodeBlocks(_ *templating.Runtime, _ *templating.Context, doc *Document) []*CodeBlock {
@@ -759,6 +844,10 @@ func markdownCodeBlocks(_ *templating.Runtime, _ *templating.Context, doc *Docum
 	return result
 }
 
+// Returns all markdown block quotes.
+//
+// @param doc *Document
+// @returns []*Blockquote
 var markdownBlockquotesFunc = modules.NewFunc("markdownBlockquotes", markdownBlockquotes)
 
 func markdownBlockquotes(_ *templating.Runtime, _ *templating.Context, doc *Document) []*Blockquote {
@@ -787,6 +876,9 @@ func markdownBlockquotes(_ *templating.Runtime, _ *templating.Context, doc *Docu
 	return result
 }
 
+// Removes a markdown node.
+//
+// @param node *Node
 var markdownRemoveFunc = modules.NewFunc("markdownRemove", markdownRemove)
 
 func markdownRemove(_ *templating.Runtime, _ *templating.Context, node *Node) string {
@@ -803,6 +895,10 @@ func markdownRemove(_ *templating.Runtime, _ *templating.Context, node *Node) st
 	return ""
 }
 
+// Appends text to a markdown document.
+//
+// @param doc *Document
+// @param str string
 var markdownAppendFunc = modules.NewFunc("markdownAppend", markdownAppend)
 
 func markdownAppend(_ *templating.Runtime, _ *templating.Context, doc *Document, str string) *Document {
@@ -823,6 +919,10 @@ func markdownAppend(_ *templating.Runtime, _ *templating.Context, doc *Document,
 	return doc
 }
 
+// Prepends text to a markdown document.
+//
+// @param doc *Document
+// @param str string
 var markdownPrependFunc = modules.NewFunc("markdownPrepend", markdownPrepend)
 
 func markdownPrepend(_ *templating.Runtime, _ *templating.Context, doc *Document, str string) *Document {
