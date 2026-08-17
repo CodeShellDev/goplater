@@ -68,21 +68,20 @@ File Content: +​{​​{ read "./myfile.txt" }​}​
 ## Standard Library
 
 <table>
-  <tr>
-    <th><code>read(path string) string</code></th>
-  </tr>
-  <tr>
-    <td>
-      Reads and templates a file.
+<tr>
+<th><code>read(path string) string</code></th>
+</tr>
+<tr>
+<td>
+    Reads and templates a file.
 
-      <details>
-        <summary>Example</summary>
+<details>
+<summary>Example</summary>
 
-        <pre><code>{{ read "/path/to/file" }}</code></pre>
-      </details>
-    </td>
-
-  </tr>
+<pre><code>{{ read "/path/to/file" }}</code></pre>
+</details>
+</td>
+</tr>
 </table>
 
 ### [**fs**](https://pkg.go.dev/github.com/codeshelldev/goplater/internals/template/funcs/fs)
