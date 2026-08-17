@@ -50,25 +50,12 @@ File Content: +​{​​{ read "./myfile.txt" }​}​
 
 ## Standard Library
 
-<svg xmlns="http://www.w3.org/2000/svg" width="100%" height="200">
-  <foreignObject width="100%" height="200">
-    <div xmlns="http://www.w3.org/1999/xhtml"
-         style="width:100%;">
-      <table style="width:100%;">
-        <tr>
-          <th style="text-align:left;">
-            <code>read(path string) string</code>
-          </th>
-        </tr>
-        <tr>
-          <td>Reads and templates a file.</td>
-        </tr>
-      </table>
-    </div>
-  </foreignObject>
-</svg>
-
 ### [**fs**](https://pkg.go.dev/github.com/codeshelldev/goplater/internals/template/funcs/fs)
+
+<svg xmlns="http://www.w3.org/2000/svg" width="100%" height="200">
+<foreignObject width="100%" height="200">
+<div xmlns="http://www.w3.org/1999/xhtml"
+    style="width:100%;">
 
 <table width="100%">
 <tr><th align="left"><h4><code>read(path string) string</code></h4></th>
@@ -145,6 +132,10 @@ Writes to a file path.
 </details>
 
 </td></tr></table>
+
+</div>
+</foreignObject>
+</svg>
 
 <table width="100%">
 <tr><th align="left"><h4><code>mkdir(path string) throws error</code></h4></th>
