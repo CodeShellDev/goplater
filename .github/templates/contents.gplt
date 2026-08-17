@@ -7,7 +7,7 @@
 
 +{{- range $item := $items -}}
 +{{- $text := markdownText $item -}}
-+{{- $line := (concat "- [#" $text "](" (call "generateHeadingAnchor" $text) ")") -}}
++{{- $line := (concat "- [" $text "](#" (call "generateHeadingAnchor" $text) ")") -}}
 +{{- $lines = slicePush $lines $line -}}
 +{{- end -}}
 
