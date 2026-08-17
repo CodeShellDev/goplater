@@ -19,6 +19,8 @@ type ResolverChain struct {
 	resolvers []Resolver
 }
 
+const IMPORT_FILE_EXTENSION = "gplt"
+
 func NewResolverChain(resolvers ...Resolver) *ResolverChain {
 	return &ResolverChain{resolvers: resolvers}
 }

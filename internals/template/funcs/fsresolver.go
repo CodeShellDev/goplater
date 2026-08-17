@@ -7,6 +7,7 @@ import (
 	"strings"
 
 	"github.com/codeshelldev/goplater/internals/template/context"
+	"github.com/codeshelldev/goplater/pkg/templating"
 	"github.com/codeshelldev/goplater/utils/fsutils"
 )
 
@@ -27,12 +28,16 @@ func (r *FsResolver) CanResolve(path string) bool {
 }
 
 func (r *FsResolver) Resolve(path string) (string, error) {
-	filePathAbs := resolvePath(*r.ctx, path)
+	filePathAbs := resolvePath(*r.ctx, path + "." + templating.IMPORT_FILE_EXTENSION)
 
-	exists, _ := fsutils.Exists(filePathAbs)
+	info, err := os.Stat(filePathAbs)
 
-	if !exists {
-		filePathAbs = filePathAbs + ".gplt"
+	if err != nil {
+		return "", errors.New("file does not exist")
+	}
+
+	if info.IsDir() {
+		return "", errors.New("import is not a valid file")
 	}
 
 	return readFile(filePathAbs)
@@ -62,7 +67,6 @@ func resolvePath(ctx context.TemplateContext, path string) string {
 	} else {
 		filePathAbs, _ = filepath.Abs(path)
 	}
-
 
 	return filePathAbs
 }

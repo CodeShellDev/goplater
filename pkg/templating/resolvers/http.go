@@ -8,6 +8,8 @@ import (
 	"path/filepath"
 	"strings"
 	"time"
+
+	"github.com/codeshelldev/goplater/pkg/templating"
 )
 
 type HttpResolver struct {
@@ -27,6 +29,8 @@ func (r *HttpResolver) CanResolve(path string) bool {
 }
 
 func (r *HttpResolver) Resolve(path string) (string, error) {
+	path = path + "." + templating.IMPORT_FILE_EXTENSION
+	
 	resp, err := r.Client.Get(path)
 	if err != nil {
 		return "", err
