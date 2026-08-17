@@ -77,7 +77,8 @@ Reads and templates a file.
 <br/>
 <details>
 <summary>Example</summary>
-<pre><code>{{ read "/path/to/file" }}<br>{{read}}</code></pre>
+<pre><code>{{ read "/path/to/file" }}
+	{{read}}</code></pre>
 </details>
 </td>
 </tr>
