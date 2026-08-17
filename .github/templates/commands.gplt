@@ -55,6 +55,7 @@
 +{{- if gt (len $examples) 0 }}
 <details>
   <summary>Examples</summary>
+  <br/>
 +{{- range $i, $example := $examples }}
 
 **Example**:

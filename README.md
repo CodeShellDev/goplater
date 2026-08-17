@@ -73,6 +73,7 @@ Reads and templates file.
 
 <details>
   <summary>Examples</summary>
+  <br/>
 
 **Example**:
 ```
@@ -87,6 +88,7 @@ Reads file (without templating).
 
 <details>
   <summary>Examples</summary>
+  <br/>
 
 **Example**:
 ```
@@ -101,6 +103,7 @@ Reads file and passes arguments to it.
 
 <details>
   <summary>Examples</summary>
+  <br/>
 
 **Example**:
 ```
@@ -115,6 +118,7 @@ Writes to a file path.
 
 <details>
   <summary>Examples</summary>
+  <br/>
 
 **Example**:
 ```
@@ -129,6 +133,7 @@ Creates directory at path.
 
 <details>
   <summary>Examples</summary>
+  <br/>
 
 **Example**:
 ```
@@ -143,6 +148,7 @@ Appends to an existing file.
 
 <details>
   <summary>Examples</summary>
+  <br/>
 
 **Example**:
 ```
@@ -157,6 +163,7 @@ Returns if a file or folder exists at a given path.
 
 <details>
   <summary>Examples</summary>
+  <br/>
 
 **Example**:
 ```
@@ -173,6 +180,7 @@ Returns if a file exists at a given path.
 
 <details>
   <summary>Examples</summary>
+  <br/>
 
 **Example**:
 ```
@@ -189,6 +197,7 @@ Returns if a folder exists at a given path.
 
 <details>
   <summary>Examples</summary>
+  <br/>
 
 **Example**:
 ```
@@ -205,6 +214,7 @@ Returns all files and folders inside of a given directory.
 
 <details>
   <summary>Examples</summary>
+  <br/>
 
 **Example**:
 ```
@@ -224,6 +234,7 @@ Returns all files and folders recursively under a given directory.
 
 <details>
   <summary>Examples</summary>
+  <br/>
 
 **Example**:
 ```
@@ -243,6 +254,7 @@ Removes a file or folder at a given path.
 
 <details>
   <summary>Examples</summary>
+  <br/>
 
 **Example**:
 ```
@@ -299,6 +311,7 @@ Deletes a container entry with the given key.
 
 <details>
   <summary>Examples</summary>
+  <br/>
 
 **Example**:
 ```
@@ -319,6 +332,7 @@ Set a container entry value with the given key.
 
 <details>
   <summary>Examples</summary>
+  <br/>
 
 **Example**:
 ```
@@ -339,6 +353,7 @@ Returns if an entry with the given key exists in container.
 
 <details>
   <summary>Examples</summary>
+  <br/>
 
 **Example**:
 ```
@@ -355,6 +370,7 @@ Appends a value to a slice.
 
 <details>
   <summary>Examples</summary>
+  <br/>
 
 **Example**:
 ```
@@ -376,6 +392,7 @@ Creates a new slice, optionally with values.
 
 <details>
   <summary>Examples</summary>
+  <br/>
 
 **Example**:
 ```
@@ -398,6 +415,7 @@ Currently only supports string keys!
 
 <details>
   <summary>Examples</summary>
+  <br/>
 
 **Example**:
 ```
@@ -455,6 +473,7 @@ The fs resolver is only available as an internal module and does not ship with t
 
 <details>
   <summary>Examples</summary>
+  <br/>
 
 **Example**:
 ```
@@ -493,6 +512,7 @@ Sets the output object as a whole.
 
 <details>
   <summary>Examples</summary>
+  <br/>
 
 **Example**:
 ```
