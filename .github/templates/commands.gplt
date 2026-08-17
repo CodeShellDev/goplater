@@ -57,6 +57,7 @@
 +{{ $examples := index $decl "examples" -}}
 +{{- if gt (len $examples) 0 }}
 <br/>
+<br/>
 <details>
   <summary>Examples</summary>
   <br/>
@@ -67,9 +68,7 @@
 +{{- $outputs := (index $decl "outputs") -}}
 +{{- if gt (len $outputs) $i }}
 **Output**:
-<pre><code>
-+{{ index $outputs $i }}
-</code></pre>
+<pre><code>+{{ index $outputs $i }}</code></pre>
 +{{ end -}}
 +{{- end }}
 

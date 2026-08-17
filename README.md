@@ -59,6 +59,7 @@ File Content: +​{​​{ read "./myfile.txt" }​}​
 Reads and templates file.
 
 <br/>
+<br/>
 <details>
   <summary>Examples</summary>
   <br/>
@@ -76,6 +77,7 @@ Reads and templates file.
 </tr><tr><td>
 Reads file (without templating).
 
+<br/>
 <br/>
 <details>
   <summary>Examples</summary>
@@ -95,6 +97,7 @@ Reads file (without templating).
 Reads file and passes arguments to it.
 
 <br/>
+<br/>
 <details>
   <summary>Examples</summary>
   <br/>
@@ -112,6 +115,7 @@ Reads file and passes arguments to it.
 </tr><tr><td>
 Writes to a file path.
 
+<br/>
 <br/>
 <details>
   <summary>Examples</summary>
@@ -131,6 +135,7 @@ Writes to a file path.
 Creates directory at path.
 
 <br/>
+<br/>
 <details>
   <summary>Examples</summary>
   <br/>
@@ -149,6 +154,7 @@ Creates directory at path.
 Appends to an existing file.
 
 <br/>
+<br/>
 <details>
   <summary>Examples</summary>
   <br/>
@@ -166,6 +172,7 @@ Appends to an existing file.
 </tr><tr><td>
 Returns if a file or folder exists at a given path.
 
+<br/>
 <br/>
 <details>
   <summary>Examples</summary>
@@ -187,6 +194,7 @@ Path exists!
 Returns if a file exists at a given path.
 
 <br/>
+<br/>
 <details>
   <summary>Examples</summary>
   <br/>
@@ -206,6 +214,7 @@ Path is a file!
 </tr><tr><td>
 Returns if a folder exists at a given path.
 
+<br/>
 <br/>
 <details>
   <summary>Examples</summary>
@@ -227,6 +236,7 @@ Path is a folder!
 Returns all files and folders inside of a given directory.
 
 <br/>
+<br/>
 <details>
   <summary>Examples</summary>
   <br/>
@@ -234,9 +244,7 @@ Returns all files and folders inside of a given directory.
 **Example**:
 <pre><code>+{{ join ", " (listDir "/path/to") }}</code></pre>
 **Output**:
-<pre><code>
-/path/to/file1.txt, /path/to/file2.txt, /path/to/folder
-</code></pre>
+<pre><code>/path/to/file1.txt, /path/to/file2.txt, /path/to/folder</code></pre>
 
 
 </details>
@@ -250,6 +258,7 @@ Returns all files and folders inside of a given directory.
 Returns all files and folders recursively under a given directory.
 
 <br/>
+<br/>
 <details>
   <summary>Examples</summary>
   <br/>
@@ -257,9 +266,7 @@ Returns all files and folders recursively under a given directory.
 **Example**:
 <pre><code>+{{ join ", " (walkDir "/path/to") }}</code></pre>
 **Output**:
-<pre><code>
-/path/to/file1.txt, /path/to/file2.txt, /path/to/folder, /path/to/folder/file3.txt
-</code></pre>
+<pre><code>/path/to/file1.txt, /path/to/file2.txt, /path/to/folder, /path/to/folder/file3.txt</code></pre>
 
 
 </details>
@@ -272,6 +279,7 @@ Returns all files and folders recursively under a given directory.
 </tr><tr><td>
 Removes a file or folder at a given path.
 
+<br/>
 <br/>
 <details>
   <summary>Examples</summary>
@@ -369,6 +377,7 @@ Decodes a base64 string.
 Deletes a container entry with the given key.
 
 <br/>
+<br/>
 <details>
   <summary>Examples</summary>
   <br/>
@@ -377,9 +386,7 @@ Deletes a container entry with the given key.
 <pre><code>+{{ $newSlice := delete (sliceCreate "Apple" "Banana") 0 }}
 +{{ echo $newSlice }}</code></pre>
 **Output**:
-<pre><code>
-[Banana]
-</code></pre>
+<pre><code>[Banana]</code></pre>
 
 
 </details>
@@ -393,6 +400,7 @@ Deletes a container entry with the given key.
 Set a container entry value with the given key.
 
 <br/>
+<br/>
 <details>
   <summary>Examples</summary>
   <br/>
@@ -401,9 +409,7 @@ Set a container entry value with the given key.
 <pre><code>+{{ $newSlice := set (sliceCreate "Apple" "Banana") 0 "Strawberry" }}
 +{{ echo $newSlice }}</code></pre>
 **Output**:
-<pre><code>
-[Strawberry Banana]
-</code></pre>
+<pre><code>[Strawberry Banana]</code></pre>
 
 
 </details>
@@ -416,6 +422,7 @@ Set a container entry value with the given key.
 </tr><tr><td>
 Returns if an entry with the given key exists in container.
 
+<br/>
 <br/>
 <details>
   <summary>Examples</summary>
@@ -437,6 +444,7 @@ Container has "version"!
 Appends a value to a slice.
 
 <br/>
+<br/>
 <details>
   <summary>Examples</summary>
   <br/>
@@ -446,9 +454,7 @@ Appends a value to a slice.
 +{{ $newSlice = slicePush $newSlice "Strawberry" }}
 +{{ echo $newSlice }}</code></pre>
 **Output**:
-<pre><code>
-[Apple Banana Strawberry]
-</code></pre>
+<pre><code>[Apple Banana Strawberry]</code></pre>
 
 
 </details>
@@ -462,6 +468,7 @@ Appends a value to a slice.
 Creates a new slice, optionally with values.
 
 <br/>
+<br/>
 <details>
   <summary>Examples</summary>
   <br/>
@@ -470,9 +477,7 @@ Creates a new slice, optionally with values.
 <pre><code>+{{ $newSlice := sliceCreate "Apple" "Banana" }}
 +{{ echo $newSlice }}</code></pre>
 **Output**:
-<pre><code>
-[Apple Banana]
-</code></pre>
+<pre><code>[Apple Banana]</code></pre>
 
 
 </details>
@@ -488,6 +493,7 @@ Pairs are constructed one by one, a key followed by the given value.
 Currently only supports string keys!
 
 <br/>
+<br/>
 <details>
   <summary>Examples</summary>
   <br/>
@@ -496,9 +502,7 @@ Currently only supports string keys!
 <pre><code>+{{ $newMap := mapCreate "key1" "value1" "key2" "value2" }}
 +{{ echo $newMap }}</code></pre>
 **Output**:
-<pre><code>
-map[key1:value1 key2:value2]
-</code></pre>
+<pre><code>map[key1:value1 key2:value2]</code></pre>
 
 
 </details>
@@ -581,6 +585,7 @@ Optionally supply an alias for easier access.
 The fs resolver is only available as an internal module and does not ship with the `pkg/templating/modules` directory.
 
 <br/>
+<br/>
 <details>
   <summary>Examples</summary>
   <br/>
@@ -588,17 +593,13 @@ The fs resolver is only available as an internal module and does not ship with t
 **Example**:
 <pre><code>+{{ import "https://domain.com/functions" }}</code></pre>
 **Output**:
-<pre><code>
-+{{ call "functions.greet" "John" }}
-</code></pre>
+<pre><code>+{{ call "functions.greet" "John" }}</code></pre>
 
 
 **Example**:
 <pre><code>+{{ import "funcs" "https://domain.com/functions" }}</code></pre>
 **Output**:
-<pre><code>
-+{{ call "funcs.greet" "John" }}
-</code></pre>
+<pre><code>+{{ call "funcs.greet" "John" }}</code></pre>
 
 
 </details>
@@ -628,6 +629,7 @@ Appends a value to the output.
 </tr><tr><td>
 Sets the output object as a whole.
 
+<br/>
 <br/>
 <details>
   <summary>Examples</summary>
