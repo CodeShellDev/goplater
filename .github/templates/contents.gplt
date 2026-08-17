@@ -22,8 +22,6 @@
 +{{ define "generateHeadingAnchor(text)" }}
     +{{ $text := .text }}
 
-    +{{ echo $text }}
-
     +{{ $text = lower $text }}
     +{{ $text = regexReplace $text "`" "" }}
     +{{ $text = regexReplace $text `[^a-z0-9\s-]` "" }}

@@ -1,4 +1,6 @@
 +{{ define "renderCommandDocs" }}
+    +{{- $level := 4 -}}
+
     +{{- $files := walkDir "~/" -}}
     +{{- range $files -}}
         +{{- if eq (fileExt .) ".go" -}}
@@ -7,24 +9,27 @@
             +{{- if eq (len $decls) 0 -}}
                 +{{- continue -}}
             +{{- end -}}
-            +{{- call "renderCommandSection" . $decls -}}
+            +{{- call "renderCommandSection" . $decls $level -}}
         +{{- end -}}
     +{{- end -}}
 +{{ end }}
 
-+{{ define "renderCommandSection(path, declarations)" }}
++{{ define "renderCommandSection(path, declarations, level)" }}
 +{{- $pathNoExt := cutSuffix .path ".go" }}
 +{{- $filename := basePath $pathNoExt -}}
 +{{- $decls := .declarations }}
++{{- $level := .level -}}
+
 ### [`+{{ $filename }}`](+{{ concat "https://pkg.go.dev/github.com/codeshelldev/goplater/" (after $pathNoExt "goplater/" ) }})
 +{{ range $decl := $decls -}}
-    +{{ call "renderCommand" $decl }}
+
+    +{{ call "renderCommand" $decl $level }}
 +{{- end -}}
 +{{ end }}
 
-+{{ define "renderCommand(declaration)" }}
++{{ define "renderCommand(declaration, level)" }}
 +{{- $decl := .declaration }}
-#### `+{{ index $decl "name" }}
++{{ repeat "#" .level }} `+{{ index $decl "name" }}
 
 +{{- $paramsStr := "" -}}
 +{{- if gt (len (index $decl "params")) 0 -}}
@@ -46,7 +51,11 @@
 +{{- end}}`
 
 +{{ index $decl "summary" }}
-+{{ range $i, $example := index $decl "examples" }}
++{{ $examples := index $decl "examples" -}}
++{{- if gt (len $examples) 0 }}
+<details>
+  <summary>Examples</summary>
++{{- range $i, $example := $examples }}
 **Example**:
 ```
 +{{ $example }}
@@ -58,7 +67,9 @@
 +{{ index $outputs $i }}
 ```
 +{{ end -}}
-+{{- end -}}
++{{- end }}
+</details>
++{{ end -}}
 +{{ end }}
 
 +{{ define "parseFuncDeclarations(content)" }}
