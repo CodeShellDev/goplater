@@ -74,7 +74,7 @@ Reads and templates file.
 <table width="100%">
 <tr><th align="left"><h4><code>readRaw(path string) string</code></h4></th>
 </tr><tr><td>
-Reads file (without templating).                                                                                                     
+Reads file (without templating).                                                                                                                                             
 
 <br/>
 <br/>
