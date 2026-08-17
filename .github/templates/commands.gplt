@@ -29,7 +29,10 @@
 
 +{{ define "renderCommand(declaration, level)" }}
 +{{- $decl := .declaration }}
-+{{ repeat "#" .level }} **`+{{ index $decl "name" }}
+
+<table align="left">
+<tr><th align="left"><code><h+{{ .level }}>`
++{{- index $decl "name" -}}
 
 +{{- $paramsStr := "" -}}
 +{{- if gt (len (index $decl "params")) 0 -}}
@@ -48,32 +51,35 @@
     +{{- if gt (len $returns) 1 -}}
         +{{- $returnStr = concat "(" $returnStr ")" -}}
     +{{- end }} +{{ $returnStr -}}
-+{{- end}}`**
-
++{{- end}}</h+{{ .level}}></code></th>
+</tr><tr><td>
 +{{ index $decl "summary" }}
 +{{ $examples := index $decl "examples" -}}
 +{{- if gt (len $examples) 0 }}
+<br/>
 <details>
   <summary>Examples</summary>
   <br/>
 +{{- range $i, $example := $examples }}
 
 **Example**:
-```
+<pre><code>
 +{{ $example }}
-```
+</code></pre>
 +{{- $outputs := (index $decl "outputs") -}}
 +{{- if gt (len $outputs) $i }}
 **Output**:
-```
+<pre><code>
 +{{ index $outputs $i }}
-```
+</code></pre>
 +{{ end -}}
 +{{- end }}
 
 </details>
 +{{ end }}
----
+</td>
+</tr>
+</table>
 +{{ end }}
 
 +{{ define "parseFuncDeclarations(content)" }}
