@@ -30,7 +30,7 @@
 +{{ define "renderCommand(declaration, level)" }}
 +{{- $decl := .declaration }}
 
-<table align="left">
+<table align="left" width="100%">
 <tr><th align="left"><h+{{ .level }}><code>
 +{{- index $decl "name" -}}
 
