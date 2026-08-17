@@ -52,6 +52,7 @@ File Content: +​{​​{ read "./myfile.txt" }​}​
 
 ### [**fs**](https://pkg.go.dev/github.com/codeshelldev/goplater/internals/template/funcs/fs)
 
+
 <table align="left">
 <tr><th align="left"><code><h4>`read(path string) string</h4></code></th>
 </tr><tr><td>
@@ -63,7 +64,6 @@ Reads and templates file.
   <br/>
 
 **Example**:
-
 <pre><code>
 +{{ read "/path/to/file" }}
 </code></pre>
@@ -73,6 +73,8 @@ Reads and templates file.
 </td>
 </tr>
 </table>
+<br/>
+
 
 <table align="left">
 <tr><th align="left"><code><h4>`readRaw(path string) string</h4></code></th>
@@ -85,7 +87,6 @@ Reads file (without templating).
   <br/>
 
 **Example**:
-
 <pre><code>
 +{{ readRaw "/path/to/file" }}
 </code></pre>
@@ -95,6 +96,8 @@ Reads file (without templating).
 </td>
 </tr>
 </table>
+<br/>
+
 
 <table align="left">
 <tr><th align="left"><code><h4>`readArgs(path string, args any) string</h4></code></th>
@@ -107,7 +110,6 @@ Reads file and passes arguments to it.
   <br/>
 
 **Example**:
-
 <pre><code>
 +{{ readArgs "/path/to/file" (sliceCreate "my" "args") }}
 </code></pre>
@@ -117,6 +119,8 @@ Reads file and passes arguments to it.
 </td>
 </tr>
 </table>
+<br/>
+
 
 <table align="left">
 <tr><th align="left"><code><h4>`write(path string, content string) throws error</h4></code></th>
@@ -129,7 +133,6 @@ Writes to a file path.
   <br/>
 
 **Example**:
-
 <pre><code>
 +{{ write "/path/to/file" "Hello" }}
 </code></pre>
@@ -139,6 +142,8 @@ Writes to a file path.
 </td>
 </tr>
 </table>
+<br/>
+
 
 <table align="left">
 <tr><th align="left"><code><h4>`mkdir(path string) throws error</h4></code></th>
@@ -151,7 +156,6 @@ Creates directory at path.
   <br/>
 
 **Example**:
-
 <pre><code>
 +{{ mkdir "/path/to/somewhere/" }}
 </code></pre>
@@ -161,6 +165,8 @@ Creates directory at path.
 </td>
 </tr>
 </table>
+<br/>
+
 
 <table align="left">
 <tr><th align="left"><code><h4>`appendFile(path string, content string) throws error</h4></code></th>
@@ -173,7 +179,6 @@ Appends to an existing file.
   <br/>
 
 **Example**:
-
 <pre><code>
 +{{ appendFile "/path/to/somewhere/" "Goodbye" }}
 </code></pre>
@@ -183,6 +188,8 @@ Appends to an existing file.
 </td>
 </tr>
 </table>
+<br/>
+
 
 <table align="left">
 <tr><th align="left"><code><h4>`fsExists(path string) bool</h4></code></th>
@@ -195,7 +202,6 @@ Returns if a file or folder exists at a given path.
   <br/>
 
 **Example**:
-
 <pre><code>
 +{{ if (fsExists "/path/to/somewhere") }}
 Path exists!
@@ -207,6 +213,8 @@ Path exists!
 </td>
 </tr>
 </table>
+<br/>
+
 
 <table align="left">
 <tr><th align="left"><code><h4>`isFile(path string) bool</h4></code></th>
@@ -219,7 +227,6 @@ Returns if a file exists at a given path.
   <br/>
 
 **Example**:
-
 <pre><code>
 +{{ if (isFile "/path/to/file") }}
 Path is a file!
@@ -231,6 +238,8 @@ Path is a file!
 </td>
 </tr>
 </table>
+<br/>
+
 
 <table align="left">
 <tr><th align="left"><code><h4>`isDir(path string) bool</h4></code></th>
@@ -243,7 +252,6 @@ Returns if a folder exists at a given path.
   <br/>
 
 **Example**:
-
 <pre><code>
 +{{ if (isDir "/path/to/somewhere") }}
 Path is a folder!
@@ -255,6 +263,8 @@ Path is a folder!
 </td>
 </tr>
 </table>
+<br/>
+
 
 <table align="left">
 <tr><th align="left"><code><h4>`listDir(path string) ([]string, throws error)</h4></code></th>
@@ -267,22 +277,22 @@ Returns all files and folders inside of a given directory.
   <br/>
 
 **Example**:
-
 <pre><code>
 +{{ join ", " (listDir "/path/to") }}
 </code></pre>
-
 **Output**:
-
 <pre><code>
 /path/to/file1.txt, /path/to/file2.txt, /path/to/folder
 </code></pre>
+
 
 </details>
 
 </td>
 </tr>
 </table>
+<br/>
+
 
 <table align="left">
 <tr><th align="left"><code><h4>`walkDir(path string) ([]string, throws error)</h4></code></th>
@@ -295,22 +305,22 @@ Returns all files and folders recursively under a given directory.
   <br/>
 
 **Example**:
-
 <pre><code>
 +{{ join ", " (walkDir "/path/to") }}
 </code></pre>
-
 **Output**:
-
 <pre><code>
 /path/to/file1.txt, /path/to/file2.txt, /path/to/folder, /path/to/folder/file3.txt
 </code></pre>
+
 
 </details>
 
 </td>
 </tr>
 </table>
+<br/>
+
 
 <table align="left">
 <tr><th align="left"><code><h4>`fsRemove(path string) throws error</h4></code></th>
@@ -323,7 +333,6 @@ Removes a file or folder at a given path.
   <br/>
 
 **Example**:
-
 <pre><code>
 +{{ fsRemove "/path/to/file/or/folder" }}
 </code></pre>
@@ -333,6 +342,8 @@ Removes a file or folder at a given path.
 </td>
 </tr>
 </table>
+<br/>
+
 
 <table align="left">
 <tr><th align="left"><code><h4>`joinPath(paths []string) string</h4></code></th>
@@ -342,6 +353,8 @@ Joins paths together.
 </td>
 </tr>
 </table>
+<br/>
+
 
 <table align="left">
 <tr><th align="left"><code><h4>`basePath(path string) string</h4></code></th>
@@ -351,6 +364,8 @@ Returns the last element of a path.
 </td>
 </tr>
 </table>
+<br/>
+
 
 <table align="left">
 <tr><th align="left"><code><h4>`pathDir(path string) string</h4></code></th>
@@ -360,6 +375,8 @@ Returns all but the last element of a path.
 </td>
 </tr>
 </table>
+<br/>
+
 
 <table align="left">
 <tr><th align="left"><code><h4>`fileExt(path string) string</h4></code></th>
@@ -369,6 +386,8 @@ Returns the file name extension of a file path.
 </td>
 </tr>
 </table>
+<br/>
+
 
 <table align="left">
 <tr><th align="left"><code><h4>`absPath(path string) (string, throws error)</h4></code></th>
@@ -379,6 +398,8 @@ If the path is not absolute it will be joined with the current working directory
 </td>
 </tr>
 </table>
+<br/>
+
 
 <table align="left">
 <tr><th align="left"><code><h4>`relPath(basePath string, targetPath string) (string, throws error)</h4></code></th>
@@ -389,7 +410,9 @@ The returned path will always be relative to basePath, even if basePath and targ
 </td>
 </tr>
 </table>
+<br/>
 ### [**outputto**](https://pkg.go.dev/github.com/codeshelldev/goplater/internals/template/funcs/outputto)
+
 
 <table align="left">
 <tr><th align="left"><code><h4>`outputTo(path string) throws error</h4></code></th>
@@ -400,7 +423,9 @@ Errors if path is not allowed.
 </td>
 </tr>
 </table>
+<br/>
 ### [**base64**](https://pkg.go.dev/github.com/codeshelldev/goplater/pkg/templating/modules/base64/base64)
+
 
 <table align="left">
 <tr><th align="left"><code><h4>`base64Encode(encode string) string</h4></code></th>
@@ -410,6 +435,8 @@ Encodes strings with base64.
 </td>
 </tr>
 </table>
+<br/>
+
 
 <table align="left">
 <tr><th align="left"><code><h4>`base64Decode(decode string) (string, throws error)</h4></code></th>
@@ -419,7 +446,9 @@ Decodes a base64 string.
 </td>
 </tr>
 </table>
+<br/>
 ### [**container**](https://pkg.go.dev/github.com/codeshelldev/goplater/pkg/templating/modules/container/container)
+
 
 <table align="left">
 <tr><th align="left"><code><h4>`delete(container map[any]any|[]any, key any) (any, throws error)</h4></code></th>
@@ -432,23 +461,23 @@ Deletes a container entry with the given key.
   <br/>
 
 **Example**:
-
 <pre><code>
 +{{ $newSlice := delete (sliceCreate "Apple" "Banana") 0 }}
 +{{ echo $newSlice }}
 </code></pre>
-
 **Output**:
-
 <pre><code>
 [Banana]
 </code></pre>
+
 
 </details>
 
 </td>
 </tr>
 </table>
+<br/>
+
 
 <table align="left">
 <tr><th align="left"><code><h4>`set(container map[any]any|[]any, key any, value any) (any, throws error)</h4></code></th>
@@ -461,23 +490,23 @@ Set a container entry value with the given key.
   <br/>
 
 **Example**:
-
 <pre><code>
 +{{ $newSlice := set (sliceCreate "Apple" "Banana") 0 "Strawberry" }}
 +{{ echo $newSlice }}
 </code></pre>
-
 **Output**:
-
 <pre><code>
 [Strawberry Banana]
 </code></pre>
+
 
 </details>
 
 </td>
 </tr>
 </table>
+<br/>
+
 
 <table align="left">
 <tr><th align="left"><code><h4>`has(container map[any]any|[]any, key any) (bool, throws error)</h4></code></th>
@@ -490,7 +519,6 @@ Returns if an entry with the given key exists in container.
   <br/>
 
 **Example**:
-
 <pre><code>
 +{{ if (has (mapCreate "version" "v1") "version") }}
 Container has "version"!
@@ -502,6 +530,8 @@ Container has "version"!
 </td>
 </tr>
 </table>
+<br/>
+
 
 <table align="left">
 <tr><th align="left"><code><h4>`slicePush(container []any, value any) []any</h4></code></th>
@@ -514,24 +544,24 @@ Appends a value to a slice.
   <br/>
 
 **Example**:
-
 <pre><code>
 +{{ $newSlice := sliceCreate "Apple" "Banana" }}
 +{{ $newSlice = slicePush $newSlice "Strawberry" }}
 +{{ echo $newSlice }}
 </code></pre>
-
 **Output**:
-
 <pre><code>
 [Apple Banana Strawberry]
 </code></pre>
+
 
 </details>
 
 </td>
 </tr>
 </table>
+<br/>
+
 
 <table align="left">
 <tr><th align="left"><code><h4>`sliceCreate(values []any) []any</h4></code></th>
@@ -544,23 +574,23 @@ Creates a new slice, optionally with values.
   <br/>
 
 **Example**:
-
 <pre><code>
 +{{ $newSlice := sliceCreate "Apple" "Banana" }}
 +{{ echo $newSlice }}
 </code></pre>
-
 **Output**:
-
 <pre><code>
 [Apple Banana]
 </code></pre>
+
 
 </details>
 
 </td>
 </tr>
 </table>
+<br/>
+
 
 <table align="left">
 <tr><th align="left"><code><h4>`mapCreate(entries []any) map[string]any</h4></code></th>
@@ -575,24 +605,24 @@ Currently only supports string keys!
   <br/>
 
 **Example**:
-
 <pre><code>
 +{{ $newMap := mapCreate "key1" "value1" "key2" "value2" }}
 +{{ echo $newMap }}
 </code></pre>
-
 **Output**:
-
 <pre><code>
 map[key1:value1 key2:value2]
 </code></pre>
+
 
 </details>
 
 </td>
 </tr>
 </table>
+<br/>
 ### [**conversion**](https://pkg.go.dev/github.com/codeshelldev/goplater/pkg/templating/modules/conversion/conversion)
+
 
 <table align="left">
 <tr><th align="left"><code><h4>`toString(value string) string</h4></code></th>
@@ -602,6 +632,8 @@ Returns a given value as string (using [fmt.Sprint](https://pkg.go.dev/fmt#Sprin
 </td>
 </tr>
 </table>
+<br/>
+
 
 <table align="left">
 <tr><th align="left"><code><h4>`toInt(str string) (int, throws error)</h4></code></th>
@@ -611,6 +643,8 @@ Attempts to parse a string as int.
 </td>
 </tr>
 </table>
+<br/>
+
 
 <table align="left">
 <tr><th align="left"><code><h4>`toFloat64(str string) (float64, throws error)</h4></code></th>
@@ -620,6 +654,8 @@ Attempts to parse a string as float64.
 </td>
 </tr>
 </table>
+<br/>
+
 
 <table align="left">
 <tr><th align="left"><code><h4>`toFloat32(str string) (float32, throws error)</h4></code></th>
@@ -629,6 +665,8 @@ Attempts to parse a string as float32.
 </td>
 </tr>
 </table>
+<br/>
+
 
 <table align="left">
 <tr><th align="left"><code><h4>`toBool(str string) (bool, throws error)</h4></code></th>
@@ -638,7 +676,9 @@ Attempts to parse a string as a bool (using [strconv.ParseBool](https://pkg.go.d
 </td>
 </tr>
 </table>
+<br/>
 ### [**globals**](https://pkg.go.dev/github.com/codeshelldev/goplater/pkg/templating/modules/core/globals)
+
 
 <table align="left">
 <tr><th align="left"><code><h4>`globalSet(key string, value any)</h4></code></th>
@@ -648,6 +688,8 @@ Defines a global value with a key.
 </td>
 </tr>
 </table>
+<br/>
+
 
 <table align="left">
 <tr><th align="left"><code><h4>`globalGet(key string) (any, throws error)</h4></code></th>
@@ -657,6 +699,8 @@ Tries to retrieve a global value with a key.
 </td>
 </tr>
 </table>
+<br/>
+
 
 <table align="left">
 <tr><th align="left"><code><h4>`globalHas(key string) bool</h4></code></th>
@@ -666,7 +710,9 @@ Returns whether a given global variable exists.
 </td>
 </tr>
 </table>
+<br/>
 ### [**import**](https://pkg.go.dev/github.com/codeshelldev/goplater/pkg/templating/modules/core/import)
+
 
 <table align="left">
 <tr><th align="left"><code><h4>`import(alias string?, path string) throws error</h4></code></th>
@@ -681,35 +727,33 @@ The fs resolver is only available as an internal module and does not ship with t
   <br/>
 
 **Example**:
-
 <pre><code>
 +{{ import "https://domain.com/functions" }}
 </code></pre>
-
 **Output**:
-
 <pre><code>
 +{{ call "functions.greet" "John" }}
 </code></pre>
 
-**Example**:
 
+**Example**:
 <pre><code>
 +{{ import "funcs" "https://domain.com/functions" }}
 </code></pre>
-
 **Output**:
-
 <pre><code>
 +{{ call "funcs.greet" "John" }}
 </code></pre>
+
 
 </details>
 
 </td>
 </tr>
 </table>
+<br/>
 ### [**return**](https://pkg.go.dev/github.com/codeshelldev/goplater/pkg/templating/modules/core/return)
+
 
 <table align="left">
 <tr><th align="left"><code><h4>`return(i int, value any) throws error</h4></code></th>
@@ -719,6 +763,8 @@ Sets an output value at the given index.
 </td>
 </tr>
 </table>
+<br/>
+
 
 <table align="left">
 <tr><th align="left"><code><h4>`returnNext(value any)</h4></code></th>
@@ -728,6 +774,8 @@ Appends a value to the output.
 </td>
 </tr>
 </table>
+<br/>
+
 
 <table align="left">
 <tr><th align="left"><code><h4>`returnAll(value []any)</h4></code></th>
@@ -740,7 +788,6 @@ Sets the output object as a whole.
   <br/>
 
 **Example**:
-
 <pre><code>
 +{{ returnAll "1" "2" "3" }}
 +{{ returnAll (sliceCreate "1" "2" "3") }}
@@ -751,6 +798,8 @@ Sets the output object as a whole.
 </td>
 </tr>
 </table>
+<br/>
+
 
 <table align="left">
 <tr><th align="left"><code><h4>`getOutputs() []any</h4></code></th>
@@ -760,7 +809,9 @@ Returns current outputs.
 </td>
 </tr>
 </table>
+<br/>
 ### [**debug**](https://pkg.go.dev/github.com/codeshelldev/goplater/pkg/templating/modules/debug/debug)
+
 
 <table align="left">
 <tr><th align="left"><code><h4>`echo(data []any)</h4></code></th>
@@ -770,7 +821,9 @@ Outputs data to stdout.
 </td>
 </tr>
 </table>
+<br/>
 ### [**html**](https://pkg.go.dev/github.com/codeshelldev/goplater/pkg/templating/modules/html/html)
+
 
 <table align="left">
 <tr><th align="left"><code><h4>`htmlDecode(html string) (*goquery.Document, throws error)</h4></code></th>
@@ -780,6 +833,8 @@ Decodes html into a document.
 </td>
 </tr>
 </table>
+<br/>
+
 
 <table align="left">
 <tr><th align="left"><code><h4>`htmlDocFindAll(doc *goquery.Document, selector string) ([]*goquery.Selection, throws error)</h4></code></th>
@@ -789,6 +844,8 @@ Finds elements in document by selector (using [goquery.Find](https://pkg.go.dev/
 </td>
 </tr>
 </table>
+<br/>
+
 
 <table align="left">
 <tr><th align="left"><code><h4>`htmlDocFind(doc *goquery.Document, selector string) (*goquery.Selection, throws error)</h4></code></th>
@@ -798,6 +855,8 @@ Finds element in document by selector (using [goquery.Find](https://pkg.go.dev/g
 </td>
 </tr>
 </table>
+<br/>
+
 
 <table align="left">
 <tr><th align="left"><code><h4>`htmlFindAll(doc *goquery.Document, selector string) ([]*goquery.Selection, throws error)</h4></code></th>
@@ -807,6 +866,8 @@ Finds elements in element by selector (using [goquery.Find](https://pkg.go.dev/g
 </td>
 </tr>
 </table>
+<br/>
+
 
 <table align="left">
 <tr><th align="left"><code><h4>`htmlFind(doc *goquery.Document, selector string) (*goquery.Selection, throws error)</h4></code></th>
@@ -816,6 +877,8 @@ Finds element in element by selector (using [goquery.Find](https://pkg.go.dev/gi
 </td>
 </tr>
 </table>
+<br/>
+
 
 <table align="left">
 <tr><th align="left"><code><h4>`htmlText(el *goquery.Selection) string</h4></code></th>
@@ -825,6 +888,8 @@ Returns the elements text content.
 </td>
 </tr>
 </table>
+<br/>
+
 
 <table align="left">
 <tr><th align="left"><code><h4>`htmlAttr(el *goquery.Selection, attr string) string</h4></code></th>
@@ -834,6 +899,8 @@ Returns an elements attribute content.
 </td>
 </tr>
 </table>
+<br/>
+
 
 <table align="left">
 <tr><th align="left"><code><h4>`htmlInner(el *goquery.Selection) string</h4></code></th>
@@ -843,7 +910,9 @@ Returns the elements inner html.
 </td>
 </tr>
 </table>
+<br/>
 ### [**http**](https://pkg.go.dev/github.com/codeshelldev/goplater/pkg/templating/modules/http/http)
+
 
 <table align="left">
 <tr><th align="left"><code><h4>`fetch(url string) string</h4></code></th>
@@ -854,6 +923,8 @@ Outputs errors as string.
 </td>
 </tr>
 </table>
+<br/>
+
 
 <table align="left">
 <tr><th align="left"><code><h4>`fetchThrow(url string) (string, throws error)</h4></code></th>
@@ -864,7 +935,9 @@ Throws error instead of outputting it.
 </td>
 </tr>
 </table>
+<br/>
 ### [**json**](https://pkg.go.dev/github.com/codeshelldev/goplater/pkg/templating/modules/json/json)
+
 
 <table align="left">
 <tr><th align="left"><code><h4>`jsonEncode(obj any) (string, throws error)</h4></code></th>
@@ -874,6 +947,8 @@ Encodes an object into a json string.
 </td>
 </tr>
 </table>
+<br/>
+
 
 <table align="left">
 <tr><th align="left"><code><h4>`jsonDecode(json string) (any, throws error)</h4></code></th>
@@ -883,7 +958,9 @@ Decodes a json string into an object.
 </td>
 </tr>
 </table>
+<br/>
 ### [**markdown**](https://pkg.go.dev/github.com/codeshelldev/goplater/pkg/templating/modules/markdown/markdown)
+
 
 <table align="left">
 <tr><th align="left"><code><h4>`markdownDecode(md string) *Document</h4></code></th>
@@ -893,6 +970,8 @@ Decodes markdown into a document.
 </td>
 </tr>
 </table>
+<br/>
+
 
 <table align="left">
 <tr><th align="left"><code><h4>`markdownEncode(doc *Document) string</h4></code></th>
@@ -902,6 +981,8 @@ Encodes a document into markdown.
 </td>
 </tr>
 </table>
+<br/>
+
 
 <table align="left">
 <tr><th align="left"><code><h4>`markdownFindAll(target Searchable, selector string) []*Node</h4></code></th>
@@ -911,6 +992,8 @@ Finds elements in target by selector (using [custom](https://pkg.go.dev/github.c
 </td>
 </tr>
 </table>
+<br/>
+
 
 <table align="left">
 <tr><th align="left"><code><h4>`markdownFind(target Searchable, selector string) *Node</h4></code></th>
@@ -920,6 +1003,8 @@ Finds element in target by selector (using [custom](https://pkg.go.dev/github.co
 </td>
 </tr>
 </table>
+<br/>
+
 
 <table align="left">
 <tr><th align="left"><code><h4>`markdownIs(node *Node, selector string) bool</h4></code></th>
@@ -929,6 +1014,8 @@ Returns whether node matches selector (using [custom](https://pkg.go.dev/github.
 </td>
 </tr>
 </table>
+<br/>
+
 
 <table align="left">
 <tr><th align="left"><code><h4>`markdownHTML(doc *Document) (string, throws error)</h4></code></th>
@@ -938,6 +1025,8 @@ Returns html markdown representation.
 </td>
 </tr>
 </table>
+<br/>
+
 
 <table align="left">
 <tr><th align="left"><code><h4>`markdownText(node *Node) string</h4></code></th>
@@ -947,6 +1036,8 @@ Returns all raw markdown text in a node recursively.
 </td>
 </tr>
 </table>
+<br/>
+
 
 <table align="left">
 <tr><th align="left"><code><h4>`markdownHeadings(doc *Document) []*Heading</h4></code></th>
@@ -956,6 +1047,8 @@ Returns all markdown headings.
 </td>
 </tr>
 </table>
+<br/>
+
 
 <table align="left">
 <tr><th align="left"><code><h4>`markdownLinks(doc *Document) []*Link</h4></code></th>
@@ -965,6 +1058,8 @@ Returns all markdown links.
 </td>
 </tr>
 </table>
+<br/>
+
 
 <table align="left">
 <tr><th align="left"><code><h4>`markdownLinkURL(link *Link) string</h4></code></th>
@@ -974,6 +1069,8 @@ Returns the url of a markdown link node.
 </td>
 </tr>
 </table>
+<br/>
+
 
 <table align="left">
 <tr><th align="left"><code><h4>`markdownLinkSetURL(link *Link, url string)</h4></code></th>
@@ -983,6 +1080,8 @@ Sets a link node's url.
 </td>
 </tr>
 </table>
+<br/>
+
 
 <table align="left">
 <tr><th align="left"><code><h4>`markdownLinkSetTitle(link *Link, title string)</h4></code></th>
@@ -992,6 +1091,8 @@ Sets a link node's title.
 </td>
 </tr>
 </table>
+<br/>
+
 
 <table align="left">
 <tr><th align="left"><code><h4>`markdownLinkText(link *Link) string</h4></code></th>
@@ -1001,6 +1102,8 @@ Returns the text of a markdown link node.
 </td>
 </tr>
 </table>
+<br/>
+
 
 <table align="left">
 <tr><th align="left"><code><h4>`markdownImages(doc *Document) []*Image</h4></code></th>
@@ -1010,6 +1113,8 @@ Returns all markdown images.
 </td>
 </tr>
 </table>
+<br/>
+
 
 <table align="left">
 <tr><th align="left"><code><h4>`markdownImageURL(image *Image) string</h4></code></th>
@@ -1019,6 +1124,8 @@ Returns the url of a markdown image node.
 </td>
 </tr>
 </table>
+<br/>
+
 
 <table align="left">
 <tr><th align="left"><code><h4>`markdownImageSetURL(image *Image, url string)</h4></code></th>
@@ -1028,6 +1135,8 @@ Sets a image node's url.
 </td>
 </tr>
 </table>
+<br/>
+
 
 <table align="left">
 <tr><th align="left"><code><h4>`markdownImageSetAlt(image *Image, alt string)</h4></code></th>
@@ -1037,6 +1146,8 @@ Sets a image node's alt.
 </td>
 </tr>
 </table>
+<br/>
+
 
 <table align="left">
 <tr><th align="left"><code><h4>`markdownParagraphs(doc *Document) []*Paragraph</h4></code></th>
@@ -1046,6 +1157,8 @@ Returns all markdown paragraphs.
 </td>
 </tr>
 </table>
+<br/>
+
 
 <table align="left">
 <tr><th align="left"><code><h4>`markdownCodeBlocks(doc *Document) []*CodeBlock</h4></code></th>
@@ -1055,6 +1168,8 @@ Returns all markdown code blocks.
 </td>
 </tr>
 </table>
+<br/>
+
 
 <table align="left">
 <tr><th align="left"><code><h4>`markdownBlockquotes(doc *Document) []*Blockquote</h4></code></th>
@@ -1064,6 +1179,8 @@ Returns all markdown block quotes.
 </td>
 </tr>
 </table>
+<br/>
+
 
 <table align="left">
 <tr><th align="left"><code><h4>`markdownRemove(node *Node)</h4></code></th>
@@ -1073,6 +1190,8 @@ Removes a markdown node.
 </td>
 </tr>
 </table>
+<br/>
+
 
 <table align="left">
 <tr><th align="left"><code><h4>`markdownAppend(doc *Document, str string)</h4></code></th>
@@ -1082,6 +1201,8 @@ Appends text to a markdown document.
 </td>
 </tr>
 </table>
+<br/>
+
 
 <table align="left">
 <tr><th align="left"><code><h4>`markdownPrepend(doc *Document, str string)</h4></code></th>
@@ -1091,7 +1212,9 @@ Prepends text to a markdown document.
 </td>
 </tr>
 </table>
+<br/>
 ### [**funcs**](https://pkg.go.dev/github.com/codeshelldev/goplater/pkg/templating/modules/math/funcs)
+
 
 <table align="left">
 <tr><th align="left"><code><h4>`abs(numbers int|float64) (int|float64, throws error)</h4></code></th>
@@ -1101,6 +1224,8 @@ Returns the abs value of a number.
 </td>
 </tr>
 </table>
+<br/>
+
 
 <table align="left">
 <tr><th align="left"><code><h4>`min(a int|float64, b int|float64) (int|float64, throws error)</h4></code></th>
@@ -1110,6 +1235,8 @@ Returns the smaller value of two numbers.
 </td>
 </tr>
 </table>
+<br/>
+
 
 <table align="left">
 <tr><th align="left"><code><h4>`max(a int|float64, b int|float64) (int|float64, throws error)</h4></code></th>
@@ -1119,6 +1246,8 @@ Returns the bigger value of two numbers.
 </td>
 </tr>
 </table>
+<br/>
+
 
 <table align="left">
 <tr><th align="left"><code><h4>`clamp(value int|float64, min int|float64, max int|float64) (int|float64, throws error)</h4></code></th>
@@ -1128,6 +1257,8 @@ Clamps a value between a minimum and maximum value.
 </td>
 </tr>
 </table>
+<br/>
+
 
 <table align="left">
 <tr><th align="left"><code><h4>`pow(base int|float64, exponent int|float64) (float64, throws error)</h4></code></th>
@@ -1137,6 +1268,8 @@ Performs pow on base with exponent.
 </td>
 </tr>
 </table>
+<br/>
+
 
 <table align="left">
 <tr><th align="left"><code><h4>`sqrt(number int|float64) (float64, throws error)</h4></code></th>
@@ -1146,6 +1279,8 @@ Returns the square root of a number.
 </td>
 </tr>
 </table>
+<br/>
+
 
 <table align="left">
 <tr><th align="left"><code><h4>`round(number int|float64) (int, throws error)</h4></code></th>
@@ -1155,6 +1290,8 @@ Rounds a number to the nearest integer.
 </td>
 </tr>
 </table>
+<br/>
+
 
 <table align="left">
 <tr><th align="left"><code><h4>`floor(number int|float64) (int, throws error)</h4></code></th>
@@ -1164,6 +1301,8 @@ Returns the greatest integer value less than or equal to number.
 </td>
 </tr>
 </table>
+<br/>
+
 
 <table align="left">
 <tr><th align="left"><code><h4>`ceil(number int|float64) (int, throws error)</h4></code></th>
@@ -1173,7 +1312,9 @@ Returns the least integer value greater than or equal to number.
 </td>
 </tr>
 </table>
+<br/>
 ### [**operators**](https://pkg.go.dev/github.com/codeshelldev/goplater/pkg/templating/modules/math/operators)
+
 
 <table align="left">
 <tr><th align="left"><code><h4>`add(numbers [](int|float64)) (int|float64, throws error)</h4></code></th>
@@ -1183,6 +1324,8 @@ Adds numbers together.
 </td>
 </tr>
 </table>
+<br/>
+
 
 <table align="left">
 <tr><th align="left"><code><h4>`sub(numbers [](int|float64)) (int|float64, throws error)</h4></code></th>
@@ -1192,6 +1335,8 @@ Subtracts numbers from each other.
 </td>
 </tr>
 </table>
+<br/>
+
 
 <table align="left">
 <tr><th align="left"><code><h4>`mult(numbers [](int|float64)) (int|float64, throws error)</h4></code></th>
@@ -1201,6 +1346,8 @@ Multiplies numbers together.
 </td>
 </tr>
 </table>
+<br/>
+
 
 <table align="left">
 <tr><th align="left"><code><h4>`divd(numbers [](int|float64)) (int|float64, throws error)</h4></code></th>
@@ -1210,6 +1357,8 @@ Divides numbers from each other.
 </td>
 </tr>
 </table>
+<br/>
+
 
 <table align="left">
 <tr><th align="left"><code><h4>`mod(numbers [](int|float64)) (int|float64, throws error)</h4></code></th>
@@ -1219,7 +1368,9 @@ Performs modulo on numbers.
 </td>
 </tr>
 </table>
+<br/>
 ### [**regex**](https://pkg.go.dev/github.com/codeshelldev/goplater/pkg/templating/modules/regex/regex)
+
 
 <table align="left">
 <tr><th align="left"><code><h4>`regexMatch(regex string) (bool, throws error)</h4></code></th>
@@ -1229,6 +1380,8 @@ Returns whether a string matches the given regex pattern.
 </td>
 </tr>
 </table>
+<br/>
+
 
 <table align="left">
 <tr><th align="left"><code><h4>`regexFind(regex string) ([]string, throws error)</h4></code></th>
@@ -1238,6 +1391,8 @@ Returns all matches against the given regex pattern in a string.
 </td>
 </tr>
 </table>
+<br/>
+
 
 <table align="left">
 <tr><th align="left"><code><h4>`regexFindGroups(regex string) ([][]string, throws error)</h4></code></th>
@@ -1247,6 +1402,8 @@ Returns all matches and submatches from the given regex pattern in a string.
 </td>
 </tr>
 </table>
+<br/>
+
 
 <table align="left">
 <tr><th align="left"><code><h4>`regexFindGroupsIndex(regex string) ([][]int, throws error)</h4></code></th>
@@ -1256,6 +1413,8 @@ Returns all match and submatch positions from the given regex pattern in a strin
 </td>
 </tr>
 </table>
+<br/>
+
 
 <table align="left">
 <tr><th align="left"><code><h4>`regexReplace(regex string) (string, throws error)</h4></code></th>
@@ -1265,7 +1424,9 @@ Replaces all matches from the given regex pattern in a string with the replaceWi
 </td>
 </tr>
 </table>
+<br/>
 ### [**strings**](https://pkg.go.dev/github.com/codeshelldev/goplater/pkg/templating/modules/strings/strings)
+
 
 <table align="left">
 <tr><th align="left"><code><h4>`trimSpace(str string) string</h4></code></th>
@@ -1275,6 +1436,8 @@ Trims space from a string (leading and trailing).
 </td>
 </tr>
 </table>
+<br/>
+
 
 <table align="left">
 <tr><th align="left"><code><h4>`trim(str string, cutset string) string</h4></code></th>
@@ -1284,6 +1447,8 @@ Trims all chars defined in the cutset param from a string (leading and trailing)
 </td>
 </tr>
 </table>
+<br/>
+
 
 <table align="left">
 <tr><th align="left"><code><h4>`upper(str string) string</h4></code></th>
@@ -1293,6 +1458,8 @@ Uppercases a string.
 </td>
 </tr>
 </table>
+<br/>
+
 
 <table align="left">
 <tr><th align="left"><code><h4>`lower(str string) string</h4></code></th>
@@ -1302,6 +1469,8 @@ Lowercases a string.
 </td>
 </tr>
 </table>
+<br/>
+
 
 <table align="left">
 <tr><th align="left"><code><h4>`contains(str string, sub string) bool</h4></code></th>
@@ -1311,6 +1480,8 @@ Returns whether a string contains the given substring.
 </td>
 </tr>
 </table>
+<br/>
+
 
 <table align="left">
 <tr><th align="left"><code><h4>`count(str string, sub string) int</h4></code></th>
@@ -1320,6 +1491,8 @@ Counts all occurences of a substring in the given string.
 </td>
 </tr>
 </table>
+<br/>
+
 
 <table align="left">
 <tr><th align="left"><code><h4>`startsWith(str string, prefix string) bool</h4></code></th>
@@ -1329,6 +1502,8 @@ Returns whether a string starts with the given prefix.
 </td>
 </tr>
 </table>
+<br/>
+
 
 <table align="left">
 <tr><th align="left"><code><h4>`endsWith(str string, suffix string) bool</h4></code></th>
@@ -1338,6 +1513,8 @@ Returns whether a string ends with the given suffix.
 </td>
 </tr>
 </table>
+<br/>
+
 
 <table align="left">
 <tr><th align="left"><code><h4>`isEmpty(str string) bool</h4></code></th>
@@ -1347,6 +1524,8 @@ Returns whether the given string is empty.
 </td>
 </tr>
 </table>
+<br/>
+
 
 <table align="left">
 <tr><th align="left"><code><h4>`replace(str string, sub string, replaceWith string) string</h4></code></th>
@@ -1356,6 +1535,8 @@ Replaces all occurences of a substring in the given string with the replaceWith 
 </td>
 </tr>
 </table>
+<br/>
+
 
 <table align="left">
 <tr><th align="left"><code><h4>`split(str string, sub string, sep string) []string</h4></code></th>
@@ -1365,6 +1546,8 @@ Split a string by the given seperator.
 </td>
 </tr>
 </table>
+<br/>
+
 
 <table align="left">
 <tr><th align="left"><code><h4>`after(str string, sub string) string</h4></code></th>
@@ -1374,6 +1557,8 @@ Returns the string after the given substring in a string.
 </td>
 </tr>
 </table>
+<br/>
+
 
 <table align="left">
 <tr><th align="left"><code><h4>`before(str string, sub string) string</h4></code></th>
@@ -1383,6 +1568,8 @@ Returns the string before the given substring in a string.
 </td>
 </tr>
 </table>
+<br/>
+
 
 <table align="left">
 <tr><th align="left"><code><h4>`between(str string, startSub string, endSub string) string</h4></code></th>
@@ -1392,6 +1579,8 @@ Returns the substring between the start and end substring.
 </td>
 </tr>
 </table>
+<br/>
+
 
 <table align="left">
 <tr><th align="left"><code><h4>`cutPrefix(str string, sub string) string</h4></code></th>
@@ -1401,6 +1590,8 @@ Removes a substring at the start of the given string.
 </td>
 </tr>
 </table>
+<br/>
+
 
 <table align="left">
 <tr><th align="left"><code><h4>`cutSuffix(str string, sub string) string</h4></code></th>
@@ -1410,6 +1601,8 @@ Removes a substring at the end of the given string.
 </td>
 </tr>
 </table>
+<br/>
+
 
 <table align="left">
 <tr><th align="left"><code><h4>`slice(str string, start int, end int) string</h4></code></th>
@@ -1419,6 +1612,8 @@ Slices a string based on start and end index.
 </td>
 </tr>
 </table>
+<br/>
+
 
 <table align="left">
 <tr><th align="left"><code><h4>`join(sep string, strings []string) string</h4></code></th>
@@ -1428,6 +1623,8 @@ Joins multiple strings together by the given separator.
 </td>
 </tr>
 </table>
+<br/>
+
 
 <table align="left">
 <tr><th align="left"><code><h4>`repeat(str string, count int) string</h4></code></th>
@@ -1437,7 +1634,9 @@ Repeat a string n times.
 </td>
 </tr>
 </table>
+<br/>
 ### [**yaml**](https://pkg.go.dev/github.com/codeshelldev/goplater/pkg/templating/modules/yaml/yaml)
+
 
 <table align="left">
 <tr><th align="left"><code><h4>`yamlDecode(yaml string) (any, throws error)</h4></code></th>
@@ -1447,6 +1646,8 @@ Decodes a yaml string into an object.
 </td>
 </tr>
 </table>
+<br/>
+
 
 </details>
 
