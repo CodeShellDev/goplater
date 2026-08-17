@@ -69,7 +69,7 @@ File Content: +​{​​{ read "./myfile.txt" }​}​
 
 <table align="left">
 <tr>
-<th align="left"><code>read(path string) string</code></th>
+<th align="left"><h3><code>read(path string) string</code></h3></th>
 </tr>
 <tr>
 <td>
