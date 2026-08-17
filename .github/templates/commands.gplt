@@ -29,7 +29,7 @@
 
 +{{ define "renderCommand(declaration, level)" }}
 +{{- $decl := .declaration }}
-+{{ repeat "#" .level }} `+{{ index $decl "name" }}
++{{ repeat "#" .level }} **`+{{ index $decl "name" }}
 
 +{{- $paramsStr := "" -}}
 +{{- if gt (len (index $decl "params")) 0 -}}
@@ -48,7 +48,7 @@
     +{{- if gt (len $returns) 1 -}}
         +{{- $returnStr = concat "(" $returnStr ")" -}}
     +{{- end }} +{{ $returnStr -}}
-+{{- end}}`
++{{- end}}`**
 
 +{{ index $decl "summary" }}
 +{{ $examples := index $decl "examples" -}}
