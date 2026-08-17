@@ -54,6 +54,7 @@ File Content: +​{​​{ read "./myfile.txt" }​}​
 
 
 <table align="left">
+<<<<<<< HEAD
 <tr><th align="left"><code><h4>`read(path string) string</h4></code></th>
 </tr><tr><td>
 Reads and templates file.
@@ -68,6 +69,19 @@ Reads and templates file.
 +{{ read "/path/to/file" }}
 </code></pre>
 
+=======
+<tr>
+<th align="left"><h3><code>read(path string) string</code></h3></th>
+</tr>
+<tr>
+<td>
+Reads and templates a file.
+<br/>
+<details>
+<summary>Example</summary>
+<pre><code>{{ read "/path/to/file" }}
+	{{read}}</code></pre>
+>>>>>>> 24e2b621c82a1f3da200d915ea0bb9a39a773fee
 </details>
 
 </td>
