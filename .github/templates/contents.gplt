@@ -1,0 +1,54 @@
++{{ define "renderContentSection(md, level)" }}
++{{- $document := markdownDecode .md -}}
+
++{{- $items := call "collectHeadingChildren" $document .level -}}
+
++{{- $lines := sliceCreate }}
+
++{{- range $item := $items -}}
++{{- $text := markdownText $item -}}
++{{- $line := (concat "- [" $text "](" (call "generateHeadingAnchor" $text) ")") -}}
++{{- $lines = slicePush $lines $line -}}
++{{- end -}}
+
++{{- join "\n" $lines -}}
++{{ end }}
+
++{{ define "indentTabs(text, indent)" }}
+    +{{ $prefix := repeat "\t" .indent }}
+    +{{ returnNext (regexReplace .text `(?m)^` $prefix) }}
++{{ end }}
+
++{{ define "generateHeadingAnchor(text)" }}
+    +{{ $text := .text }}
+
+    +{{ echo $text }}
+
+    +{{ $text = lower $text }}
+    +{{ $text = regexReplace $text "`" "" }}
+    +{{ $text = regexReplace $text `[^a-z0-9\s-]` "" }}
+    +{{ $text = regexReplace $text `\s+` "-" }}
+    +{{ $text = regexReplace $text `-+` "-" }}
+    +{{ $text = trim $text "-" }}
+
+    +{{ returnNext $text }}
++{{ end }}
+
++{{ define "collectHeadingChildren(document, level)" }}
+    +{{ $result := sliceCreate }}
+    +{{ $level := .level }}
+
+    +{{ range $node := markdownHeadings .document }}
+        +{{ $nodeLevel := $node.Level }}
+
+        +{{ if le $nodeLevel $level }}
+            +{{ break }}
+        +{{ end }}
+
+        +{{ if eq $nodeLevel (add $level 1) }}
+            +{{ $result = slicePush $result $node }}
+        +{{ end }}
+    +{{ end }}
+
+    +{{ returnNext $result }}
++{{ end }}

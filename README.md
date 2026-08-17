@@ -8,20 +8,33 @@
 
 ## Contents
 
+<!-- prettier-ignore -->
 - [Getting Started](#getting-started)
 - [Usage](#usage)
-  - [File Functions](#file-functions)
-  - [String Functions](#string-functions)
-  - [Math Functions](#math-functions)
-  - [Container Functions](#container-functions)
-  - [Parser Functions](#parser-functions)
-  - [Advanced Functions](#advanced-functions)
+	- [fs.go](fsgo)
+	- [outputto.go](outputtogo)
+	- [base64.go](base64go)
+	- [container.go](containergo)
+	- [conversion.go](conversiongo)
+	- [globals.go](globalsgo)
+	- [import.go](importgo)
+	- [return.go](returngo)
+	- [debug.go](debuggo)
+	- [html.go](htmlgo)
+	- [http.go](httpgo)
+	- [json.go](jsongo)
+	- [markdown.go](markdowngo)
+	- [funcs.go](funcsgo)
+	- [operators.go](operatorsgo)
+	- [regex.go](regexgo)
+	- [strings.go](stringsgo)
+	- [yaml.go](yamlgo)
 - [Contributing](#contributing)
 - [Support](#support)
 - [License](#license)
 - [Legal](#legal)
 
-### [`testing.go`](https://testing)
+Need help? Come join our [Matrix Server](https://matrix.to/#/#codeshelldev.oss.goplater:matrix.org)!
 
 ## Getting Started
 
@@ -48,494 +61,656 @@ Goplater uses Go's [builtin templating library](https://pkg.go.dev/text/template
 File Content: +​{​{​{ read "./myfile.txt" }​}​}
 ```
 
-### File Functions
 
-As you saw in the example above `read` is used for reading and output file contents.
-But there are more as you will see in the following…
+### [`fs.go`](https://pkg.go.dev/github.com/codeshelldev/goplater/internals/template/funcs/fs.go)
 
-#### `read`
+#### `read(path string) string`
 
-Reads from absolute or relative file path (depending on input),
-where relative paths are relative to the invoker.
+Reads and templates file.
 
+**Example**:
 ```
-read "path"
++{{ read "/path/to/file" }}
 ```
+#### `readRaw(path string) string`
 
-#### `readArgs`
+Reads file (without templating).
 
-Same as [`read`], but allows to supply additional arguments to the file for further processing.
-
+**Example**:
 ```
-read "path" arg1 arg2 arg3
++{{ readRaw "/path/to/file" }}
 ```
+#### `readArgs(path string, args any) string`
 
-Arguments are accessible in under `.args` with `{{{ index .args 0 }}}`.
+Reads file and passes arguments to it.
 
-#### `fetch`
+**Example**:
+```
++{{ read "/path/to/file" }}
+```
+#### `write(path string, content string) throws error`
 
-Performs a get http request to the specified url.
+Writes to a file path.
 
+**Example**:
 ```
-fetch "url"
++{{ write "/path/to/file" "Hello" }}
 ```
+#### `mkdir(path string) throws error`
 
-### String Functions
+Creates directory at path.
 
-#### `trim`
+**Example**:
+```
++{{ read "/path/to/somewhere/" }}
+```
+#### `appendFile(path string, content string) throws error`
 
-Outputs trimmed string.
+Appends to an existing file.
 
-#### `upper`
+**Example**:
+```
++{{ appendFile "/path/to/somewhere/" "Goodbye" }}
+```
+#### `fsExists(path string) bool`
 
-Outputs uppercased string.
+Returns if a file or folder exists at a given path.
 
-#### `lower`
+**Example**:
+```
++{{ if (fsExists "/path/to/somewhere") }}
+Path exists!
++{{ end }}
+```
+#### `isFile(path string) bool`
 
-Outputs lowercased string.
+Returns if a file exists at a given path.
 
-#### `contains`
+**Example**:
+```
++{{ if (isFile "/path/to/file") }}
+Path is a file!
++{{ end }}
+```
+#### `isDir(path string) bool`
 
-Returns wether string contains substring.
+Returns if a folder exists at a given path.
 
+**Example**:
 ```
-contains "Sunflower" "flower"
++{{ if (fsExists "/path/to/somewhere") }}
+Path is a folder!
++{{ end }}
 ```
+#### `listDir(path string) ([]string, throws error)`
 
-#### `count`
+Returns all files and folders inside of a given directory.
 
-Returns amount of times that substring is present in string.
+**Example**:
+```
++{{ join ", " (listDir "/path/to") }}
+```
+**Output**:
+```
+/path/to/file1.txt, /path/to/file2.txt, /path/to/folder
+```
 
-#### `repeat`
+#### `walkDir(path string) ([]string, throws error)`
 
-Repeats string n times.
+Returns all files and folders recursively under a given directory.
 
+**Example**:
+```
++{{ join ", " (walkDir "/path/to") }}
 ```
-repeat "*" 5
+**Output**:
 ```
+/path/to/file1.txt, /path/to/file2.txt, /path/to/folder, /path/to/folder/file3.txt
+```
 
-#### `startsWith`
+#### `fsRemove(path string) throws error`
 
-Returns wether string starts with prefix.
+Removes a file or folder at a given path.
 
+**Example**:
 ```
-startsWith "Sunflower" "Sun"
++{{ fsRemove "/path/to/file/or/folder" }}
 ```
+#### `joinPath(paths []string) string`
 
-#### `endsWith`
+Joins paths together.
 
-Returns wether string ends with prefix.
+#### `basePath(path string) string`
 
-```
-endsWith "Sunflower" "flower"
-```
+Returns the last element of a path.
 
-#### `isEmpty`
+#### `pathDir(path string) string`
 
-Returns wether string is empty (`""`).
+Returns all but the last element of a path.
 
-#### `indexOf`
+#### `fileExt(path string) string`
 
-Returns starting index of substring in string.
+Returns the file name extension of a file path.
 
-```
-indexOf "Apple Banana Strawberry" "Apple"
-```
+#### `absPath(path string) (string, throws error)`
 
-#### `replace`
+Returns an absolute representation of a given path.
+If the path is not absolute it will be joined with the current working directory to turn it into an absolute path.
 
-Replaces substring with new string in old string.
+#### `relPath(basePath string, targetPath string) (string, throws error)`
 
-```
-replace "Sunflower" "flower" "shine"
-```
+Returns a relative path that is lexically equivalent to targetPath when joined to basePath with an intervening separator.
+The returned path will always be relative to basePath, even if basePath and targetPath share no elements.
 
-#### `split`
+### [`outputto.go`](https://pkg.go.dev/github.com/codeshelldev/goplater/internals/template/funcs/outputto.go)
 
-Split string by separator and return slice of all parts.
+#### `outputTo(path string) throws error`
 
-```
-split "Apple, Banana, Strawberry" ", "
-```
+Changes the output path for the current file.
+Errors if path is not allowed.
 
-#### `before`
+### [`base64.go`](https://pkg.go.dev/github.com/codeshelldev/goplater/pkg/templating/modules/base64/base64.go)
 
-Outputs string before substring in string.
+#### `base64Encode(encode string) string`
 
-```
-before "Apple Banana Strawberry" "Banana"
-```
+Encodes strings with base64.
 
-#### `after`
+#### `base64Decode(decode string) (string, throws error)`
 
-Outputs string after substring in string.
+Decodes a base64 string.
 
-```
-after "Apple Banana Strawberry" "Apple"
-```
+### [`container.go`](https://pkg.go.dev/github.com/codeshelldev/goplater/pkg/templating/modules/container/container.go)
 
-#### `between`
+#### `delete(container map[any]any|[]any, key any) (any, throws error)`
 
-Outputs inbetween of starting and ending substring.
+Deletes a container entry with the given key.
 
+**Example**:
+```
++{{ $newSlice := delete (sliceCreate "Apple" "Banana") 0 }}
++{{ echo $newSlice }}
 ```
-between "Apple Banana Strawberry" "Apple" "Strawberry"
+**Output**:
 ```
+[Banana]
+```
 
-#### `slice`
+#### `set(container map[any]any|[]any, key any, value any) (any, throws error)`
 
-Slice string by `start` and `end` bounds.
+Set a container entry value with the given key.
 
+**Example**:
+```
++{{ $newSlice := set (sliceCreate "Apple" "Banana") 0 "Strawberry" }}
++{{ echo $newSlice }}
+```
+**Output**:
 ```
-slice "  Apple  " 2 7
+[Strawberry Banana]
 ```
 
-#### `join`
+#### `has(container map[any]any|[]any, key any) (bool, throws error)`
 
-Joins strings with separator.
+Returns if an entry with the given key exists in container.
 
+**Example**:
 ```
-join "Apple" "Banana" "Strawberry" ", "
++{{ if (has (mapCreate "version" "v1") "version") }}
+Container has "version"!
++{{ end }}
 ```
+#### `slicePush(container []any, value any) []any`
 
-#### `concat`
+Appends a value to a slice.
 
-Concat multiple strings.
-
+**Example**:
+```
++{{ $newSlice := sliceCreate "Apple" "Banana" }}
++{{ $newSlice = slicePush $newSlice "Strawberry" }}
++{{ echo $newSlice }}
 ```
-concat "Apple" "Banana" "Strawberry"
+**Output**:
 ```
+[Apple Banana Strawberry]
+```
 
-#### `append`
+#### `sliceCreate(values []any) []any`
 
-Appends another string to string.
+Creates a new slice, optionally with values.
 
+**Example**:
+```
++{{ $newSlice := sliceCreate "Apple" "Banana" }}
++{{ echo $newSlice }}
+```
+**Output**:
 ```
-append "Hello " "World!"
+[Apple Banana]
 ```
 
-#### `regexMatch`
+#### `mapCreate(entries []any) map[string]any`
 
-Outputs wether string matches regex.
+Creates a new map, optionally with key value pairs.
+Pairs are constructed one by one, a key followed by the given value.
+Currently only supports string keys!
 
+**Example**:
 ```
-regexMatch "[0-9]" "0123456789"
++{{ $newMap := mapCreate "key1" "value1" "key2" "value2" }}
++{{ echo $newMap }}
 ```
+**Output**:
+```
+map[key1:value1 key2:value2]
+```
 
-#### `regexFind`
+### [`conversion.go`](https://pkg.go.dev/github.com/codeshelldev/goplater/pkg/templating/modules/conversion/conversion.go)
 
-Returns a list of all regex matches.
+#### `toString(value string) string`
 
-```
-index ( regexFind "[1-36-9]" "01234 56789" ) 0
-```
+Returns a given value as string (using [fmt.Sprint](https://pkg.go.dev/fmt#Sprint)).
+
+#### `toInt(str string) (int, throws error)`
+
+Attempts to parse a string as int.
+
+#### `toFloat64(str string) (float64, throws error)`
+
+Attempts to parse a string as float64.
+
+#### `toFloat32(str string) (float32, throws error)`
+
+Attempts to parse a string as float32.
+
+#### `toBool(str string) (bool, throws error)`
+
+Attempts to parse a string as a bool (using [strconv.ParseBool](https://pkg.go.dev/strconv#ParseBool)).
+
+### [`globals.go`](https://pkg.go.dev/github.com/codeshelldev/goplater/pkg/templating/modules/core/globals.go)
+
+#### `globalSet(key string, value any)`
+
+Defines a global value with a key.
+
+#### `globalGet(key string) (any, throws error)`
+
+Tries to retrieve a global value with a key.
+
+#### `globalHas(key string) bool`
+
+Returns whether a given global variable exists.
 
-#### `regexFindGroups`
+### [`import.go`](https://pkg.go.dev/github.com/codeshelldev/goplater/pkg/templating/modules/core/import.go)
 
-Returns a nested list (`[][]string`) of all regex submatches (groups `(.*)`).
+#### `import(alias string?, path string) throws error`
 
+Tries to import a template file with func definitions.
+Optionally supply an alias for easier access.
+The fs resolver is only available as an internal module and does not ship with the `pkg/templating/modules` directory.
+
+**Example**:
+```
++{{ import "https://domain.com/functions" }}
+```
+**Output**:
+```
++{{ call "functions.greet" "John" }}
+```
+
+**Example**:
+```
++{{ import "funcs" "https://domain.com/functions" }}
 ```
-index ( index ( regexFindGroups "(_*)(\S+)(_*)" "__xyz__" 0 ) 0 )
+**Output**:
 ```
++{{ call "funcs.greet" "John" }}
+```
+
+### [`return.go`](https://pkg.go.dev/github.com/codeshelldev/goplater/pkg/templating/modules/core/return.go)
+
+#### `return(i int, value any) throws error`
 
-#### `regexReplace`
+Sets an output value at the given index.
 
-Replaces substring via regex in string.
+#### `returnNext(value any)`
 
+Appends a value to the output.
+
+#### `returnAll(value []any)`
+
+Sets the output object as a whole.
+
+**Example**:
 ```
-regexReplace "string" "replace_regex" "replace_with"
++{{ returnAll "1" "2" "3" }}
++{{ returnAll (sliceCreate "1" "2" "3") }}
 ```
+#### `getOutputs() []any`
 
-### Math Functions
+Returns current outputs.
 
-#### `add`
+### [`debug.go`](https://pkg.go.dev/github.com/codeshelldev/goplater/pkg/templating/modules/debug/debug.go)
 
-Adds two numbers together.
+#### `echo(data []any)`
 
-#### `sub`
+Outputs data to stdout.
 
-Subtraction for two numbers.
+### [`html.go`](https://pkg.go.dev/github.com/codeshelldev/goplater/pkg/templating/modules/html/html.go)
 
-#### `mult`
+#### `htmlDecode(html string) (*goquery.Document, throws error)`
 
-Multiplies two numbers.
+Decodes html into a document.
 
-#### `divd`
+#### `htmlDocFindAll(doc *goquery.Document, selector string) ([]*goquery.Selection, throws error)`
 
-Divides a through b.
+Finds elements in document by selector (using [goquery.Find](https://pkg.go.dev/github.com/PuerkitoBio/goquery#Selection.Find)).
 
-#### `mod`
+#### `htmlDocFind(doc *goquery.Document, selector string) (*goquery.Selection, throws error)`
 
-Performs a modulo b.
+Finds element in document by selector (using [goquery.Find](https://pkg.go.dev/github.com/PuerkitoBio/goquery#Selection.Find)).
 
-### Conversion Functions
+#### `htmlFindAll(doc *goquery.Document, selector string) ([]*goquery.Selection, throws error)`
 
-Functions for converting types.
+Finds elements in element by selector (using [goquery.Find](https://pkg.go.dev/github.com/PuerkitoBio/goquery#Selection.Find)).
 
-#### `toString`
+#### `htmlFind(doc *goquery.Document, selector string) (*goquery.Selection, throws error)`
 
-Returns value as string (via `fmt.Sprint()`).
+Finds element in element by selector (using [goquery.Find](https://pkg.go.dev/github.com/PuerkitoBio/goquery#Selection.Find)).
 
-#### `toInt`
+#### `htmlText(el *goquery.Selection) string`
 
-Parses string as int.
+Returns the elements text content.
 
-#### `toFloat64`
+#### `htmlAttr(el *goquery.Selection, attr string) string`
 
-Parses string as float64.
+Returns an elements attribute content.
 
-#### `toFloat32`
+#### `htmlInner(el *goquery.Selection) string`
 
-Same as [`toFloat64`](#tofloat64), but for float32.
+Returns the elements inner html.
 
-#### `toBool`
+### [`http.go`](https://pkg.go.dev/github.com/codeshelldev/goplater/pkg/templating/modules/http/http.go)
 
-Parses string as bool.
+#### `fetch(url string) string`
 
-### Container Functions
+Fetches a resource from a given url.
+Outputs errors as string.
 
-The following are functions for slices and maps.
+#### `fetchThrow(url string) (string, throws error)`
 
-#### `has`
+Fetches a resource from a given url.
+Throws error instead of outputting it.
 
-Returns wether map or slice has key.
+### [`json.go`](https://pkg.go.dev/github.com/codeshelldev/goplater/pkg/templating/modules/json/json.go)
 
-#### `includes`
+#### `jsonEncode(obj any) (string, throws error)`
 
-Returns wether map or slice includes value.
+Encodes an object into a json string.
 
-#### `delete`
+#### `jsonDecode(json string) (any, throws error)`
 
-Deletes an entry from a map or slice.
+Decodes a json string into an object.
 
-```
-delete map "key"
-```
+### [`markdown.go`](https://pkg.go.dev/github.com/codeshelldev/goplater/pkg/templating/modules/markdown/markdown.go)
 
-```
-delete slice 0
-```
+#### `markdownDecode(md string) *Document`
 
-#### `set`
+Decodes markdown into a document.
 
-Returns map or slice with updated key.
+#### `markdownEncode(doc *Document) string`
 
-```
-set map "key" value
-```
+Encodes a document into markdown.
 
-```
-set slice 0 value
-```
+#### `markdownFindAll(target Searchable, selector string) []*Node`
 
-#### `mapCreate`
+Finds elements in target by selector (using [custom](https://pkg.go.dev/github.com/codeshelldev/goplater/pkg/templating/modules/markdown#TypeMatches)).
 
-Creates empty map (`map[string]any`).
+#### `markdownFind(target Searchable, selector string) *Node`
 
-#### `mapCreateWith`
+Finds element in target by selector (using [custom](https://pkg.go.dev/github.com/codeshelldev/goplater/pkg/templating/modules/markdown#TypeMatches)).
 
-Creates map by using arguments as key value pairs.
+#### `markdownIs(node *Node, selector string) bool`
 
-```
-mapCreateWith "key1" value1 "key2" value2
-```
+Returns whether node matches selector (using [custom](https://pkg.go.dev/github.com/codeshelldev/goplater/pkg/templating/modules/markdown#TypeMatches)).
 
-#### `slicePush`
+#### `markdownHTML(doc *Document) (string, throws error)`
 
-Returns slice with value pushed on top.
+Returns html markdown representation.
 
-```
-slicePush slice value
-```
+#### `markdownText(node *Node) string`
 
-#### `sliceCreate`
+Returns all raw markdown text in a node recursively.
 
-Creates empty slice.
+#### `markdownHeadings(doc *Document) []*Heading`
 
-#### `sliceCreateWith`
+Returns all markdown headings.
 
-Creates slice by using arguments as items.
+#### `markdownLinks(doc *Document) []*Link`
 
-```
-sliceCreate "a" "b" "c"
-```
+Returns all markdown links.
 
-### Parser Functions
+#### `markdownLinkURL(link *Link) string`
 
-The following section is dedicated to parser functions, for example json.
+Returns the url of a markdown link node.
 
-#### `jsonDecode`
+#### `markdownLinkSetURL(link *Link, url string)`
 
-Parses json string as map.
+Sets a link node's url.
 
-#### `jsonEncode`
+#### `markdownLinkSetTitle(link *Link, title string)`
 
-Returns json string from object.
+Sets a link node's title.
 
-#### `yamlDecode`
+#### `markdownLinkText(link *Link) string`
 
-Parses yaml string as map.
+Returns the text of a markdown link node.
 
-#### `yamlEncode`
+#### `markdownImages(doc *Document) []*Image`
 
-Returns yaml string from object.
+Returns all markdown images.
 
-#### `base64Decode`
+#### `markdownImageURL(image *Image) string`
 
-Decodes base64 into raw string.
+Returns the url of a markdown image node.
 
-#### `base64Encode`
+#### `markdownImageSetURL(image *Image, url string)`
 
-Encodes raw string into base64.
+Sets a image node's url.
 
-#### `htmlDecode`
+#### `markdownImageSetAlt(image *Image, alt string)`
 
-Parses html string as html document.
+Sets a image node's alt.
 
-##### `htmlDocFind`
+#### `markdownParagraphs(doc *Document) []*Paragraph`
 
-Query element by selector in html document.
+Returns all markdown paragraphs.
 
-```
-htmlDocFind ( html "html_string" ) "h3:contains['xyz']"
-```
+#### `markdownCodeBlocks(doc *Document) []*CodeBlock`
 
-##### `htmlFind`
+Returns all markdown code blocks.
 
-Query element by selector within another element.
+#### `markdownBlockquotes(doc *Document) []*Blockquote`
 
-```
-htmlFind ( htmlDocFind document ) "h3:contains['xyz']"
-```
+Returns all markdown block quotes.
 
-##### `htmlText`
+#### `markdownRemove(node *Node)`
 
-Outputs inner text of a html element.
+Removes a markdown node.
 
-```
-htmlText ( htmlDocFind document "selector" )
-```
+#### `markdownAppend(doc *Document, str string)`
 
-##### `htmlAttr`
+Appends text to a markdown document.
 
-Outputs the value of the specified elements attribute.
+#### `markdownPrepend(doc *Document, str string)`
 
-```
-htmlAttr ( htmlDocFind document "selector" ) "attribute"
-```
+Prepends text to a markdown document.
 
-##### `htmlInner`
+### [`funcs.go`](https://pkg.go.dev/github.com/codeshelldev/goplater/pkg/templating/modules/math/funcs.go)
 
-Outputs element's inner html string.
+#### `abs(numbers int|float64) (int|float64, throws error)`
 
-```
-htmlInner ( htmlDocFind document "selector" )
-```
+Returns the abs value of a number.
 
-### Advanced Functions
+#### `min(a int|float64, b int|float64) (int|float64, throws error)`
 
-In addition to the function in the [Simple Functions](#simple-functions) section, there are also some functions for advanced usage.
+Returns the smaller value of two numbers.
 
-#### `import`
+#### `max(a int|float64, b int|float64) (int|float64, throws error)`
 
-Imports a file and **executes** it as template, output is **discarded**.
+Returns the bigger value of two numbers.
 
-```
-import "functions.inc.gtmpl"
-```
+#### `clamp(value int|float64, min int|float64, max int|float64) (int|float64, throws error)`
 
-#### `globalSet`
+Clamps a value between a minimum and maximum value.
 
-Sets key globally to value.
+#### `pow(base int|float64, exponent int|float64) (float64, throws error)`
 
-```
-globalSet "key" value
-```
+Performs pow on base with exponent.
 
-#### `globalGet`
+#### `sqrt(number int|float64) (float64, throws error)`
 
-Returns global value at key.
+Returns the square root of a number.
 
-#### `funcDefine`
+#### `round(number int|float64) (int, throws error)`
 
-Defines a global function.
+Rounds a number to the nearest integer.
 
-```
-funcDefine "name" `
-    {{{ return 0 "Hello World" }}}
-`
-```
+#### `floor(number int|float64) (int, throws error)`
 
-The second argument is the template body, notice the `{{{ ... }}}` instead of `$​{​{​{ ... }​}​}`.
+Returns the greatest integer value less than or equal to number.
 
-Raw output is discarded only output via [`return`](#return) persists.
+#### `ceil(number int|float64) (int, throws error)`
 
-##### `return`
+Returns the least integer value greater than or equal to number.
 
-> [!WARNING]
-> This function is **only** accessible from within functions!
+### [`operators.go`](https://pkg.go.dev/github.com/codeshelldev/goplater/pkg/templating/modules/math/operators.go)
 
-Sets return argument at **index** to **value**.
+#### `add(numbers [](int|float64)) (int|float64, throws error)`
 
-```
-funcDefine "helloWorld" "{{{ return 0 "Hello World!" }}}"
-```
+Adds numbers together.
 
-**Overwriting** previous return arguments is possible.
+#### `sub(numbers [](int|float64)) (int|float64, throws error)`
 
-##### `returnNext`
+Subtracts numbers from each other.
 
-Same as [`return`](#return), but **appends** to output.
+#### `mult(numbers [](int|float64)) (int|float64, throws error)`
 
-Shorthand for:
+Multiplies numbers together.
 
-```
-return i+1 value
-```
+#### `divd(numbers [](int|float64)) (int|float64, throws error)`
 
-```
-returnNext value
-```
+Divides numbers from each other.
 
-##### `returnAll`
+#### `mod(numbers [](int|float64)) (int|float64, throws error)`
 
-Sets return output slice directly with **multiple** arguments.
+Performs modulo on numbers.
 
-```
-returnAll out1 out2 out3
-```
+### [`regex.go`](https://pkg.go.dev/github.com/codeshelldev/goplater/pkg/templating/modules/regex/regex.go)
 
-##### `returnOutputs`
+#### `regexMatch(regex string) (bool, throws error)`
 
-Sets return output slice directly with **one slice**.
+Returns whether a string matches the given regex pattern.
 
-```
-returnOutputs slice
-```
+#### `regexFind(regex string) ([]string, throws error)`
 
-##### `getOutputs`
+Returns all matches against the given regex pattern in a string.
 
-Returns the whole output slice.
+#### `regexFindGroups(regex string) ([][]string, throws error)`
 
-#### `funcCall`
+Returns all matches and submatches from the given regex pattern in a string.
 
-Calls a global function by its name (without passing any arguments).
+#### `regexFindGroupsIndex(regex string) ([][]int, throws error)`
 
-```
-funcCall "name"
-```
+Returns all match and submatch positions from the given regex pattern in a string.
 
-Returns list of [`return`](#return) outputs in order of index, or if applicable only a single output.
+#### `regexReplace(regex string) (string, throws error)`
 
-#### `funcCallArgs`
+Replaces all matches from the given regex pattern in a string with the replaceWith param (which allows using '$1', etc.).
 
-Same as [`funcCall`](#funccall), but arguments can be passed.
+### [`strings.go`](https://pkg.go.dev/github.com/codeshelldev/goplater/pkg/templating/modules/strings/strings.go)
 
-```
-funcCallArgs "name" arg1 arg2
-```
+#### `trimSpace(str string) string`
+
+Trims space from a string (leading and trailing).
+
+#### `trim(str string, cutset string) string`
+
+Trims all chars defined in the cutset param from a string (leading and trailing).
+
+#### `upper(str string) string`
+
+Uppercases a string.
+
+#### `lower(str string) string`
+
+Lowercases a string.
+
+#### `contains(str string, sub string) bool`
+
+Returns whether a string contains the given substring.
+
+#### `count(str string, sub string) int`
+
+Counts all occurences of a substring in the given string.
+
+#### `startsWith(str string, prefix string) bool`
+
+Returns whether a string starts with the given prefix.
+
+#### `endsWith(str string, suffix string) bool`
+
+Returns whether a string ends with the given suffix.
+
+#### `isEmpty(str string) bool`
+
+Returns whether the given string is empty.
+
+#### `replace(str string, sub string, replaceWith string) string`
+
+Replaces all occurences of a substring in the given string with the replaceWith param.
+
+#### `split(str string, sub string, sep string) []string`
+
+Split a string by the given seperator.
+
+#### `after(str string, sub string) string`
+
+Returns the string after the given substring in a string.
+
+#### `before(str string, sub string) string`
+
+Returns the string before the given substring in a string.
+
+#### `between(str string, startSub string, endSub string) string`
+
+Returns the substring between the start and end substring.
+
+#### `cutPrefix(str string, sub string) string`
+
+Removes a substring at the start of the given string.
+
+#### `cutSuffix(str string, sub string) string`
+
+Removes a substring at the end of the given string.
+
+#### `slice(str string, start int, end int) string`
+
+Slices a string based on start and end index.
+
+#### `join(sep string, strings []string) string`
+
+Joins multiple strings together by the given separator.
+
+#### `repeat(str string, count int) string`
+
+Repeat a string n times.
+
+### [`yaml.go`](https://pkg.go.dev/github.com/codeshelldev/goplater/pkg/templating/modules/yaml/yaml.go)
+
+#### `yamlDecode(yaml string) (any, throws error)`
+
+Decodes a yaml string into an object.
 
-Arguments are accessible in function body with `{{{ index .args 0 }}}`.
 
 ## Contributing
 
