@@ -57,7 +57,7 @@ File Content: +​{​​{ read "./myfile.txt" }​}​
 <div xmlns="http://www.w3.org/1999/xhtml"
     style="width:100%;">
 
-<table width="100%">
+<table style="width:100%">
 <tr><th align="left"><h4><code>read(path string) string</code></h4></th>
 </tr><tr><td>
 Reads and templates file.
