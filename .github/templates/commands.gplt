@@ -30,7 +30,7 @@
 +{{ define "renderCommand(declaration, level)" }}
 +{{- $decl := .declaration }}
 
-<div><table align="left">
+<table align="left">
 <tr><th align="left"><code><h+{{ .level }}>`
 +{{- index $decl "name" -}}
 
@@ -80,7 +80,7 @@
 </td>
 </tr>
 </table>
-</div>
+<div style="clear: both;"></div>
 +{{ end }}
 
 +{{ define "parseFuncDeclarations(content)" }}
