@@ -16,10 +16,8 @@
 	- [outputto](#outputto)
 	- [base64](#base64)
 	- [container](#container)
-	- [conversion](#conversion)
 	- [globals](#globals)
 	- [import](#import)
-	- [return](#return)
 	- [debug](#debug)
 	- [html](#html)
 	- [http](#http)
@@ -67,91 +65,119 @@ File Content: +​{​​{ read "./myfile.txt" }​}​
 
 ## Standard Library
 
-
 ### [`fs`](https://pkg.go.dev/github.com/codeshelldev/goplater/internals/template/funcs/fs)
 
 #### `read(path string) string`
 
 Reads and templates file.
 
+<details>
+  <summary>Examples</summary>
 **Example**:
 ```
 +{{ read "/path/to/file" }}
 ```
+</details>
 #### `readRaw(path string) string`
 
 Reads file (without templating).
 
+<details>
+  <summary>Examples</summary>
 **Example**:
 ```
 +{{ readRaw "/path/to/file" }}
 ```
+</details>
 #### `readArgs(path string, args any) string`
 
 Reads file and passes arguments to it.
 
+<details>
+  <summary>Examples</summary>
 **Example**:
 ```
 +{{ read "/path/to/file" }}
 ```
+</details>
 #### `write(path string, content string) throws error`
 
 Writes to a file path.
 
+<details>
+  <summary>Examples</summary>
 **Example**:
 ```
 +{{ write "/path/to/file" "Hello" }}
 ```
+</details>
 #### `mkdir(path string) throws error`
 
 Creates directory at path.
 
+<details>
+  <summary>Examples</summary>
 **Example**:
 ```
 +{{ read "/path/to/somewhere/" }}
 ```
+</details>
 #### `appendFile(path string, content string) throws error`
 
 Appends to an existing file.
 
+<details>
+  <summary>Examples</summary>
 **Example**:
 ```
 +{{ appendFile "/path/to/somewhere/" "Goodbye" }}
 ```
+</details>
 #### `fsExists(path string) bool`
 
 Returns if a file or folder exists at a given path.
 
+<details>
+  <summary>Examples</summary>
 **Example**:
 ```
 +{{ if (fsExists "/path/to/somewhere") }}
 Path exists!
 +{{ end }}
 ```
+</details>
 #### `isFile(path string) bool`
 
 Returns if a file exists at a given path.
 
+<details>
+  <summary>Examples</summary>
 **Example**:
 ```
 +{{ if (isFile "/path/to/file") }}
 Path is a file!
 +{{ end }}
 ```
+</details>
 #### `isDir(path string) bool`
 
 Returns if a folder exists at a given path.
 
+<details>
+  <summary>Examples</summary>
 **Example**:
 ```
 +{{ if (fsExists "/path/to/somewhere") }}
 Path is a folder!
 +{{ end }}
 ```
+</details>
 #### `listDir(path string) ([]string, throws error)`
 
 Returns all files and folders inside of a given directory.
 
+<details>
+  <summary>Examples</summary>
 **Example**:
 ```
 +{{ join ", " (listDir "/path/to") }}
@@ -161,10 +187,13 @@ Returns all files and folders inside of a given directory.
 /path/to/file1.txt, /path/to/file2.txt, /path/to/folder
 ```
 
+</details>
 #### `walkDir(path string) ([]string, throws error)`
 
 Returns all files and folders recursively under a given directory.
 
+<details>
+  <summary>Examples</summary>
 **Example**:
 ```
 +{{ join ", " (walkDir "/path/to") }}
@@ -174,14 +203,18 @@ Returns all files and folders recursively under a given directory.
 /path/to/file1.txt, /path/to/file2.txt, /path/to/folder, /path/to/folder/file3.txt
 ```
 
+</details>
 #### `fsRemove(path string) throws error`
 
 Removes a file or folder at a given path.
 
+<details>
+  <summary>Examples</summary>
 **Example**:
 ```
 +{{ fsRemove "/path/to/file/or/folder" }}
 ```
+</details>
 #### `joinPath(paths []string) string`
 
 Joins paths together.
@@ -231,6 +264,8 @@ Decodes a base64 string.
 
 Deletes a container entry with the given key.
 
+<details>
+  <summary>Examples</summary>
 **Example**:
 ```
 +{{ $newSlice := delete (sliceCreate "Apple" "Banana") 0 }}
@@ -241,10 +276,13 @@ Deletes a container entry with the given key.
 [Banana]
 ```
 
+</details>
 #### `set(container map[any]any|[]any, key any, value any) (any, throws error)`
 
 Set a container entry value with the given key.
 
+<details>
+  <summary>Examples</summary>
 **Example**:
 ```
 +{{ $newSlice := set (sliceCreate "Apple" "Banana") 0 "Strawberry" }}
@@ -255,20 +293,26 @@ Set a container entry value with the given key.
 [Strawberry Banana]
 ```
 
+</details>
 #### `has(container map[any]any|[]any, key any) (bool, throws error)`
 
 Returns if an entry with the given key exists in container.
 
+<details>
+  <summary>Examples</summary>
 **Example**:
 ```
 +{{ if (has (mapCreate "version" "v1") "version") }}
 Container has "version"!
 +{{ end }}
 ```
+</details>
 #### `slicePush(container []any, value any) []any`
 
 Appends a value to a slice.
 
+<details>
+  <summary>Examples</summary>
 **Example**:
 ```
 +{{ $newSlice := sliceCreate "Apple" "Banana" }}
@@ -280,10 +324,13 @@ Appends a value to a slice.
 [Apple Banana Strawberry]
 ```
 
+</details>
 #### `sliceCreate(values []any) []any`
 
 Creates a new slice, optionally with values.
 
+<details>
+  <summary>Examples</summary>
 **Example**:
 ```
 +{{ $newSlice := sliceCreate "Apple" "Banana" }}
@@ -294,12 +341,15 @@ Creates a new slice, optionally with values.
 [Apple Banana]
 ```
 
+</details>
 #### `mapCreate(entries []any) map[string]any`
 
 Creates a new map, optionally with key value pairs.
 Pairs are constructed one by one, a key followed by the given value.
 Currently only supports string keys!
 
+<details>
+  <summary>Examples</summary>
 **Example**:
 ```
 +{{ $newMap := mapCreate "key1" "value1" "key2" "value2" }}
@@ -310,7 +360,7 @@ Currently only supports string keys!
 map[key1:value1 key2:value2]
 ```
 
-### [`conversion`](https://pkg.go.dev/github.com/codeshelldev/goplater/pkg/templating/modules/conversion/conversion)
+</details>### [`conversion`](https://pkg.go.dev/github.com/codeshelldev/goplater/pkg/templating/modules/conversion/conversion)
 
 #### `toString(value string) string`
 
@@ -354,6 +404,8 @@ Tries to import a template file with func definitions.
 Optionally supply an alias for easier access.
 The fs resolver is only available as an internal module and does not ship with the `pkg/templating/modules` directory.
 
+<details>
+  <summary>Examples</summary>
 **Example**:
 ```
 +{{ import "https://domain.com/functions" }}
@@ -364,15 +416,18 @@ The fs resolver is only available as an internal module and does not ship with t
 ```
 
 **Example**:
+
 ```
 +{{ import "funcs" "https://domain.com/functions" }}
 ```
+
 **Output**:
+
 ```
 +{{ call "funcs.greet" "John" }}
 ```
 
-### [`return`](https://pkg.go.dev/github.com/codeshelldev/goplater/pkg/templating/modules/core/return)
+</details>### [`return`](https://pkg.go.dev/github.com/codeshelldev/goplater/pkg/templating/modules/core/return)
 
 #### `return(i int, value any) throws error`
 
@@ -386,11 +441,14 @@ Appends a value to the output.
 
 Sets the output object as a whole.
 
+<details>
+  <summary>Examples</summary>
 **Example**:
 ```
 +{{ returnAll "1" "2" "3" }}
 +{{ returnAll (sliceCreate "1" "2" "3") }}
 ```
+</details>
 #### `getOutputs() []any`
 
 Returns current outputs.
@@ -716,7 +774,6 @@ Repeat a string n times.
 #### `yamlDecode(yaml string) (any, throws error)`
 
 Decodes a yaml string into an object.
-
 
 </details>
 
