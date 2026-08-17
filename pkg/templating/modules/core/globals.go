@@ -87,7 +87,7 @@ func globalHas(rt *templating.Runtime, _ *templating.Context, key string) bool  
 	return HasGlobal(rt, key)
 }
 
-func SetGlobal(rt *templating.Runtime, key string, value any) {
+func SetGlobal(rt *templating.Runtime, key string, value any) string {
 	if !rt.HasStore(globalStoreID) {
 		err := rt.RegisterStore(globalStoreID, NewGlobalStore())
 
@@ -99,6 +99,7 @@ func SetGlobal(rt *templating.Runtime, key string, value any) {
 	s := rt.GetStore(globalStoreID)
 
 	s.Set(key, value)
+	return ""
 }
 
 func GetGlobal(rt *templating.Runtime, key string) (any, error) {
