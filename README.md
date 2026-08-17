@@ -67,17 +67,16 @@ File Content: +​{​​{ read "./myfile.txt" }​}​
 
 ## Standard Library
 
-<table>
+<table align="left">
 <tr>
-<th><code>read(path string) string</code></th>
+<th align="left"><code>read(path string) string</code></th>
 </tr>
 <tr>
 <td>
-    Reads and templates a file.
-
+Reads and templates a file.
+<br/>
 <details>
 <summary>Example</summary>
-
 <pre><code>{{ read "/path/to/file" }}</code></pre>
 </details>
 </td>
