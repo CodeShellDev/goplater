@@ -64,35 +64,27 @@ File Content: +​{​​{ read "./myfile.txt" }​}​
     60% { transform: rotate( 0.0deg) }
     100% { transform: rotate( 0.0deg) }
 }
-
 .container {
 background-color: black;
-
     width: 100%;
     height: 300px;
-
     display: flex;
     justify-content: center;
     align-items: center;
     color: white;
-
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
-
 }
-
 .hi {
-animation: hi 1.5s linear -0.5s infinite;
-display: inline-block;
-transform-origin: 70% 70%;
+    animation: hi 1.5s linear -0.5s infinite;
+    display: inline-block;
+    transform-origin: 70% 70%;
 }
-
 @media (prefers-reduced-motion) {
-.hi {
-animation: none;
-}
+    .hi {
+        animation: none;
+    }
 }
 </style>
-
 <div class="container">
 <h1>Hi there, my name is John Doe <div class="hi">👋</div></h1>
 </div>
