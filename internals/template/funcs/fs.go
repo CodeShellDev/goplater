@@ -74,7 +74,7 @@ func readRaw(_ *templating.Runtime, ctx *templating.Context, path string) string
 // @returns string
 //
 // @example
-//   +{{ read "/path/to/file" }}
+//   +{{ readArgs "/path/to/file" (sliceCreate "my" "args") }}
 var readArgsFunc = modules.NewFunc("readArgs", readArgs)
 
 func readArgs(rt *templating.Runtime, ctx *templating.Context, path string, args any) string {
@@ -146,7 +146,7 @@ func write(_ *templating.Runtime, ctx *templating.Context, path string, content 
 // @returns error
 //
 // @example
-//   +{{ read "/path/to/somewhere/" }}
+//   +{{ mkdir "/path/to/somewhere/" }}
 var mkdirFunc = modules.NewFunc("mkdir", mkdir)
 
 func mkdir(_ *templating.Runtime, ctx *templating.Context, path string) string {
@@ -253,7 +253,7 @@ func isFile(_ *templating.Runtime, ctx *templating.Context, path string) bool {
 // @returns bool
 //
 // @example
-//   +{{ if (fsExists "/path/to/somewhere") }}
+//   +{{ if (isDir "/path/to/somewhere") }}
 //		Path is a folder!
 //	 +{{ end }}
 var isDirFunc = modules.NewFunc("isDir", isDir)
