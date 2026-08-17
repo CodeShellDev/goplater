@@ -53,7 +53,7 @@
     +{{- end }} +{{ $returnStr -}}
 +{{- end}}</code></h+{{ .level}}></th>
 </tr><tr><td>
-+{{ index $decl "summary" }}
++{{ markdownHTML (markdownDecode (index $decl "summary")) }}
 +{{ $examples := index $decl "examples" -}}
 +{{- if gt (len $examples) 0 }}
 <br/>

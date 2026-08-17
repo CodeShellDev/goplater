@@ -56,7 +56,8 @@ File Content: +​{​​{ read "./myfile.txt" }​}​
 <table width="100%">
 <tr><th align="left"><h4><code>read(path string) string</code></h4></th>
 </tr><tr><td>
-Reads and templates file.
+<p>Reads and templates file.</p>
+
 
 <br/>
 <br/>
@@ -75,7 +76,8 @@ Reads and templates file.
 <table width="100%">
 <tr><th align="left"><h4><code>readRaw(path string) string</code></h4></th>
 </tr><tr><td>
-Reads file (without templating).
+<p>Reads file (without templating).</p>
+
 
 <br/>
 <br/>
@@ -94,7 +96,8 @@ Reads file (without templating).
 <table width="100%">
 <tr><th align="left"><h4><code>readArgs(path string, args any) string</code></h4></th>
 </tr><tr><td>
-Reads file and passes arguments to it.
+<p>Reads file and passes arguments to it.</p>
+
 
 <br/>
 <br/>
@@ -113,7 +116,8 @@ Reads file and passes arguments to it.
 <table width="100%">
 <tr><th align="left"><h4><code>write(path string, content string) throws error</code></h4></th>
 </tr><tr><td>
-Writes to a file path.
+<p>Writes to a file path.</p>
+
 
 <br/>
 <br/>
@@ -132,7 +136,8 @@ Writes to a file path.
 <table width="100%">
 <tr><th align="left"><h4><code>mkdir(path string) throws error</code></h4></th>
 </tr><tr><td>
-Creates directory at path.
+<p>Creates directory at path.</p>
+
 
 <br/>
 <br/>
@@ -151,7 +156,8 @@ Creates directory at path.
 <table width="100%">
 <tr><th align="left"><h4><code>appendFile(path string, content string) throws error</code></h4></th>
 </tr><tr><td>
-Appends to an existing file.
+<p>Appends to an existing file.</p>
+
 
 <br/>
 <br/>
@@ -170,7 +176,8 @@ Appends to an existing file.
 <table width="100%">
 <tr><th align="left"><h4><code>fsExists(path string) bool</code></h4></th>
 </tr><tr><td>
-Returns if a file or folder exists at a given path.
+<p>Returns if a file or folder exists at a given path.</p>
+
 
 <br/>
 <br/>
@@ -191,7 +198,8 @@ Path exists!
 <table width="100%">
 <tr><th align="left"><h4><code>isFile(path string) bool</code></h4></th>
 </tr><tr><td>
-Returns if a file exists at a given path.
+<p>Returns if a file exists at a given path.</p>
+
 
 <br/>
 <br/>
@@ -212,7 +220,8 @@ Path is a file!
 <table width="100%">
 <tr><th align="left"><h4><code>isDir(path string) bool</code></h4></th>
 </tr><tr><td>
-Returns if a folder exists at a given path.
+<p>Returns if a folder exists at a given path.</p>
+
 
 <br/>
 <br/>
@@ -233,7 +242,8 @@ Path is a folder!
 <table width="100%">
 <tr><th align="left"><h4><code>listDir(path string) ([]string, throws error)</code></h4></th>
 </tr><tr><td>
-Returns all files and folders inside of a given directory.
+<p>Returns all files and folders inside of a given directory.</p>
+
 
 <br/>
 <br/>
@@ -255,7 +265,8 @@ Returns all files and folders inside of a given directory.
 <table width="100%">
 <tr><th align="left"><h4><code>walkDir(path string) ([]string, throws error)</code></h4></th>
 </tr><tr><td>
-Returns all files and folders recursively under a given directory.
+<p>Returns all files and folders recursively under a given directory.</p>
+
 
 <br/>
 <br/>
@@ -277,7 +288,8 @@ Returns all files and folders recursively under a given directory.
 <table width="100%">
 <tr><th align="left"><h4><code>fsRemove(path string) throws error</code></h4></th>
 </tr><tr><td>
-Removes a file or folder at a given path.
+<p>Removes a file or folder at a given path.</p>
+
 
 <br/>
 <br/>
@@ -296,7 +308,8 @@ Removes a file or folder at a given path.
 <table width="100%">
 <tr><th align="left"><h4><code>joinPath(paths []string) string</code></h4></th>
 </tr><tr><td>
-Joins paths together.
+<p>Joins paths together.</p>
+
 
 </td></tr></table>
 
@@ -304,7 +317,8 @@ Joins paths together.
 <table width="100%">
 <tr><th align="left"><h4><code>basePath(path string) string</code></h4></th>
 </tr><tr><td>
-Returns the last element of a path.
+<p>Returns the last element of a path.</p>
+
 
 </td></tr></table>
 
@@ -312,7 +326,8 @@ Returns the last element of a path.
 <table width="100%">
 <tr><th align="left"><h4><code>pathDir(path string) string</code></h4></th>
 </tr><tr><td>
-Returns all but the last element of a path.
+<p>Returns all but the last element of a path.</p>
+
 
 </td></tr></table>
 
@@ -320,7 +335,8 @@ Returns all but the last element of a path.
 <table width="100%">
 <tr><th align="left"><h4><code>fileExt(path string) string</code></h4></th>
 </tr><tr><td>
-Returns the file name extension of a file path.
+<p>Returns the file name extension of a file path.</p>
+
 
 </td></tr></table>
 
@@ -328,8 +344,9 @@ Returns the file name extension of a file path.
 <table width="100%">
 <tr><th align="left"><h4><code>absPath(path string) (string, throws error)</code></h4></th>
 </tr><tr><td>
-Returns an absolute representation of a given path.
-If the path is not absolute it will be joined with the current working directory to turn it into an absolute path.
+<p>Returns an absolute representation of a given path.
+If the path is not absolute it will be joined with the current working directory to turn it into an absolute path.</p>
+
 
 </td></tr></table>
 
@@ -337,8 +354,9 @@ If the path is not absolute it will be joined with the current working directory
 <table width="100%">
 <tr><th align="left"><h4><code>relPath(basePath string, targetPath string) (string, throws error)</code></h4></th>
 </tr><tr><td>
-Returns a relative path that is lexically equivalent to targetPath when joined to basePath with an intervening separator.
-The returned path will always be relative to basePath, even if basePath and targetPath share no elements.
+<p>Returns a relative path that is lexically equivalent to targetPath when joined to basePath with an intervening separator.
+The returned path will always be relative to basePath, even if basePath and targetPath share no elements.</p>
+
 
 </td></tr></table>
 <h3><a href="https://pkg.go.dev/github.com/codeshelldev/goplater/internals/template/funcs/outputto">outputto</a></h3>
@@ -347,8 +365,9 @@ The returned path will always be relative to basePath, even if basePath and targ
 <table width="100%">
 <tr><th align="left"><h4><code>outputTo(path string) throws error</code></h4></th>
 </tr><tr><td>
-Changes the output path for the current file.
-Errors if path is not allowed.
+<p>Changes the output path for the current file.
+Errors if path is not allowed.</p>
+
 
 </td></tr></table>
 <h3><a href="https://pkg.go.dev/github.com/codeshelldev/goplater/pkg/templating/modules/base64/base64">base64</a></h3>
@@ -357,7 +376,8 @@ Errors if path is not allowed.
 <table width="100%">
 <tr><th align="left"><h4><code>base64Encode(encode string) string</code></h4></th>
 </tr><tr><td>
-Encodes strings with base64.
+<p>Encodes strings with base64.</p>
+
 
 </td></tr></table>
 
@@ -365,7 +385,8 @@ Encodes strings with base64.
 <table width="100%">
 <tr><th align="left"><h4><code>base64Decode(decode string) (string, throws error)</code></h4></th>
 </tr><tr><td>
-Decodes a base64 string.
+<p>Decodes a base64 string.</p>
+
 
 </td></tr></table>
 <h3><a href="https://pkg.go.dev/github.com/codeshelldev/goplater/pkg/templating/modules/container/container">container</a></h3>
@@ -374,7 +395,8 @@ Decodes a base64 string.
 <table width="100%">
 <tr><th align="left"><h4><code>delete(container map[any]any|[]any, key any) (any, throws error)</code></h4></th>
 </tr><tr><td>
-Deletes a container entry with the given key.
+<p>Deletes a container entry with the given key.</p>
+
 
 <br/>
 <br/>
@@ -397,7 +419,8 @@ Deletes a container entry with the given key.
 <table width="100%">
 <tr><th align="left"><h4><code>set(container map[any]any|[]any, key any, value any) (any, throws error)</code></h4></th>
 </tr><tr><td>
-Set a container entry value with the given key.
+<p>Set a container entry value with the given key.</p>
+
 
 <br/>
 <br/>
@@ -420,7 +443,8 @@ Set a container entry value with the given key.
 <table width="100%">
 <tr><th align="left"><h4><code>has(container map[any]any|[]any, key any) (bool, throws error)</code></h4></th>
 </tr><tr><td>
-Returns if an entry with the given key exists in container.
+<p>Returns if an entry with the given key exists in container.</p>
+
 
 <br/>
 <br/>
@@ -441,7 +465,8 @@ Container has "version"!
 <table width="100%">
 <tr><th align="left"><h4><code>slicePush(container []any, value any) []any</code></h4></th>
 </tr><tr><td>
-Appends a value to a slice.
+<p>Appends a value to a slice.</p>
+
 
 <br/>
 <br/>
@@ -465,7 +490,8 @@ Appends a value to a slice.
 <table width="100%">
 <tr><th align="left"><h4><code>sliceCreate(values []any) []any</code></h4></th>
 </tr><tr><td>
-Creates a new slice, optionally with values.
+<p>Creates a new slice, optionally with values.</p>
+
 
 <br/>
 <br/>
@@ -488,9 +514,10 @@ Creates a new slice, optionally with values.
 <table width="100%">
 <tr><th align="left"><h4><code>mapCreate(entries []any) map[string]any</code></h4></th>
 </tr><tr><td>
-Creates a new map, optionally with key value pairs.
+<p>Creates a new map, optionally with key value pairs.
 Pairs are constructed one by one, a key followed by the given value.
-Currently only supports string keys!
+Currently only supports string keys!</p>
+
 
 <br/>
 <br/>
@@ -514,7 +541,8 @@ Currently only supports string keys!
 <table width="100%">
 <tr><th align="left"><h4><code>toString(value string) string</code></h4></th>
 </tr><tr><td>
-Returns a given value as string (using [fmt.Sprint](https://pkg.go.dev/fmt#Sprint)).
+<p>Returns a given value as string (using <a href="https://pkg.go.dev/fmt#Sprint">fmt.Sprint</a>).</p>
+
 
 </td></tr></table>
 
@@ -522,7 +550,8 @@ Returns a given value as string (using [fmt.Sprint](https://pkg.go.dev/fmt#Sprin
 <table width="100%">
 <tr><th align="left"><h4><code>toInt(str string) (int, throws error)</code></h4></th>
 </tr><tr><td>
-Attempts to parse a string as int.
+<p>Attempts to parse a string as int.</p>
+
 
 </td></tr></table>
 
@@ -530,7 +559,8 @@ Attempts to parse a string as int.
 <table width="100%">
 <tr><th align="left"><h4><code>toFloat64(str string) (float64, throws error)</code></h4></th>
 </tr><tr><td>
-Attempts to parse a string as float64.
+<p>Attempts to parse a string as float64.</p>
+
 
 </td></tr></table>
 
@@ -538,7 +568,8 @@ Attempts to parse a string as float64.
 <table width="100%">
 <tr><th align="left"><h4><code>toFloat32(str string) (float32, throws error)</code></h4></th>
 </tr><tr><td>
-Attempts to parse a string as float32.
+<p>Attempts to parse a string as float32.</p>
+
 
 </td></tr></table>
 
@@ -546,7 +577,8 @@ Attempts to parse a string as float32.
 <table width="100%">
 <tr><th align="left"><h4><code>toBool(str string) (bool, throws error)</code></h4></th>
 </tr><tr><td>
-Attempts to parse a string as a bool (using [strconv.ParseBool](https://pkg.go.dev/strconv#ParseBool)).
+<p>Attempts to parse a string as a bool (using <a href="https://pkg.go.dev/strconv#ParseBool">strconv.ParseBool</a>).</p>
+
 
 </td></tr></table>
 <h3><a href="https://pkg.go.dev/github.com/codeshelldev/goplater/pkg/templating/modules/core/globals">globals</a></h3>
@@ -555,7 +587,8 @@ Attempts to parse a string as a bool (using [strconv.ParseBool](https://pkg.go.d
 <table width="100%">
 <tr><th align="left"><h4><code>globalSet(key string, value any)</code></h4></th>
 </tr><tr><td>
-Defines a global value with a key.
+<p>Defines a global value with a key.</p>
+
 
 </td></tr></table>
 
@@ -563,7 +596,8 @@ Defines a global value with a key.
 <table width="100%">
 <tr><th align="left"><h4><code>globalGet(key string) (any, throws error)</code></h4></th>
 </tr><tr><td>
-Tries to retrieve a global value with a key.
+<p>Tries to retrieve a global value with a key.</p>
+
 
 </td></tr></table>
 
@@ -571,7 +605,8 @@ Tries to retrieve a global value with a key.
 <table width="100%">
 <tr><th align="left"><h4><code>globalHas(key string) bool</code></h4></th>
 </tr><tr><td>
-Returns whether a given global variable exists.
+<p>Returns whether a given global variable exists.</p>
+
 
 </td></tr></table>
 <h3><a href="https://pkg.go.dev/github.com/codeshelldev/goplater/pkg/templating/modules/core/import">import</a></h3>
@@ -580,9 +615,10 @@ Returns whether a given global variable exists.
 <table width="100%">
 <tr><th align="left"><h4><code>import(alias string?, path string) throws error</code></h4></th>
 </tr><tr><td>
-Tries to import a template file with func definitions.
+<p>Tries to import a template file with func definitions.
 Optionally supply an alias for easier access.
-The fs resolver is only available as an internal module and does not ship with the `pkg/templating/modules` directory.
+The fs resolver is only available as an internal module and does not ship with the <code>pkg/templating/modules</code> directory.</p>
+
 
 <br/>
 <br/>
@@ -611,7 +647,8 @@ The fs resolver is only available as an internal module and does not ship with t
 <table width="100%">
 <tr><th align="left"><h4><code>return(i int, value any) throws error</code></h4></th>
 </tr><tr><td>
-Sets an output value at the given index.
+<p>Sets an output value at the given index.</p>
+
 
 </td></tr></table>
 
@@ -619,7 +656,8 @@ Sets an output value at the given index.
 <table width="100%">
 <tr><th align="left"><h4><code>returnNext(value any)</code></h4></th>
 </tr><tr><td>
-Appends a value to the output.
+<p>Appends a value to the output.</p>
+
 
 </td></tr></table>
 
@@ -627,7 +665,8 @@ Appends a value to the output.
 <table width="100%">
 <tr><th align="left"><h4><code>returnAll(value []any)</code></h4></th>
 </tr><tr><td>
-Sets the output object as a whole.
+<p>Sets the output object as a whole.</p>
+
 
 <br/>
 <br/>
@@ -647,7 +686,8 @@ Sets the output object as a whole.
 <table width="100%">
 <tr><th align="left"><h4><code>getOutputs() []any</code></h4></th>
 </tr><tr><td>
-Returns current outputs.
+<p>Returns current outputs.</p>
+
 
 </td></tr></table>
 <h3><a href="https://pkg.go.dev/github.com/codeshelldev/goplater/pkg/templating/modules/debug/debug">debug</a></h3>
@@ -656,7 +696,8 @@ Returns current outputs.
 <table width="100%">
 <tr><th align="left"><h4><code>echo(data []any)</code></h4></th>
 </tr><tr><td>
-Outputs data to stdout.
+<p>Outputs data to stdout.</p>
+
 
 </td></tr></table>
 <h3><a href="https://pkg.go.dev/github.com/codeshelldev/goplater/pkg/templating/modules/html/html">html</a></h3>
@@ -665,7 +706,8 @@ Outputs data to stdout.
 <table width="100%">
 <tr><th align="left"><h4><code>htmlDecode(html string) (*goquery.Document, throws error)</code></h4></th>
 </tr><tr><td>
-Decodes html into a document.
+<p>Decodes html into a document.</p>
+
 
 </td></tr></table>
 
@@ -673,7 +715,8 @@ Decodes html into a document.
 <table width="100%">
 <tr><th align="left"><h4><code>htmlDocFindAll(doc *goquery.Document, selector string) ([]*goquery.Selection, throws error)</code></h4></th>
 </tr><tr><td>
-Finds elements in document by selector (using [goquery.Find](https://pkg.go.dev/github.com/PuerkitoBio/goquery#Selection.Find)).
+<p>Finds elements in document by selector (using <a href="https://pkg.go.dev/github.com/PuerkitoBio/goquery#Selection.Find">goquery.Find</a>).</p>
+
 
 </td></tr></table>
 
@@ -681,7 +724,8 @@ Finds elements in document by selector (using [goquery.Find](https://pkg.go.dev/
 <table width="100%">
 <tr><th align="left"><h4><code>htmlDocFind(doc *goquery.Document, selector string) (*goquery.Selection, throws error)</code></h4></th>
 </tr><tr><td>
-Finds element in document by selector (using [goquery.Find](https://pkg.go.dev/github.com/PuerkitoBio/goquery#Selection.Find)).
+<p>Finds element in document by selector (using <a href="https://pkg.go.dev/github.com/PuerkitoBio/goquery#Selection.Find">goquery.Find</a>).</p>
+
 
 </td></tr></table>
 
@@ -689,7 +733,8 @@ Finds element in document by selector (using [goquery.Find](https://pkg.go.dev/g
 <table width="100%">
 <tr><th align="left"><h4><code>htmlFindAll(doc *goquery.Document, selector string) ([]*goquery.Selection, throws error)</code></h4></th>
 </tr><tr><td>
-Finds elements in element by selector (using [goquery.Find](https://pkg.go.dev/github.com/PuerkitoBio/goquery#Selection.Find)).
+<p>Finds elements in element by selector (using <a href="https://pkg.go.dev/github.com/PuerkitoBio/goquery#Selection.Find">goquery.Find</a>).</p>
+
 
 </td></tr></table>
 
@@ -697,7 +742,8 @@ Finds elements in element by selector (using [goquery.Find](https://pkg.go.dev/g
 <table width="100%">
 <tr><th align="left"><h4><code>htmlFind(doc *goquery.Document, selector string) (*goquery.Selection, throws error)</code></h4></th>
 </tr><tr><td>
-Finds element in element by selector (using [goquery.Find](https://pkg.go.dev/github.com/PuerkitoBio/goquery#Selection.Find)).
+<p>Finds element in element by selector (using <a href="https://pkg.go.dev/github.com/PuerkitoBio/goquery#Selection.Find">goquery.Find</a>).</p>
+
 
 </td></tr></table>
 
@@ -705,7 +751,8 @@ Finds element in element by selector (using [goquery.Find](https://pkg.go.dev/gi
 <table width="100%">
 <tr><th align="left"><h4><code>htmlText(el *goquery.Selection) string</code></h4></th>
 </tr><tr><td>
-Returns the elements text content.
+<p>Returns the elements text content.</p>
+
 
 </td></tr></table>
 
@@ -713,7 +760,8 @@ Returns the elements text content.
 <table width="100%">
 <tr><th align="left"><h4><code>htmlAttr(el *goquery.Selection, attr string) string</code></h4></th>
 </tr><tr><td>
-Returns an elements attribute content.
+<p>Returns an elements attribute content.</p>
+
 
 </td></tr></table>
 
@@ -721,7 +769,8 @@ Returns an elements attribute content.
 <table width="100%">
 <tr><th align="left"><h4><code>htmlInner(el *goquery.Selection) string</code></h4></th>
 </tr><tr><td>
-Returns the elements inner html.
+<p>Returns the elements inner html.</p>
+
 
 </td></tr></table>
 <h3><a href="https://pkg.go.dev/github.com/codeshelldev/goplater/pkg/templating/modules/http/http">http</a></h3>
@@ -730,8 +779,9 @@ Returns the elements inner html.
 <table width="100%">
 <tr><th align="left"><h4><code>fetch(url string) string</code></h4></th>
 </tr><tr><td>
-Fetches a resource from a given url.
-Outputs errors as string.
+<p>Fetches a resource from a given url.
+Outputs errors as string.</p>
+
 
 </td></tr></table>
 
@@ -739,8 +789,9 @@ Outputs errors as string.
 <table width="100%">
 <tr><th align="left"><h4><code>fetchThrow(url string) (string, throws error)</code></h4></th>
 </tr><tr><td>
-Fetches a resource from a given url.
-Throws error instead of outputting it.
+<p>Fetches a resource from a given url.
+Throws error instead of outputting it.</p>
+
 
 </td></tr></table>
 <h3><a href="https://pkg.go.dev/github.com/codeshelldev/goplater/pkg/templating/modules/json/json">json</a></h3>
@@ -749,7 +800,8 @@ Throws error instead of outputting it.
 <table width="100%">
 <tr><th align="left"><h4><code>jsonEncode(obj any) (string, throws error)</code></h4></th>
 </tr><tr><td>
-Encodes an object into a json string.
+<p>Encodes an object into a json string.</p>
+
 
 </td></tr></table>
 
@@ -757,7 +809,8 @@ Encodes an object into a json string.
 <table width="100%">
 <tr><th align="left"><h4><code>jsonDecode(json string) (any, throws error)</code></h4></th>
 </tr><tr><td>
-Decodes a json string into an object.
+<p>Decodes a json string into an object.</p>
+
 
 </td></tr></table>
 <h3><a href="https://pkg.go.dev/github.com/codeshelldev/goplater/pkg/templating/modules/markdown/markdown">markdown</a></h3>
@@ -766,7 +819,8 @@ Decodes a json string into an object.
 <table width="100%">
 <tr><th align="left"><h4><code>markdownDecode(md string) *Document</code></h4></th>
 </tr><tr><td>
-Decodes markdown into a document.
+<p>Decodes markdown into a document.</p>
+
 
 </td></tr></table>
 
@@ -774,7 +828,8 @@ Decodes markdown into a document.
 <table width="100%">
 <tr><th align="left"><h4><code>markdownEncode(doc *Document) string</code></h4></th>
 </tr><tr><td>
-Encodes a document into markdown.
+<p>Encodes a document into markdown.</p>
+
 
 </td></tr></table>
 
@@ -782,7 +837,8 @@ Encodes a document into markdown.
 <table width="100%">
 <tr><th align="left"><h4><code>markdownFindAll(target Searchable, selector string) []*Node</code></h4></th>
 </tr><tr><td>
-Finds elements in target by selector (using [custom](https://pkg.go.dev/github.com/codeshelldev/goplater/pkg/templating/modules/markdown#TypeMatches)).
+<p>Finds elements in target by selector (using <a href="https://pkg.go.dev/github.com/codeshelldev/goplater/pkg/templating/modules/markdown#TypeMatches">custom</a>).</p>
+
 
 </td></tr></table>
 
@@ -790,7 +846,8 @@ Finds elements in target by selector (using [custom](https://pkg.go.dev/github.c
 <table width="100%">
 <tr><th align="left"><h4><code>markdownFind(target Searchable, selector string) *Node</code></h4></th>
 </tr><tr><td>
-Finds element in target by selector (using [custom](https://pkg.go.dev/github.com/codeshelldev/goplater/pkg/templating/modules/markdown#TypeMatches)).
+<p>Finds element in target by selector (using <a href="https://pkg.go.dev/github.com/codeshelldev/goplater/pkg/templating/modules/markdown#TypeMatches">custom</a>).</p>
+
 
 </td></tr></table>
 
@@ -798,7 +855,8 @@ Finds element in target by selector (using [custom](https://pkg.go.dev/github.co
 <table width="100%">
 <tr><th align="left"><h4><code>markdownIs(node *Node, selector string) bool</code></h4></th>
 </tr><tr><td>
-Returns whether node matches selector (using [custom](https://pkg.go.dev/github.com/codeshelldev/goplater/pkg/templating/modules/markdown#TypeMatches)).
+<p>Returns whether node matches selector (using <a href="https://pkg.go.dev/github.com/codeshelldev/goplater/pkg/templating/modules/markdown#TypeMatches">custom</a>).</p>
+
 
 </td></tr></table>
 
@@ -806,7 +864,8 @@ Returns whether node matches selector (using [custom](https://pkg.go.dev/github.
 <table width="100%">
 <tr><th align="left"><h4><code>markdownHTML(doc *Document) (string, throws error)</code></h4></th>
 </tr><tr><td>
-Returns html markdown representation.
+<p>Returns html markdown representation.</p>
+
 
 </td></tr></table>
 
@@ -814,7 +873,8 @@ Returns html markdown representation.
 <table width="100%">
 <tr><th align="left"><h4><code>markdownText(node *Node) string</code></h4></th>
 </tr><tr><td>
-Returns all raw markdown text in a node recursively.
+<p>Returns all raw markdown text in a node recursively.</p>
+
 
 </td></tr></table>
 
@@ -822,7 +882,8 @@ Returns all raw markdown text in a node recursively.
 <table width="100%">
 <tr><th align="left"><h4><code>markdownHeadings(doc *Document) []*Heading</code></h4></th>
 </tr><tr><td>
-Returns all markdown headings.
+<p>Returns all markdown headings.</p>
+
 
 </td></tr></table>
 
@@ -830,7 +891,8 @@ Returns all markdown headings.
 <table width="100%">
 <tr><th align="left"><h4><code>markdownLinks(doc *Document) []*Link</code></h4></th>
 </tr><tr><td>
-Returns all markdown links.
+<p>Returns all markdown links.</p>
+
 
 </td></tr></table>
 
@@ -838,7 +900,8 @@ Returns all markdown links.
 <table width="100%">
 <tr><th align="left"><h4><code>markdownLinkURL(link *Link) string</code></h4></th>
 </tr><tr><td>
-Returns the url of a markdown link node.
+<p>Returns the url of a markdown link node.</p>
+
 
 </td></tr></table>
 
@@ -846,7 +909,8 @@ Returns the url of a markdown link node.
 <table width="100%">
 <tr><th align="left"><h4><code>markdownLinkSetURL(link *Link, url string)</code></h4></th>
 </tr><tr><td>
-Sets a link node's url.
+<p>Sets a link node's url.</p>
+
 
 </td></tr></table>
 
@@ -854,7 +918,8 @@ Sets a link node's url.
 <table width="100%">
 <tr><th align="left"><h4><code>markdownLinkSetTitle(link *Link, title string)</code></h4></th>
 </tr><tr><td>
-Sets a link node's title.
+<p>Sets a link node's title.</p>
+
 
 </td></tr></table>
 
@@ -862,7 +927,8 @@ Sets a link node's title.
 <table width="100%">
 <tr><th align="left"><h4><code>markdownLinkText(link *Link) string</code></h4></th>
 </tr><tr><td>
-Returns the text of a markdown link node.
+<p>Returns the text of a markdown link node.</p>
+
 
 </td></tr></table>
 
@@ -870,7 +936,8 @@ Returns the text of a markdown link node.
 <table width="100%">
 <tr><th align="left"><h4><code>markdownImages(doc *Document) []*Image</code></h4></th>
 </tr><tr><td>
-Returns all markdown images.
+<p>Returns all markdown images.</p>
+
 
 </td></tr></table>
 
@@ -878,7 +945,8 @@ Returns all markdown images.
 <table width="100%">
 <tr><th align="left"><h4><code>markdownImageURL(image *Image) string</code></h4></th>
 </tr><tr><td>
-Returns the url of a markdown image node.
+<p>Returns the url of a markdown image node.</p>
+
 
 </td></tr></table>
 
@@ -886,7 +954,8 @@ Returns the url of a markdown image node.
 <table width="100%">
 <tr><th align="left"><h4><code>markdownImageSetURL(image *Image, url string)</code></h4></th>
 </tr><tr><td>
-Sets a image node's url.
+<p>Sets a image node's url.</p>
+
 
 </td></tr></table>
 
@@ -894,7 +963,8 @@ Sets a image node's url.
 <table width="100%">
 <tr><th align="left"><h4><code>markdownImageSetAlt(image *Image, alt string)</code></h4></th>
 </tr><tr><td>
-Sets a image node's alt.
+<p>Sets a image node's alt.</p>
+
 
 </td></tr></table>
 
@@ -902,7 +972,8 @@ Sets a image node's alt.
 <table width="100%">
 <tr><th align="left"><h4><code>markdownParagraphs(doc *Document) []*Paragraph</code></h4></th>
 </tr><tr><td>
-Returns all markdown paragraphs.
+<p>Returns all markdown paragraphs.</p>
+
 
 </td></tr></table>
 
@@ -910,7 +981,8 @@ Returns all markdown paragraphs.
 <table width="100%">
 <tr><th align="left"><h4><code>markdownCodeBlocks(doc *Document) []*CodeBlock</code></h4></th>
 </tr><tr><td>
-Returns all markdown code blocks.
+<p>Returns all markdown code blocks.</p>
+
 
 </td></tr></table>
 
@@ -918,7 +990,8 @@ Returns all markdown code blocks.
 <table width="100%">
 <tr><th align="left"><h4><code>markdownBlockquotes(doc *Document) []*Blockquote</code></h4></th>
 </tr><tr><td>
-Returns all markdown block quotes.
+<p>Returns all markdown block quotes.</p>
+
 
 </td></tr></table>
 
@@ -926,7 +999,8 @@ Returns all markdown block quotes.
 <table width="100%">
 <tr><th align="left"><h4><code>markdownRemove(node *Node)</code></h4></th>
 </tr><tr><td>
-Removes a markdown node.
+<p>Removes a markdown node.</p>
+
 
 </td></tr></table>
 
@@ -934,7 +1008,8 @@ Removes a markdown node.
 <table width="100%">
 <tr><th align="left"><h4><code>markdownAppend(doc *Document, str string)</code></h4></th>
 </tr><tr><td>
-Appends text to a markdown document.
+<p>Appends text to a markdown document.</p>
+
 
 </td></tr></table>
 
@@ -942,7 +1017,8 @@ Appends text to a markdown document.
 <table width="100%">
 <tr><th align="left"><h4><code>markdownPrepend(doc *Document, str string)</code></h4></th>
 </tr><tr><td>
-Prepends text to a markdown document.
+<p>Prepends text to a markdown document.</p>
+
 
 </td></tr></table>
 <h3><a href="https://pkg.go.dev/github.com/codeshelldev/goplater/pkg/templating/modules/math/funcs">funcs</a></h3>
@@ -951,7 +1027,8 @@ Prepends text to a markdown document.
 <table width="100%">
 <tr><th align="left"><h4><code>abs(numbers int|float64) (int|float64, throws error)</code></h4></th>
 </tr><tr><td>
-Returns the abs value of a number.
+<p>Returns the abs value of a number.</p>
+
 
 </td></tr></table>
 
@@ -959,7 +1036,8 @@ Returns the abs value of a number.
 <table width="100%">
 <tr><th align="left"><h4><code>min(a int|float64, b int|float64) (int|float64, throws error)</code></h4></th>
 </tr><tr><td>
-Returns the smaller value of two numbers.
+<p>Returns the smaller value of two numbers.</p>
+
 
 </td></tr></table>
 
@@ -967,7 +1045,8 @@ Returns the smaller value of two numbers.
 <table width="100%">
 <tr><th align="left"><h4><code>max(a int|float64, b int|float64) (int|float64, throws error)</code></h4></th>
 </tr><tr><td>
-Returns the bigger value of two numbers.
+<p>Returns the bigger value of two numbers.</p>
+
 
 </td></tr></table>
 
@@ -975,7 +1054,8 @@ Returns the bigger value of two numbers.
 <table width="100%">
 <tr><th align="left"><h4><code>clamp(value int|float64, min int|float64, max int|float64) (int|float64, throws error)</code></h4></th>
 </tr><tr><td>
-Clamps a value between a minimum and maximum value.
+<p>Clamps a value between a minimum and maximum value.</p>
+
 
 </td></tr></table>
 
@@ -983,7 +1063,8 @@ Clamps a value between a minimum and maximum value.
 <table width="100%">
 <tr><th align="left"><h4><code>pow(base int|float64, exponent int|float64) (float64, throws error)</code></h4></th>
 </tr><tr><td>
-Performs pow on base with exponent.
+<p>Performs pow on base with exponent.</p>
+
 
 </td></tr></table>
 
@@ -991,7 +1072,8 @@ Performs pow on base with exponent.
 <table width="100%">
 <tr><th align="left"><h4><code>sqrt(number int|float64) (float64, throws error)</code></h4></th>
 </tr><tr><td>
-Returns the square root of a number.
+<p>Returns the square root of a number.</p>
+
 
 </td></tr></table>
 
@@ -999,7 +1081,8 @@ Returns the square root of a number.
 <table width="100%">
 <tr><th align="left"><h4><code>round(number int|float64) (int, throws error)</code></h4></th>
 </tr><tr><td>
-Rounds a number to the nearest integer.
+<p>Rounds a number to the nearest integer.</p>
+
 
 </td></tr></table>
 
@@ -1007,7 +1090,8 @@ Rounds a number to the nearest integer.
 <table width="100%">
 <tr><th align="left"><h4><code>floor(number int|float64) (int, throws error)</code></h4></th>
 </tr><tr><td>
-Returns the greatest integer value less than or equal to number.
+<p>Returns the greatest integer value less than or equal to number.</p>
+
 
 </td></tr></table>
 
@@ -1015,7 +1099,8 @@ Returns the greatest integer value less than or equal to number.
 <table width="100%">
 <tr><th align="left"><h4><code>ceil(number int|float64) (int, throws error)</code></h4></th>
 </tr><tr><td>
-Returns the least integer value greater than or equal to number.
+<p>Returns the least integer value greater than or equal to number.</p>
+
 
 </td></tr></table>
 <h3><a href="https://pkg.go.dev/github.com/codeshelldev/goplater/pkg/templating/modules/math/operators">operators</a></h3>
@@ -1024,7 +1109,8 @@ Returns the least integer value greater than or equal to number.
 <table width="100%">
 <tr><th align="left"><h4><code>add(numbers [](int|float64)) (int|float64, throws error)</code></h4></th>
 </tr><tr><td>
-Adds numbers together.
+<p>Adds numbers together.</p>
+
 
 </td></tr></table>
 
@@ -1032,7 +1118,8 @@ Adds numbers together.
 <table width="100%">
 <tr><th align="left"><h4><code>sub(numbers [](int|float64)) (int|float64, throws error)</code></h4></th>
 </tr><tr><td>
-Subtracts numbers from each other.
+<p>Subtracts numbers from each other.</p>
+
 
 </td></tr></table>
 
@@ -1040,7 +1127,8 @@ Subtracts numbers from each other.
 <table width="100%">
 <tr><th align="left"><h4><code>mult(numbers [](int|float64)) (int|float64, throws error)</code></h4></th>
 </tr><tr><td>
-Multiplies numbers together.
+<p>Multiplies numbers together.</p>
+
 
 </td></tr></table>
 
@@ -1048,7 +1136,8 @@ Multiplies numbers together.
 <table width="100%">
 <tr><th align="left"><h4><code>divd(numbers [](int|float64)) (int|float64, throws error)</code></h4></th>
 </tr><tr><td>
-Divides numbers from each other.
+<p>Divides numbers from each other.</p>
+
 
 </td></tr></table>
 
@@ -1056,7 +1145,8 @@ Divides numbers from each other.
 <table width="100%">
 <tr><th align="left"><h4><code>mod(numbers [](int|float64)) (int|float64, throws error)</code></h4></th>
 </tr><tr><td>
-Performs modulo on numbers.
+<p>Performs modulo on numbers.</p>
+
 
 </td></tr></table>
 <h3><a href="https://pkg.go.dev/github.com/codeshelldev/goplater/pkg/templating/modules/regex/regex">regex</a></h3>
@@ -1065,7 +1155,8 @@ Performs modulo on numbers.
 <table width="100%">
 <tr><th align="left"><h4><code>regexMatch(regex string) (bool, throws error)</code></h4></th>
 </tr><tr><td>
-Returns whether a string matches the given regex pattern.
+<p>Returns whether a string matches the given regex pattern.</p>
+
 
 </td></tr></table>
 
@@ -1073,7 +1164,8 @@ Returns whether a string matches the given regex pattern.
 <table width="100%">
 <tr><th align="left"><h4><code>regexFind(regex string) ([]string, throws error)</code></h4></th>
 </tr><tr><td>
-Returns all matches against the given regex pattern in a string.
+<p>Returns all matches against the given regex pattern in a string.</p>
+
 
 </td></tr></table>
 
@@ -1081,7 +1173,8 @@ Returns all matches against the given regex pattern in a string.
 <table width="100%">
 <tr><th align="left"><h4><code>regexFindGroups(regex string) ([][]string, throws error)</code></h4></th>
 </tr><tr><td>
-Returns all matches and submatches from the given regex pattern in a string.
+<p>Returns all matches and submatches from the given regex pattern in a string.</p>
+
 
 </td></tr></table>
 
@@ -1089,7 +1182,8 @@ Returns all matches and submatches from the given regex pattern in a string.
 <table width="100%">
 <tr><th align="left"><h4><code>regexFindGroupsIndex(regex string) ([][]int, throws error)</code></h4></th>
 </tr><tr><td>
-Returns all match and submatch positions from the given regex pattern in a string.
+<p>Returns all match and submatch positions from the given regex pattern in a string.</p>
+
 
 </td></tr></table>
 
@@ -1097,7 +1191,8 @@ Returns all match and submatch positions from the given regex pattern in a strin
 <table width="100%">
 <tr><th align="left"><h4><code>regexReplace(regex string) (string, throws error)</code></h4></th>
 </tr><tr><td>
-Replaces all matches from the given regex pattern in a string with the replaceWith param (which allows using '$1', etc.).
+<p>Replaces all matches from the given regex pattern in a string with the replaceWith param (which allows using '$1', etc.).</p>
+
 
 </td></tr></table>
 <h3><a href="https://pkg.go.dev/github.com/codeshelldev/goplater/pkg/templating/modules/strings/strings">strings</a></h3>
@@ -1106,7 +1201,8 @@ Replaces all matches from the given regex pattern in a string with the replaceWi
 <table width="100%">
 <tr><th align="left"><h4><code>trimSpace(str string) string</code></h4></th>
 </tr><tr><td>
-Trims space from a string (leading and trailing).
+<p>Trims space from a string (leading and trailing).</p>
+
 
 </td></tr></table>
 
@@ -1114,7 +1210,8 @@ Trims space from a string (leading and trailing).
 <table width="100%">
 <tr><th align="left"><h4><code>trim(str string, cutset string) string</code></h4></th>
 </tr><tr><td>
-Trims all chars defined in the cutset param from a string (leading and trailing).
+<p>Trims all chars defined in the cutset param from a string (leading and trailing).</p>
+
 
 </td></tr></table>
 
@@ -1122,7 +1219,8 @@ Trims all chars defined in the cutset param from a string (leading and trailing)
 <table width="100%">
 <tr><th align="left"><h4><code>upper(str string) string</code></h4></th>
 </tr><tr><td>
-Uppercases a string.
+<p>Uppercases a string.</p>
+
 
 </td></tr></table>
 
@@ -1130,7 +1228,8 @@ Uppercases a string.
 <table width="100%">
 <tr><th align="left"><h4><code>lower(str string) string</code></h4></th>
 </tr><tr><td>
-Lowercases a string.
+<p>Lowercases a string.</p>
+
 
 </td></tr></table>
 
@@ -1138,7 +1237,8 @@ Lowercases a string.
 <table width="100%">
 <tr><th align="left"><h4><code>contains(str string, sub string) bool</code></h4></th>
 </tr><tr><td>
-Returns whether a string contains the given substring.
+<p>Returns whether a string contains the given substring.</p>
+
 
 </td></tr></table>
 
@@ -1146,7 +1246,8 @@ Returns whether a string contains the given substring.
 <table width="100%">
 <tr><th align="left"><h4><code>count(str string, sub string) int</code></h4></th>
 </tr><tr><td>
-Counts all occurences of a substring in the given string.
+<p>Counts all occurences of a substring in the given string.</p>
+
 
 </td></tr></table>
 
@@ -1154,7 +1255,8 @@ Counts all occurences of a substring in the given string.
 <table width="100%">
 <tr><th align="left"><h4><code>startsWith(str string, prefix string) bool</code></h4></th>
 </tr><tr><td>
-Returns whether a string starts with the given prefix.
+<p>Returns whether a string starts with the given prefix.</p>
+
 
 </td></tr></table>
 
@@ -1162,7 +1264,8 @@ Returns whether a string starts with the given prefix.
 <table width="100%">
 <tr><th align="left"><h4><code>endsWith(str string, suffix string) bool</code></h4></th>
 </tr><tr><td>
-Returns whether a string ends with the given suffix.
+<p>Returns whether a string ends with the given suffix.</p>
+
 
 </td></tr></table>
 
@@ -1170,7 +1273,8 @@ Returns whether a string ends with the given suffix.
 <table width="100%">
 <tr><th align="left"><h4><code>isEmpty(str string) bool</code></h4></th>
 </tr><tr><td>
-Returns whether the given string is empty.
+<p>Returns whether the given string is empty.</p>
+
 
 </td></tr></table>
 
@@ -1178,7 +1282,8 @@ Returns whether the given string is empty.
 <table width="100%">
 <tr><th align="left"><h4><code>replace(str string, sub string, replaceWith string) string</code></h4></th>
 </tr><tr><td>
-Replaces all occurences of a substring in the given string with the replaceWith param.
+<p>Replaces all occurences of a substring in the given string with the replaceWith param.</p>
+
 
 </td></tr></table>
 
@@ -1186,7 +1291,8 @@ Replaces all occurences of a substring in the given string with the replaceWith 
 <table width="100%">
 <tr><th align="left"><h4><code>split(str string, sub string, sep string) []string</code></h4></th>
 </tr><tr><td>
-Split a string by the given seperator.
+<p>Split a string by the given seperator.</p>
+
 
 </td></tr></table>
 
@@ -1194,7 +1300,8 @@ Split a string by the given seperator.
 <table width="100%">
 <tr><th align="left"><h4><code>after(str string, sub string) string</code></h4></th>
 </tr><tr><td>
-Returns the string after the given substring in a string.
+<p>Returns the string after the given substring in a string.</p>
+
 
 </td></tr></table>
 
@@ -1202,7 +1309,8 @@ Returns the string after the given substring in a string.
 <table width="100%">
 <tr><th align="left"><h4><code>before(str string, sub string) string</code></h4></th>
 </tr><tr><td>
-Returns the string before the given substring in a string.
+<p>Returns the string before the given substring in a string.</p>
+
 
 </td></tr></table>
 
@@ -1210,7 +1318,8 @@ Returns the string before the given substring in a string.
 <table width="100%">
 <tr><th align="left"><h4><code>between(str string, startSub string, endSub string) string</code></h4></th>
 </tr><tr><td>
-Returns the substring between the start and end substring.
+<p>Returns the substring between the start and end substring.</p>
+
 
 </td></tr></table>
 
@@ -1218,7 +1327,8 @@ Returns the substring between the start and end substring.
 <table width="100%">
 <tr><th align="left"><h4><code>cutPrefix(str string, sub string) string</code></h4></th>
 </tr><tr><td>
-Removes a substring at the start of the given string.
+<p>Removes a substring at the start of the given string.</p>
+
 
 </td></tr></table>
 
@@ -1226,7 +1336,8 @@ Removes a substring at the start of the given string.
 <table width="100%">
 <tr><th align="left"><h4><code>cutSuffix(str string, sub string) string</code></h4></th>
 </tr><tr><td>
-Removes a substring at the end of the given string.
+<p>Removes a substring at the end of the given string.</p>
+
 
 </td></tr></table>
 
@@ -1234,7 +1345,8 @@ Removes a substring at the end of the given string.
 <table width="100%">
 <tr><th align="left"><h4><code>slice(str string, start int, end int) string</code></h4></th>
 </tr><tr><td>
-Slices a string based on start and end index.
+<p>Slices a string based on start and end index.</p>
+
 
 </td></tr></table>
 
@@ -1242,7 +1354,8 @@ Slices a string based on start and end index.
 <table width="100%">
 <tr><th align="left"><h4><code>join(sep string, strings []string) string</code></h4></th>
 </tr><tr><td>
-Joins multiple strings together by the given separator.
+<p>Joins multiple strings together by the given separator.</p>
+
 
 </td></tr></table>
 
@@ -1250,7 +1363,8 @@ Joins multiple strings together by the given separator.
 <table width="100%">
 <tr><th align="left"><h4><code>repeat(str string, count int) string</code></h4></th>
 </tr><tr><td>
-Repeat a string n times.
+<p>Repeat a string n times.</p>
+
 
 </td></tr></table>
 <h3><a href="https://pkg.go.dev/github.com/codeshelldev/goplater/pkg/templating/modules/yaml/yaml">yaml</a></h3>
@@ -1259,7 +1373,8 @@ Repeat a string n times.
 <table width="100%">
 <tr><th align="left"><h4><code>yamlDecode(yaml string) (any, throws error)</code></h4></th>
 </tr><tr><td>
-Decodes a yaml string into an object.
+<p>Decodes a yaml string into an object.</p>
+
 
 </td></tr></table>
 
