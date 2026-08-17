@@ -64,9 +64,7 @@ Reads and templates file.
   <br/>
 
 **Example**:
-<pre><code>
-+{{ read "/path/to/file" }}
-</code></pre>
+<pre><code>+{{ read "/path/to/file" }}</code></pre>
 
 </details>
 
@@ -84,9 +82,7 @@ Reads file (without templating).
   <br/>
 
 **Example**:
-<pre><code>
-+{{ readRaw "/path/to/file" }}
-</code></pre>
+<pre><code>+{{ readRaw "/path/to/file" }}</code></pre>
 
 </details>
 
@@ -104,9 +100,7 @@ Reads file and passes arguments to it.
   <br/>
 
 **Example**:
-<pre><code>
-+{{ readArgs "/path/to/file" (sliceCreate "my" "args") }}
-</code></pre>
+<pre><code>+{{ readArgs "/path/to/file" (sliceCreate "my" "args") }}</code></pre>
 
 </details>
 
@@ -124,9 +118,7 @@ Writes to a file path.
   <br/>
 
 **Example**:
-<pre><code>
-+{{ write "/path/to/file" "Hello" }}
-</code></pre>
+<pre><code>+{{ write "/path/to/file" "Hello" }}</code></pre>
 
 </details>
 
@@ -144,9 +136,7 @@ Creates directory at path.
   <br/>
 
 **Example**:
-<pre><code>
-+{{ mkdir "/path/to/somewhere/" }}
-</code></pre>
+<pre><code>+{{ mkdir "/path/to/somewhere/" }}</code></pre>
 
 </details>
 
@@ -164,9 +154,7 @@ Appends to an existing file.
   <br/>
 
 **Example**:
-<pre><code>
-+{{ appendFile "/path/to/somewhere/" "Goodbye" }}
-</code></pre>
+<pre><code>+{{ appendFile "/path/to/somewhere/" "Goodbye" }}</code></pre>
 
 </details>
 
@@ -184,11 +172,9 @@ Returns if a file or folder exists at a given path.
   <br/>
 
 **Example**:
-<pre><code>
-+{{ if (fsExists "/path/to/somewhere") }}
+<pre><code>+{{ if (fsExists "/path/to/somewhere") }}
 Path exists!
-+{{ end }}
-</code></pre>
++{{ end }}</code></pre>
 
 </details>
 
@@ -206,11 +192,9 @@ Returns if a file exists at a given path.
   <br/>
 
 **Example**:
-<pre><code>
-+{{ if (isFile "/path/to/file") }}
+<pre><code>+{{ if (isFile "/path/to/file") }}
 Path is a file!
-+{{ end }}
-</code></pre>
++{{ end }}</code></pre>
 
 </details>
 
@@ -228,11 +212,9 @@ Returns if a folder exists at a given path.
   <br/>
 
 **Example**:
-<pre><code>
-+{{ if (isDir "/path/to/somewhere") }}
+<pre><code>+{{ if (isDir "/path/to/somewhere") }}
 Path is a folder!
-+{{ end }}
-</code></pre>
++{{ end }}</code></pre>
 
 </details>
 
@@ -250,9 +232,7 @@ Returns all files and folders inside of a given directory.
   <br/>
 
 **Example**:
-<pre><code>
-+{{ join ", " (listDir "/path/to") }}
-</code></pre>
+<pre><code>+{{ join ", " (listDir "/path/to") }}</code></pre>
 **Output**:
 <pre><code>
 /path/to/file1.txt, /path/to/file2.txt, /path/to/folder
@@ -275,9 +255,7 @@ Returns all files and folders recursively under a given directory.
   <br/>
 
 **Example**:
-<pre><code>
-+{{ join ", " (walkDir "/path/to") }}
-</code></pre>
+<pre><code>+{{ join ", " (walkDir "/path/to") }}</code></pre>
 **Output**:
 <pre><code>
 /path/to/file1.txt, /path/to/file2.txt, /path/to/folder, /path/to/folder/file3.txt
@@ -300,9 +278,7 @@ Removes a file or folder at a given path.
   <br/>
 
 **Example**:
-<pre><code>
-+{{ fsRemove "/path/to/file/or/folder" }}
-</code></pre>
+<pre><code>+{{ fsRemove "/path/to/file/or/folder" }}</code></pre>
 
 </details>
 
@@ -398,10 +374,8 @@ Deletes a container entry with the given key.
   <br/>
 
 **Example**:
-<pre><code>
-+{{ $newSlice := delete (sliceCreate "Apple" "Banana") 0 }}
-+{{ echo $newSlice }}
-</code></pre>
+<pre><code>+{{ $newSlice := delete (sliceCreate "Apple" "Banana") 0 }}
++{{ echo $newSlice }}</code></pre>
 **Output**:
 <pre><code>
 [Banana]
@@ -424,10 +398,8 @@ Set a container entry value with the given key.
   <br/>
 
 **Example**:
-<pre><code>
-+{{ $newSlice := set (sliceCreate "Apple" "Banana") 0 "Strawberry" }}
-+{{ echo $newSlice }}
-</code></pre>
+<pre><code>+{{ $newSlice := set (sliceCreate "Apple" "Banana") 0 "Strawberry" }}
++{{ echo $newSlice }}</code></pre>
 **Output**:
 <pre><code>
 [Strawberry Banana]
@@ -450,11 +422,9 @@ Returns if an entry with the given key exists in container.
   <br/>
 
 **Example**:
-<pre><code>
-+{{ if (has (mapCreate "version" "v1") "version") }}
+<pre><code>+{{ if (has (mapCreate "version" "v1") "version") }}
 Container has "version"!
-+{{ end }}
-</code></pre>
++{{ end }}</code></pre>
 
 </details>
 
@@ -472,11 +442,9 @@ Appends a value to a slice.
   <br/>
 
 **Example**:
-<pre><code>
-+{{ $newSlice := sliceCreate "Apple" "Banana" }}
+<pre><code>+{{ $newSlice := sliceCreate "Apple" "Banana" }}
 +{{ $newSlice = slicePush $newSlice "Strawberry" }}
-+{{ echo $newSlice }}
-</code></pre>
++{{ echo $newSlice }}</code></pre>
 **Output**:
 <pre><code>
 [Apple Banana Strawberry]
@@ -499,10 +467,8 @@ Creates a new slice, optionally with values.
   <br/>
 
 **Example**:
-<pre><code>
-+{{ $newSlice := sliceCreate "Apple" "Banana" }}
-+{{ echo $newSlice }}
-</code></pre>
+<pre><code>+{{ $newSlice := sliceCreate "Apple" "Banana" }}
++{{ echo $newSlice }}</code></pre>
 **Output**:
 <pre><code>
 [Apple Banana]
@@ -527,10 +493,8 @@ Currently only supports string keys!
   <br/>
 
 **Example**:
-<pre><code>
-+{{ $newMap := mapCreate "key1" "value1" "key2" "value2" }}
-+{{ echo $newMap }}
-</code></pre>
+<pre><code>+{{ $newMap := mapCreate "key1" "value1" "key2" "value2" }}
++{{ echo $newMap }}</code></pre>
 **Output**:
 <pre><code>
 map[key1:value1 key2:value2]
@@ -622,9 +586,7 @@ The fs resolver is only available as an internal module and does not ship with t
   <br/>
 
 **Example**:
-<pre><code>
-+{{ import "https://domain.com/functions" }}
-</code></pre>
+<pre><code>+{{ import "https://domain.com/functions" }}</code></pre>
 **Output**:
 <pre><code>
 +{{ call "functions.greet" "John" }}
@@ -632,9 +594,7 @@ The fs resolver is only available as an internal module and does not ship with t
 
 
 **Example**:
-<pre><code>
-+{{ import "funcs" "https://domain.com/functions" }}
-</code></pre>
+<pre><code>+{{ import "funcs" "https://domain.com/functions" }}</code></pre>
 **Output**:
 <pre><code>
 +{{ call "funcs.greet" "John" }}
@@ -674,10 +634,8 @@ Sets the output object as a whole.
   <br/>
 
 **Example**:
-<pre><code>
-+{{ returnAll "1" "2" "3" }}
-+{{ returnAll (sliceCreate "1" "2" "3") }}
-</code></pre>
+<pre><code>+{{ returnAll "1" "2" "3" }}
++{{ returnAll (sliceCreate "1" "2" "3") }}</code></pre>
 
 </details>
 

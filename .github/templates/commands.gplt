@@ -63,9 +63,7 @@
 +{{- range $i, $example := $examples }}
 
 **Example**:
-<pre><code>
-+{{ $example }}
-</code></pre>
+<pre><code>+{{ $example }}</code></pre>
 +{{- $outputs := (index $decl "outputs") -}}
 +{{- if gt (len $outputs) $i }}
 **Output**:
