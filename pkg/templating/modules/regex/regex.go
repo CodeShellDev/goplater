@@ -84,14 +84,14 @@ func regexFindGroupsIndex(_ *templating.Runtime, _ *templating.Context, regex st
 
 // Replaces all matches from the given regex pattern in a string with the replaceWith param (which allows using '$1', etc.).
 //
-// @param regex string
 // @params str string
+// @param regex string
 // @params replaceWith string
 // @returns string
 // @returns error
 var regexReplaceFunc = modules.NewFunc("regexReplace", regexReplace)
 
-func regexReplace(_ *templating.Runtime, _ *templating.Context, regex string, str string, replaceWith string) string  {
+func regexReplace(_ *templating.Runtime, _ *templating.Context, str string, regex string, replaceWith string) string  {
 	re, err := regexp.Compile(regex)
 
 	if err != nil {
