@@ -96,7 +96,7 @@ func handleOperator(values []any, intOp func(a, b int) int, floatOp func(a, b fl
 
 		res = numbers[0]
 
-		for _, num := range numbers {
+		for _, num := range numbers[1:] {
 			res = floatOp(res, num)
 		}
 
@@ -112,7 +112,7 @@ func handleOperator(values []any, intOp func(a, b int) int, floatOp func(a, b fl
 
 		res = numbers[0]
 
-		for _, num := range numbers {
+		for _, num := range numbers[1:] {
 			res = intOp(res, num)
 		}
 
