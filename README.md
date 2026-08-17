@@ -21,6 +21,8 @@
 - [License](#license)
 - [Legal](#legal)
 
+### [`testing.go`](https://testing)
+
 ## Getting Started
 
 Download the latest binary from the Release page.
