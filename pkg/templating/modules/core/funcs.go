@@ -87,6 +87,7 @@ var callFunc = modules.NewFunc("call", callFn)
 
 // Tries to call a func by name with args, optionally with a namespace handle.
 // Fails if func is not accessible or undefined.
+// Captures template output and returns it if no return statements were made.
 //
 // @param name string
 // @param args []any
@@ -99,6 +100,16 @@ var callFunc = modules.NewFunc("call", callFn)
 //	 +{{ end }}
 // 	 
 //	 +{{ call "greet" "John" }}
+// @output
+//	 Hello John!
+//
+// @example
+//	 +{{ define "greet(name)" }}
+// 		 Hello +{{ .name }}!
+//	 +{{ end }}
+// 	 
+//	 +{{ output := call "greet" "John" }}
+//	 +{{ echo $output }}
 // @output
 //	 Hello John!
 func callFn(rt *templating.Runtime, ctx *templating.Context, name string, args ...any) (any, error) {

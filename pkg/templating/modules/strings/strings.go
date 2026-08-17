@@ -9,6 +9,7 @@ import (
 )
 
 var Module = modules.NewModule(
+	trimFunc,
 	trimSpaceFunc,
 
 	upperFunc, 
@@ -44,7 +45,7 @@ var Module = modules.NewModule(
 	indexOfFunc,
 )
 
-// Trims space from a string.
+// Trims space from a string (leading and trailing).
 //
 // @param str string
 // @returns string
@@ -52,6 +53,17 @@ var trimSpaceFunc = modules.NewFunc("trimSpace", trimSpace)
 
 func trimSpace(_ *templating.Runtime, _ *templating.Context, str string) string  {
 	return strings.TrimSpace(str)
+}
+
+// Trims all chars defined in the cutset param from a string (leading and trailing).
+//
+// @param str string
+// @param cutset string
+// @returns string
+var trimFunc = modules.NewFunc("trim", trim)
+
+func trim(_ *templating.Runtime, _ *templating.Context, str string, cutset string) string  {
+	return strings.Trim(str, cutset)
 }
 
 // Uppercases a string.
