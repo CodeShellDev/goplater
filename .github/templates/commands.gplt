@@ -56,8 +56,6 @@
 +{{ markdownHTML (markdownDecode (index $decl "summary")) }}
 +{{ $examples := index $decl "examples" -}}
 +{{- if gt (len $examples) 0 }}
-<br/>
-<br/>
 <details>
   <summary>Examples</summary>
   <br/>

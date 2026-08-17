@@ -59,8 +59,6 @@ File Content: +​{​​{ read "./myfile.txt" }​}​
 <p>Reads and templates file.</p>
 
 
-<br/>
-<br/>
 <details>
   <summary>Examples</summary>
   <br/>
@@ -79,8 +77,6 @@ File Content: +​{​​{ read "./myfile.txt" }​}​
 <p>Reads file (without templating).</p>
 
 
-<br/>
-<br/>
 <details>
   <summary>Examples</summary>
   <br/>
@@ -99,8 +95,6 @@ File Content: +​{​​{ read "./myfile.txt" }​}​
 <p>Reads file and passes arguments to it.</p>
 
 
-<br/>
-<br/>
 <details>
   <summary>Examples</summary>
   <br/>
@@ -119,8 +113,6 @@ File Content: +​{​​{ read "./myfile.txt" }​}​
 <p>Writes to a file path.</p>
 
 
-<br/>
-<br/>
 <details>
   <summary>Examples</summary>
   <br/>
@@ -139,8 +131,6 @@ File Content: +​{​​{ read "./myfile.txt" }​}​
 <p>Creates directory at path.</p>
 
 
-<br/>
-<br/>
 <details>
   <summary>Examples</summary>
   <br/>
@@ -159,8 +149,6 @@ File Content: +​{​​{ read "./myfile.txt" }​}​
 <p>Appends to an existing file.</p>
 
 
-<br/>
-<br/>
 <details>
   <summary>Examples</summary>
   <br/>
@@ -179,8 +167,6 @@ File Content: +​{​​{ read "./myfile.txt" }​}​
 <p>Returns if a file or folder exists at a given path.</p>
 
 
-<br/>
-<br/>
 <details>
   <summary>Examples</summary>
   <br/>
@@ -201,8 +187,6 @@ Path exists!
 <p>Returns if a file exists at a given path.</p>
 
 
-<br/>
-<br/>
 <details>
   <summary>Examples</summary>
   <br/>
@@ -223,8 +207,6 @@ Path is a file!
 <p>Returns if a folder exists at a given path.</p>
 
 
-<br/>
-<br/>
 <details>
   <summary>Examples</summary>
   <br/>
@@ -245,8 +227,6 @@ Path is a folder!
 <p>Returns all files and folders inside of a given directory.</p>
 
 
-<br/>
-<br/>
 <details>
   <summary>Examples</summary>
   <br/>
@@ -268,8 +248,6 @@ Path is a folder!
 <p>Returns all files and folders recursively under a given directory.</p>
 
 
-<br/>
-<br/>
 <details>
   <summary>Examples</summary>
   <br/>
@@ -291,8 +269,6 @@ Path is a folder!
 <p>Removes a file or folder at a given path.</p>
 
 
-<br/>
-<br/>
 <details>
   <summary>Examples</summary>
   <br/>
@@ -398,8 +374,6 @@ Errors if path is not allowed.</p>
 <p>Deletes a container entry with the given key.</p>
 
 
-<br/>
-<br/>
 <details>
   <summary>Examples</summary>
   <br/>
@@ -422,8 +396,6 @@ Errors if path is not allowed.</p>
 <p>Set a container entry value with the given key.</p>
 
 
-<br/>
-<br/>
 <details>
   <summary>Examples</summary>
   <br/>
@@ -446,8 +418,6 @@ Errors if path is not allowed.</p>
 <p>Returns if an entry with the given key exists in container.</p>
 
 
-<br/>
-<br/>
 <details>
   <summary>Examples</summary>
   <br/>
@@ -468,8 +438,6 @@ Container has "version"!
 <p>Appends a value to a slice.</p>
 
 
-<br/>
-<br/>
 <details>
   <summary>Examples</summary>
   <br/>
@@ -493,8 +461,6 @@ Container has "version"!
 <p>Creates a new slice, optionally with values.</p>
 
 
-<br/>
-<br/>
 <details>
   <summary>Examples</summary>
   <br/>
@@ -519,8 +485,6 @@ Pairs are constructed one by one, a key followed by the given value.
 Currently only supports string keys!</p>
 
 
-<br/>
-<br/>
 <details>
   <summary>Examples</summary>
   <br/>
@@ -620,8 +584,6 @@ Optionally supply an alias for easier access.
 The fs resolver is only available as an internal module and does not ship with the <code>pkg/templating/modules</code> directory.</p>
 
 
-<br/>
-<br/>
 <details>
   <summary>Examples</summary>
   <br/>
@@ -668,8 +630,6 @@ The fs resolver is only available as an internal module and does not ship with t
 <p>Sets the output object as a whole.</p>
 
 
-<br/>
-<br/>
 <details>
   <summary>Examples</summary>
   <br/>
