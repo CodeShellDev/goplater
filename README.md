@@ -11,6 +11,7 @@
 <!-- prettier-ignore -->
 - [Getting Started](#getting-started)
 - [Usage](#usage)
+- [Standard Library](#standard-library)
 	- [fs](#fs)
 	- [outputto](#outputto)
 	- [base64](#base64)
@@ -58,8 +59,13 @@ Goplater uses Go's [builtin templating library](https://pkg.go.dev/text/template
 **Example:**
 
 ```
-File Content: +​{​{​{ read "./myfile.txt" }​}​}
+File Content: +​{​​{ read "./myfile.txt" }​}​
 ```
+
+<details>
+  <summary>Toggle me!</summary>
+
+## Standard Library
 
 
 ### [`fs`](https://pkg.go.dev/github.com/codeshelldev/goplater/internals/template/funcs/fs)
@@ -711,6 +717,8 @@ Repeat a string n times.
 
 Decodes a yaml string into an object.
 
+
+</details>
 
 ## Contributing
 
