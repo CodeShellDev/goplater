@@ -72,7 +72,8 @@
 +{{- end }}
 
 </details>
-+{{ end -}}
++{{ end }}
+---
 +{{ end }}
 
 +{{ define "parseFuncDeclarations(content)" }}
