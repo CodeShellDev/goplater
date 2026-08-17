@@ -13,9 +13,10 @@
 +{{ end }}
 
 +{{ define "renderCommandSection(path, declarations)" }}
-+{{- $filename := cutSuffix (basePath .path) ".go" -}}
++{{- $pathNoExt := cutSuffix .path ".go" }}
++{{- $filename := basePath $pathNoExt -}}
 +{{- $decls := .declarations }}
-### [`+{{ $filename }}`](+{{ concat "https://pkg.go.dev/github.com/codeshelldev/goplater/" (after .path "goplater/" ) }})
+### [`+{{ $filename }}`](+{{ concat "https://pkg.go.dev/github.com/codeshelldev/goplater/" (after $pathNoExt "goplater/" ) }})
 +{{ range $decl := $decls -}}
     +{{ call "renderCommand" $decl }}
 +{{- end -}}

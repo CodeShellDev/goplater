@@ -11,24 +11,24 @@
 <!-- prettier-ignore -->
 - [Getting Started](#getting-started)
 - [Usage](#usage)
-	- [fs](fs)
-	- [outputto](outputto)
-	- [base64](base64)
-	- [container](container)
-	- [conversion](conversion)
-	- [globals](globals)
-	- [import](import)
-	- [return](return)
-	- [debug](debug)
-	- [html](html)
-	- [http](http)
-	- [json](json)
-	- [markdown](markdown)
-	- [funcs](funcs)
-	- [operators](operators)
-	- [regex](regex)
-	- [strings](strings)
-	- [yaml](yaml)
+	- [#fs](fs)
+	- [#outputto](outputto)
+	- [#base64](base64)
+	- [#container](container)
+	- [#conversion](conversion)
+	- [#globals](globals)
+	- [#import](import)
+	- [#return](return)
+	- [#debug](debug)
+	- [#html](html)
+	- [#http](http)
+	- [#json](json)
+	- [#markdown](markdown)
+	- [#funcs](funcs)
+	- [#operators](operators)
+	- [#regex](regex)
+	- [#strings](strings)
+	- [#yaml](yaml)
 - [Contributing](#contributing)
 - [Support](#support)
 - [License](#license)
@@ -62,7 +62,7 @@ File Content: +​{​{​{ read "./myfile.txt" }​}​}
 ```
 
 
-### [`fs`](https://pkg.go.dev/github.com/codeshelldev/goplater/internals/template/funcs/fs.go)
+### [`fs`](https://pkg.go.dev/github.com/codeshelldev/goplater/internals/template/funcs/fs)
 
 #### `read(path string) string`
 
@@ -202,14 +202,14 @@ If the path is not absolute it will be joined with the current working directory
 Returns a relative path that is lexically equivalent to targetPath when joined to basePath with an intervening separator.
 The returned path will always be relative to basePath, even if basePath and targetPath share no elements.
 
-### [`outputto`](https://pkg.go.dev/github.com/codeshelldev/goplater/internals/template/funcs/outputto.go)
+### [`outputto`](https://pkg.go.dev/github.com/codeshelldev/goplater/internals/template/funcs/outputto)
 
 #### `outputTo(path string) throws error`
 
 Changes the output path for the current file.
 Errors if path is not allowed.
 
-### [`base64`](https://pkg.go.dev/github.com/codeshelldev/goplater/pkg/templating/modules/base64/base64.go)
+### [`base64`](https://pkg.go.dev/github.com/codeshelldev/goplater/pkg/templating/modules/base64/base64)
 
 #### `base64Encode(encode string) string`
 
@@ -219,7 +219,7 @@ Encodes strings with base64.
 
 Decodes a base64 string.
 
-### [`container`](https://pkg.go.dev/github.com/codeshelldev/goplater/pkg/templating/modules/container/container.go)
+### [`container`](https://pkg.go.dev/github.com/codeshelldev/goplater/pkg/templating/modules/container/container)
 
 #### `delete(container map[any]any|[]any, key any) (any, throws error)`
 
@@ -304,7 +304,7 @@ Currently only supports string keys!
 map[key1:value1 key2:value2]
 ```
 
-### [`conversion`](https://pkg.go.dev/github.com/codeshelldev/goplater/pkg/templating/modules/conversion/conversion.go)
+### [`conversion`](https://pkg.go.dev/github.com/codeshelldev/goplater/pkg/templating/modules/conversion/conversion)
 
 #### `toString(value string) string`
 
@@ -326,7 +326,7 @@ Attempts to parse a string as float32.
 
 Attempts to parse a string as a bool (using [strconv.ParseBool](https://pkg.go.dev/strconv#ParseBool)).
 
-### [`globals`](https://pkg.go.dev/github.com/codeshelldev/goplater/pkg/templating/modules/core/globals.go)
+### [`globals`](https://pkg.go.dev/github.com/codeshelldev/goplater/pkg/templating/modules/core/globals)
 
 #### `globalSet(key string, value any)`
 
@@ -340,7 +340,7 @@ Tries to retrieve a global value with a key.
 
 Returns whether a given global variable exists.
 
-### [`import`](https://pkg.go.dev/github.com/codeshelldev/goplater/pkg/templating/modules/core/import.go)
+### [`import`](https://pkg.go.dev/github.com/codeshelldev/goplater/pkg/templating/modules/core/import)
 
 #### `import(alias string?, path string) throws error`
 
@@ -366,7 +366,7 @@ The fs resolver is only available as an internal module and does not ship with t
 +{{ call "funcs.greet" "John" }}
 ```
 
-### [`return`](https://pkg.go.dev/github.com/codeshelldev/goplater/pkg/templating/modules/core/return.go)
+### [`return`](https://pkg.go.dev/github.com/codeshelldev/goplater/pkg/templating/modules/core/return)
 
 #### `return(i int, value any) throws error`
 
@@ -389,13 +389,13 @@ Sets the output object as a whole.
 
 Returns current outputs.
 
-### [`debug`](https://pkg.go.dev/github.com/codeshelldev/goplater/pkg/templating/modules/debug/debug.go)
+### [`debug`](https://pkg.go.dev/github.com/codeshelldev/goplater/pkg/templating/modules/debug/debug)
 
 #### `echo(data []any)`
 
 Outputs data to stdout.
 
-### [`html`](https://pkg.go.dev/github.com/codeshelldev/goplater/pkg/templating/modules/html/html.go)
+### [`html`](https://pkg.go.dev/github.com/codeshelldev/goplater/pkg/templating/modules/html/html)
 
 #### `htmlDecode(html string) (*goquery.Document, throws error)`
 
@@ -429,7 +429,7 @@ Returns an elements attribute content.
 
 Returns the elements inner html.
 
-### [`http`](https://pkg.go.dev/github.com/codeshelldev/goplater/pkg/templating/modules/http/http.go)
+### [`http`](https://pkg.go.dev/github.com/codeshelldev/goplater/pkg/templating/modules/http/http)
 
 #### `fetch(url string) string`
 
@@ -441,7 +441,7 @@ Outputs errors as string.
 Fetches a resource from a given url.
 Throws error instead of outputting it.
 
-### [`json`](https://pkg.go.dev/github.com/codeshelldev/goplater/pkg/templating/modules/json/json.go)
+### [`json`](https://pkg.go.dev/github.com/codeshelldev/goplater/pkg/templating/modules/json/json)
 
 #### `jsonEncode(obj any) (string, throws error)`
 
@@ -451,7 +451,7 @@ Encodes an object into a json string.
 
 Decodes a json string into an object.
 
-### [`markdown`](https://pkg.go.dev/github.com/codeshelldev/goplater/pkg/templating/modules/markdown/markdown.go)
+### [`markdown`](https://pkg.go.dev/github.com/codeshelldev/goplater/pkg/templating/modules/markdown/markdown)
 
 #### `markdownDecode(md string) *Document`
 
@@ -545,7 +545,7 @@ Appends text to a markdown document.
 
 Prepends text to a markdown document.
 
-### [`funcs`](https://pkg.go.dev/github.com/codeshelldev/goplater/pkg/templating/modules/math/funcs.go)
+### [`funcs`](https://pkg.go.dev/github.com/codeshelldev/goplater/pkg/templating/modules/math/funcs)
 
 #### `abs(numbers int|float64) (int|float64, throws error)`
 
@@ -583,7 +583,7 @@ Returns the greatest integer value less than or equal to number.
 
 Returns the least integer value greater than or equal to number.
 
-### [`operators`](https://pkg.go.dev/github.com/codeshelldev/goplater/pkg/templating/modules/math/operators.go)
+### [`operators`](https://pkg.go.dev/github.com/codeshelldev/goplater/pkg/templating/modules/math/operators)
 
 #### `add(numbers [](int|float64)) (int|float64, throws error)`
 
@@ -605,7 +605,7 @@ Divides numbers from each other.
 
 Performs modulo on numbers.
 
-### [`regex`](https://pkg.go.dev/github.com/codeshelldev/goplater/pkg/templating/modules/regex/regex.go)
+### [`regex`](https://pkg.go.dev/github.com/codeshelldev/goplater/pkg/templating/modules/regex/regex)
 
 #### `regexMatch(regex string) (bool, throws error)`
 
@@ -627,7 +627,7 @@ Returns all match and submatch positions from the given regex pattern in a strin
 
 Replaces all matches from the given regex pattern in a string with the replaceWith param (which allows using '$1', etc.).
 
-### [`strings`](https://pkg.go.dev/github.com/codeshelldev/goplater/pkg/templating/modules/strings/strings.go)
+### [`strings`](https://pkg.go.dev/github.com/codeshelldev/goplater/pkg/templating/modules/strings/strings)
 
 #### `trimSpace(str string) string`
 
@@ -705,7 +705,7 @@ Joins multiple strings together by the given separator.
 
 Repeat a string n times.
 
-### [`yaml`](https://pkg.go.dev/github.com/codeshelldev/goplater/pkg/templating/modules/yaml/yaml.go)
+### [`yaml`](https://pkg.go.dev/github.com/codeshelldev/goplater/pkg/templating/modules/yaml/yaml)
 
 #### `yamlDecode(yaml string) (any, throws error)`
 
