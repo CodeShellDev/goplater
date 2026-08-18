@@ -12,7 +12,24 @@
 - [Getting Started](#getting-started)
 - [Usage](#usage)
 - [Standard Library](#standard-library)
-	
+	- [fs](#fs)
+	- [outputto](#outputto)
+	- [base64](#base64)
+	- [container](#container)
+	- [conversion](#conversion)
+	- [globals](#globals)
+	- [import](#import)
+	- [return](#return)
+	- [debug](#debug)
+	- [html](#html)
+	- [http](#http)
+	- [json](#json)
+	- [markdown](#markdown)
+	- [funcs](#funcs)
+	- [operators](#operators)
+	- [regex](#regex)
+	- [strings](#strings)
+	- [yaml](#yaml)
 - [Contributing](#contributing)
 - [Support](#support)
 - [License](#license)
@@ -45,10 +62,9 @@ Goplater uses Go's [builtin templating library](https://pkg.go.dev/text/template
 File Content: +​{​​{ read "./myfile.txt" }​}​
 ```
 
-<details>
-  <summary>Toggle me!</summary>
-
 ## Standard Library
+
+Goplater includes a large selection of built-in functions for use in your templates.
 
 <h3><a href="https://pkg.go.dev/github.com/codeshelldev/goplater/internals/template/funcs/fs">fs</a></h3>
 
@@ -1338,8 +1354,6 @@ Throws error instead of outputting it.</p>
 
 </td></tr></table>
 
-
-</details>
 
 ## Contributing
 

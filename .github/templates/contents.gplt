@@ -1,12 +1,12 @@
-+{{ define "renderContentSection(md, level)" }}
-+{{- $document := markdownDecode .md -}}
++{{ define "renderContentSection(html, level)" }}
++{{- $document := htmlDecode .html -}}
 
 +{{- $items := call "collectHeadingChildren" $document .level -}}
 
 +{{- $lines := sliceCreate }}
 
 +{{- range $item := $items -}}
-+{{- $text := markdownText $item -}}
++{{- $text := htmlText $item -}}
 +{{- $line := (concat "- [" $text "](#" (call "generateHeadingAnchor" $text) ")") -}}
 +{{- $lines = slicePush $lines $line -}}
 +{{- end -}}
@@ -36,16 +36,8 @@
     +{{ $result := sliceCreate }}
     +{{ $level := .level }}
 
-    +{{ range $node := markdownHeadings .document }}
-        +{{ $nodeLevel := $node.Level }}
-
-        +{{ if le $nodeLevel $level }}
-            +{{ break }}
-        +{{ end }}
-
-        +{{ if eq $nodeLevel (add $level 1) }}
-            +{{ $result = slicePush $result $node }}
-        +{{ end }}
+    +{{ range $element := htmlDocFindAll .document (concat "h" (toString $level)) }}
+        +{{ $result = slicePush $result $element }}
     +{{ end }}
 
     +{{ returnNext $result }}
