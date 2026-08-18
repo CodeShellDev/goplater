@@ -49,6 +49,8 @@ jobs:
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           tag-name: ${{ github.event.release.tag_name }}
+          input-pattern: dist/{name}-{version}-{os}-{arch}
+          output-pattern: dist/{name}-{version}-{os}-{arch}
 
   npm:
     name: Release to npm
