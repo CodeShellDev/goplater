@@ -8,13 +8,13 @@ import (
 
 var Module = modules.NewModule(yamlEncodeFunc, yamlDecodeFunc)
 
-var yamlEncodeFunc = modules.NewFunc("yamlEncode", yamlEncode)
-
 // Encodes an object into a yaml string.
 //
 // @param obj any
 // @returns string
 // @returns error
+var yamlEncodeFunc = modules.NewFunc("yamlEncode", yamlEncode)
+
 func yamlEncode(_ *templating.Runtime, _ *templating.Context, obj any) (string, error) {
 	bytes, err := yamlUtils.Marshal(obj)
 
