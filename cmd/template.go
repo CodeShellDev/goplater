@@ -34,14 +34,14 @@ func init() {
 	templateCmd.Flags().StringVarP(&templateOptions.Output, "output", "o", ".", "output path for templated files")
 	templateCmd.Flags().StringVarP(&templateOptions.Source, "source", "s", ".", "source path for local files")
 
-	templateCmd.Flags().StringSliceVar(&templateOptions.AllowedOutputFolders, "allowed-output-folders", []string{}, "allowed output folders")
+	templateCmd.Flags().StringSliceVar(&templateOptions.AllowedOutputFolders, "allowed-output-folders", []string{}, "allowed output folders (recursively)")
 
 	templateCmd.Flags().StringSliceVarP(&templateOptions.Match, "match", "m", []string{".*"}, "regexes used for matching files to process")
 
-	templateCmd.Flags().StringSliceVarP(&templateOptions.Whitespace, "whitespace", "w", []string{"l","t"}, "remove whitespace from files")
+	templateCmd.Flags().StringSliceVarP(&templateOptions.Whitespace, "whitespace", "w", []string{"l","t"}, "remove leading and trailing whitespace from files")
 
 	templateCmd.Flags().BoolVarP(&templateOptions.Verbose, "verbose", "v", false, "print additional information")
-	templateCmd.Flags().BoolVarP(&templateOptions.Supress, "ignore-errors", "i", false, "ignore / supress errors")
+	templateCmd.Flags().BoolVarP(&templateOptions.Supress, "ignore-errors", "i", false, "supress errors")
 }
 
 func validate(cmd *cobra.Command, args []string) error {
