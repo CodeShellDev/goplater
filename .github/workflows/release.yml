@@ -17,7 +17,6 @@ jobs:
       - uses: codeshelldev/gh-actions/go-build@v1.0.3
         with:
           platforms: linux/amd64,linux/arm64,darwin/amd64,windows/amd64
-          ldflags: "-X 'buildinfo.Version=${{ github.event.release.tag_name }}' -X 'buildinfo.Commit=${{ github.sha }}'"
           output-pattern: dist/goplater-${{ github.event.release.tag_name }}-{os}-{arch}
           build-args: |
             Version=${{ github.event.release.tag_name }}
