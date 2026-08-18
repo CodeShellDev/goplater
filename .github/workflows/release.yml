@@ -1,0 +1,88 @@
+name: Build & Release
+
+on:
+  release:
+    types: [published]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    name: Create release
+
+    permissions:
+      contents: write
+
+    steps:
+      - uses: actions/checkout@v4
+      - uses: codeshelldev/gh-actions/go-build@v1
+        with:
+          platforms: linux/amd64, linux/arm64, darwin/amd64, windows/amd64
+          ldflags: "-X 'buildinfo.Version=${{ github.event.release.tag_name }}' -X 'buildinfo.Commit=${{ github.sha }}'"
+          output-pattern: dist/goplater-${{ github.event.release.tag_name }}-{os}-{arch}
+          build-args: |
+            Version=${{ github.event.release.tag_name }}
+            Commit=${{ github.sha }}
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: go-binaries
+          path: dist/*
+
+  gh-release:
+    name: Attach to release
+    needs: build
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: write
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Download build artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: go-binaries
+          path: dist
+
+      - uses: codeshelldev/gh-actions/gh-releaser@v1
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          tag-name: ${{ github.event.release.tag_name }}
+
+  npm:
+    name: Release to npm
+    needs: build
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: read
+      id-token: write
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v5
+
+      - name: Setup node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "24.x"
+          registry-url: https://registry.npmjs.org
+
+      - name: Download build artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: go-binaries
+          path: dist
+
+      - name: Publish npm package
+        run: |
+          cp -r dist/* npm/bin/
+          chmod +x -R npm/bin/
+          cp README.md npm/
+          cp LICENSE npm/
+          cd npm/
+          npm version ${{ github.event.release.tag_name }} --no-git-tag-version
+          npm publish --access public
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPMJS_PCKG_TOKEN }}
