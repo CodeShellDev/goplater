@@ -8,7 +8,7 @@ import (
 	"text/template"
 	"text/template/parse"
 
-	"github.com/codeshelldev/goplater/utils/funcutils"
+	"github.com/codeshelldev/goplater/pkg/gplt/utils/funcutils"
 )
 
 type Runtimes struct {

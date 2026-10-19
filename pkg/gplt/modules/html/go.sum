@@ -1,0 +1,10 @@
+github.com/PuerkitoBio/goquery v1.13.0 h1:mqHbjD7Jmnul4DTR24LKTjo1uUmHUh072kteGV+xpFM=
+github.com/PuerkitoBio/goquery v1.13.0/go.mod h1:Hip5mdBL8K2wEGKJdr27sRaNwIdDajmCwB/ExUPwW+g=
+github.com/andybalholm/cascadia v1.3.4 h1:vM2lgh0Vru9Vwyfm4cQqWP2HHMW0u0+2PAW7Q38Qufg=
+github.com/andybalholm/cascadia v1.3.4/go.mod h1:BLRmbRjpEtNKieZOCCvYj4RqN+KRA41GBe/5O+G93kM=
+github.com/codeshelldev/goplater v1.5.2 h1:kF2LCl4g6kBdTtA6WNBdQn28EH502ko1bTjYhsyjjBY=
+github.com/codeshelldev/goplater v1.5.2/go.mod h1:2qsM6Yjl4yQca22XOQWQ/p2gib7QzygY2t2ld12nPxM=
+github.com/codeshelldev/goplater/pkg/gplt v0.0.0-20261019164652-c2b50d516ff5 h1:lW6SewbtTnYOK7VGg2oT7CqXl7f1SWWd2/5FFGr8SFs=
+github.com/codeshelldev/goplater/pkg/gplt v0.0.0-20261019164652-c2b50d516ff5/go.mod h1:L6XuKX2t1Jn1E56wbj8vxxtBYzn+Qectvkz9QlnG7Yw=
+golang.org/x/net v0.58.0 h1:ynWG7rqYi4ccpTEuPZ2QGWHktVEM9DMCj9yzDE0Q7To=
+golang.org/x/net v0.58.0/go.mod h1:YwCddHnFlT7eLQqVprV19OnhLGtc5xOKgE0RyqgfWAU=
