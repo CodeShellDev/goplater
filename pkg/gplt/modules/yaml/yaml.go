@@ -1,0 +1,37 @@
+package yaml
+
+import (
+	"github.com/codeshelldev/goplater/pkg/gplt"
+	"github.com/codeshelldev/goplater/pkg/gplt/modules"
+	yamlUtils "go.yaml.in/yaml/v3"
+)
+
+var Module = modules.NewModule(yamlEncodeFunc, yamlDecodeFunc)
+
+// Encodes an object into a yaml string.
+//
+// @param obj any
+// @returns string
+// @returns error
+var yamlEncodeFunc = modules.NewFunc("yamlEncode", yamlEncode)
+
+func yamlEncode(_ *gplt.Runtime, _ *gplt.Context, obj any) (string, error) {
+	bytes, err := yamlUtils.Marshal(obj)
+
+	return string(bytes), err
+}
+
+// Decodes a yaml string into an object.
+//
+// @param yaml string
+// @returns any
+// @returns error
+var yamlDecodeFunc = modules.NewFunc("yamlDecode", yamlDecode)
+
+func yamlDecode(_ *gplt.Runtime, _ *gplt.Context, yaml string) (any, error) {
+	var obj any
+
+	err := yamlUtils.Unmarshal([]byte(yaml), &obj)
+
+	return obj, err
+}

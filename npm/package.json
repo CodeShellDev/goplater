@@ -1,7 +1,7 @@
 {
 	"name": "@codeshelldev/goplater",
-	"version": "0.0.0",
-	"description": "",
+	"version": "none",
+	"description": "JS Distribution of goplater binaries",
 	"homepage": "https://github.com/codeshelldev/goplater#readme",
 	"bugs": {
 		"url": "https://github.com/codeshelldev/goplater/issues"

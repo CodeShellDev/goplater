@@ -1,6 +1,6 @@
 module github.com/codeshelldev/goplater
 
-go 1.26.5
+go 1.27.2
 
 require (
 	github.com/PuerkitoBio/goquery v1.12.0

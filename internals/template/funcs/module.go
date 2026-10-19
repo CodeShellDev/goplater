@@ -1,6 +1,6 @@
 package funcs
 
-import "github.com/codeshelldev/goplater/pkg/templating/modules"
+import "github.com/codeshelldev/goplater/pkg/gplt/modules"
 
 var Module = modules.NewModule(
 	readFunc, 

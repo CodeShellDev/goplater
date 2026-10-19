@@ -7,7 +7,7 @@ import (
 	"strings"
 
 	"github.com/codeshelldev/goplater/internals/template/context"
-	"github.com/codeshelldev/goplater/pkg/templating"
+	"github.com/codeshelldev/goplater/pkg/gplt"
 	"github.com/codeshelldev/goplater/utils/fsutils"
 )
 
@@ -28,7 +28,7 @@ func (r *FsResolver) CanResolve(path string) bool {
 }
 
 func (r *FsResolver) Resolve(path string) (string, error) {
-	filePathAbs := resolvePath(*r.ctx, path + "." + templating.IMPORT_FILE_EXTENSION)
+	filePathAbs := resolvePath(*r.ctx, path + "." + gplt.IMPORT_FILE_EXTENSION)
 
 	info, err := os.Stat(filePathAbs)
 

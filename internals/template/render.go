@@ -4,10 +4,10 @@ import (
 	"github.com/codeshelldev/goplater/internals/template/context"
 	"github.com/codeshelldev/goplater/internals/template/core"
 	"github.com/codeshelldev/goplater/internals/template/funcs"
-	"github.com/codeshelldev/goplater/pkg/templating"
-	"github.com/codeshelldev/goplater/pkg/templating/collections"
-	"github.com/codeshelldev/goplater/pkg/templating/resolvers"
-	"github.com/codeshelldev/goplater/pkg/templating/types"
+	"github.com/codeshelldev/goplater/pkg/gplt"
+	"github.com/codeshelldev/goplater/pkg/gplt/collections"
+	"github.com/codeshelldev/goplater/pkg/gplt/resolvers"
+	"github.com/codeshelldev/goplater/pkg/gplt/types"
 )
 
 func (t *Templater) Render(content string, ctx *context.TemplateContext) (string, error) {
@@ -25,22 +25,22 @@ func templateContent(content string, ctx *context.TemplateContext) (string, erro
 }
 
 func templateStr(str string, tmplContext *context.TemplateContext) (string, error) {
-	e := templating.NewEngine()
+	e := gplt.NewEngine()
 
 	e.Use(funcs.Module)
 
 	e.UseSafeModules(collections.All...)
 	e.SetResolver(
-		templating.NewResolverChain(
+		gplt.NewResolverChain(
 			funcs.NewFsResolver(tmplContext),
 			resolvers.NewHttpResolver(),
 		),
 	)
 
-	ctx := &templating.Context{}
+	ctx := &gplt.Context{}
 	ctx.Set(context.TemplateContextKey, tmplContext)
 
-	return e.Execute(tmplContext.Path, str, nil, templating.EngineOptions{
+	return e.Execute(tmplContext.Path, str, nil, gplt.EngineOptions{
 		Delims: types.Delims{
 			Left: "+{{", Right: "}}",
 		},
