@@ -2,8 +2,8 @@ package funcs
 
 import (
 	"github.com/codeshelldev/goplater/internals/template/context"
-	"github.com/codeshelldev/goplater/pkg/templating"
-	"github.com/codeshelldev/goplater/pkg/templating/modules"
+	"github.com/codeshelldev/goplater/pkg/gplt"
+	"github.com/codeshelldev/goplater/pkg/gplt/modules"
 )
 
 // Changes the output path for the current file.
@@ -13,7 +13,7 @@ import (
 // @returns error
 var outputToFunc = modules.NewFunc("outputTo", outputToFn)
 
-func outputToFn(rt *templating.Runtime, ctx *templating.Context, path string) string {
+func outputToFn(rt *gplt.Runtime, ctx *gplt.Context, path string) string {
 	tmplContext := ctx.Get(context.TemplateContextKey).(*context.TemplateContext)
 	fullPath := resolvePath(*tmplContext, path)
 

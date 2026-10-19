@@ -6,8 +6,8 @@ import (
 	"path/filepath"
 
 	"github.com/codeshelldev/goplater/internals/template/context"
-	"github.com/codeshelldev/goplater/pkg/templating"
-	"github.com/codeshelldev/goplater/pkg/templating/modules"
+	"github.com/codeshelldev/goplater/pkg/gplt"
+	"github.com/codeshelldev/goplater/pkg/gplt/modules"
 	"github.com/codeshelldev/goplater/utils/fsutils"
 )
 
@@ -32,7 +32,7 @@ func isPathAllowed(path string, tmplContext *context.TemplateContext) bool {
 //   +{{ read "/path/to/file" }}
 var readFunc = modules.NewFunc("read", read)
 
-func read(rt *templating.Runtime, ctx *templating.Context, path string) string {
+func read(rt *gplt.Runtime, ctx *gplt.Context, path string) string {
 	str, ctx := readHandler(ctx, path)
 
 	str, err := rt.GetEngine().Execute(":read:" + path, str, nil, rt.GetEngineOptions(), ctx)
@@ -53,7 +53,7 @@ func read(rt *templating.Runtime, ctx *templating.Context, path string) string {
 //   +{{ readRaw "/path/to/file" }}
 var readRawFunc = modules.NewFunc("readRaw", readRaw)
 
-func readRaw(_ *templating.Runtime, ctx *templating.Context, path string) string {
+func readRaw(_ *gplt.Runtime, ctx *gplt.Context, path string) string {
 	tmplContext := ctx.Get(context.TemplateContextKey).(*context.TemplateContext)
 
 	filePathAbs := resolvePath(*tmplContext, path)
@@ -77,7 +77,7 @@ func readRaw(_ *templating.Runtime, ctx *templating.Context, path string) string
 //   +{{ readArgs "/path/to/file" (sliceCreate "my" "args") }}
 var readArgsFunc = modules.NewFunc("readArgs", readArgs)
 
-func readArgs(rt *templating.Runtime, ctx *templating.Context, path string, args any) string {
+func readArgs(rt *gplt.Runtime, ctx *gplt.Context, path string, args any) string {
 	str, newContext := readHandler(ctx, path)
 
 	data := map[string]any{
@@ -93,7 +93,7 @@ func readArgs(rt *templating.Runtime, ctx *templating.Context, path string, args
 	return str
 }
 
-func readHandler(ctx *templating.Context, path string) (string, *templating.Context) {
+func readHandler(ctx *gplt.Context, path string) (string, *gplt.Context) {
 	tmplContext := ctx.Get(context.TemplateContextKey).(*context.TemplateContext)
 
 	filePathAbs := resolvePath(*tmplContext, path)
@@ -106,7 +106,7 @@ func readHandler(ctx *templating.Context, path string) (string, *templating.Cont
 
 	tmplContext.Invoker = filePathAbs
 
-	newContext := &templating.Context{}
+	newContext := &gplt.Context{}
 
 	newContext.Set(context.TemplateContextKey, tmplContext)
 
@@ -123,7 +123,7 @@ func readHandler(ctx *templating.Context, path string) (string, *templating.Cont
 //   +{{ write "/path/to/file" "Hello" }}
 var writeFunc = modules.NewFunc("write", write)
 
-func write(_ *templating.Runtime, ctx *templating.Context, path string, content string) error {
+func write(_ *gplt.Runtime, ctx *gplt.Context, path string, content string) error {
 	tmplContext := ctx.Get(context.TemplateContextKey).(*context.TemplateContext)
 
 	filePathAbs := resolvePath(*tmplContext, path)
@@ -149,7 +149,7 @@ func write(_ *templating.Runtime, ctx *templating.Context, path string, content 
 //   +{{ mkdir "/path/to/somewhere/" }}
 var mkdirFunc = modules.NewFunc("mkdir", mkdir)
 
-func mkdir(_ *templating.Runtime, ctx *templating.Context, path string) string {
+func mkdir(_ *gplt.Runtime, ctx *gplt.Context, path string) string {
 	tmplContext := ctx.Get(context.TemplateContextKey).(*context.TemplateContext)
 
 	folderPathAbs := resolvePath(*tmplContext, path)
@@ -176,7 +176,7 @@ func mkdir(_ *templating.Runtime, ctx *templating.Context, path string) string {
 //   +{{ appendFile "/path/to/somewhere/" "Goodbye" }}
 var appendFileFunc = modules.NewFunc("appendFile", appendFile)
 
-func appendFile(_ *templating.Runtime, ctx *templating.Context, path string, content string) string {
+func appendFile(_ *gplt.Runtime, ctx *gplt.Context, path string, content string) string {
 	tmplContext := ctx.Get(context.TemplateContextKey).(*context.TemplateContext)
 
 	filePathAbs := resolvePath(*tmplContext, path)
@@ -210,7 +210,7 @@ func appendFile(_ *templating.Runtime, ctx *templating.Context, path string, con
 //	 +{{ end }}
 var fsExistsFunc = modules.NewFunc("fsExists", fsExists)
 
-func fsExists(_ *templating.Runtime, ctx *templating.Context, path string) bool {
+func fsExists(_ *gplt.Runtime, ctx *gplt.Context, path string) bool {
 	tmplContext := ctx.Get(context.TemplateContextKey).(*context.TemplateContext)
 
 	filePathAbs := resolvePath(*tmplContext, path)
@@ -234,7 +234,7 @@ func fsExists(_ *templating.Runtime, ctx *templating.Context, path string) bool 
 //	 +{{ end }}
 var isFileFunc = modules.NewFunc("isFile", isFile)
 
-func isFile(_ *templating.Runtime, ctx *templating.Context, path string) bool {
+func isFile(_ *gplt.Runtime, ctx *gplt.Context, path string) bool {
 	tmplContext := ctx.Get(context.TemplateContextKey).(*context.TemplateContext)
 
 	filePathAbs := resolvePath(*tmplContext, path)
@@ -258,7 +258,7 @@ func isFile(_ *templating.Runtime, ctx *templating.Context, path string) bool {
 //	 +{{ end }}
 var isDirFunc = modules.NewFunc("isDir", isDir)
 
-func isDir(_ *templating.Runtime, ctx *templating.Context, path string) bool {
+func isDir(_ *gplt.Runtime, ctx *gplt.Context, path string) bool {
 	tmplContext := ctx.Get(context.TemplateContextKey).(*context.TemplateContext)
 
 	filePathAbs := resolvePath(*tmplContext, path)
@@ -283,7 +283,7 @@ func isDir(_ *templating.Runtime, ctx *templating.Context, path string) bool {
 //	 /path/to/file1.txt, /path/to/file2.txt, /path/to/folder
 var listDirFunc = modules.NewFunc("listDir", listDir)
 
-func listDir(_ *templating.Runtime, ctx *templating.Context, path string) ([]string, error) {
+func listDir(_ *gplt.Runtime, ctx *gplt.Context, path string) ([]string, error) {
 	tmplContext := ctx.Get(context.TemplateContextKey).(*context.TemplateContext)
 
 	folderPathAbs := resolvePath(*tmplContext, path)
@@ -314,7 +314,7 @@ func listDir(_ *templating.Runtime, ctx *templating.Context, path string) ([]str
 //	 /path/to/file1.txt, /path/to/file2.txt, /path/to/folder, /path/to/folder/file3.txt
 var walkDirFunc = modules.NewFunc("walkDir", walkDir)
 
-func walkDir(_ *templating.Runtime, ctx *templating.Context, path string) ([]string, error) {
+func walkDir(_ *gplt.Runtime, ctx *gplt.Context, path string) ([]string, error) {
 	tmplContext := ctx.Get(context.TemplateContextKey).(*context.TemplateContext)
 
 	folderPathAbs := resolvePath(*tmplContext, path)
@@ -342,7 +342,7 @@ func walkDir(_ *templating.Runtime, ctx *templating.Context, path string) ([]str
 //   +{{ fsRemove "/path/to/file/or/folder" }}
 var fsRemoveFunc = modules.NewFunc("fsRemove", fsRemove)
 
-func fsRemove(_ *templating.Runtime, ctx *templating.Context, path string) string {
+func fsRemove(_ *gplt.Runtime, ctx *gplt.Context, path string) string {
 	tmplContext := ctx.Get(context.TemplateContextKey).(*context.TemplateContext)
 
 	filePathAbs := resolvePath(*tmplContext, path)
@@ -365,7 +365,7 @@ func fsRemove(_ *templating.Runtime, ctx *templating.Context, path string) strin
 // @returns string
 var joinPathFunc = modules.NewFunc("joinPath", joinPath)
 
-func joinPath(_ *templating.Runtime, _ *templating.Context, paths ...string) string {
+func joinPath(_ *gplt.Runtime, _ *gplt.Context, paths ...string) string {
 	return filepath.Join(paths...)
 }
 
@@ -375,7 +375,7 @@ func joinPath(_ *templating.Runtime, _ *templating.Context, paths ...string) str
 // @returns string
 var basePathFunc = modules.NewFunc("basePath", basePath)
 
-func basePath(_ *templating.Runtime, _ *templating.Context, path string) string {
+func basePath(_ *gplt.Runtime, _ *gplt.Context, path string) string {
 	return filepath.Base(path)
 }
 
@@ -385,7 +385,7 @@ func basePath(_ *templating.Runtime, _ *templating.Context, path string) string 
 // @returns string
 var pathDirFunc = modules.NewFunc("pathDir", pathDir)
 
-func pathDir(_ *templating.Runtime, _ *templating.Context, path string) string {
+func pathDir(_ *gplt.Runtime, _ *gplt.Context, path string) string {
 	return filepath.Dir(path)
 }
 
@@ -395,7 +395,7 @@ func pathDir(_ *templating.Runtime, _ *templating.Context, path string) string {
 // @returns string
 var fileExtFunc = modules.NewFunc("fileExt", fileExt)
 
-func fileExt(_ *templating.Runtime, _ *templating.Context, path string) string {
+func fileExt(_ *gplt.Runtime, _ *gplt.Context, path string) string {
 	return filepath.Ext(path)
 }
 
@@ -407,7 +407,7 @@ func fileExt(_ *templating.Runtime, _ *templating.Context, path string) string {
 // @returns error
 var absPathFunc = modules.NewFunc("absPath", absPath)
 
-func absPath(_ *templating.Runtime, _ *templating.Context, path string) (string, error) {
+func absPath(_ *gplt.Runtime, _ *gplt.Context, path string) (string, error) {
 	abs, err := filepath.Abs(path)
 	if err != nil {
 		return "", err
@@ -425,7 +425,7 @@ func absPath(_ *templating.Runtime, _ *templating.Context, path string) (string,
 // @returns error
 var relPathFunc = modules.NewFunc("relPath", relPath)
 
-func relPath(_ *templating.Runtime, _ *templating.Context, basePath string, targetPath string) (string, error) {
+func relPath(_ *gplt.Runtime, _ *gplt.Context, basePath string, targetPath string) (string, error) {
 	rel, err := filepath.Rel(basePath, targetPath)
 	if err != nil {
 		return "", err
