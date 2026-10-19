@@ -10,6 +10,9 @@ usage() {
 [[ $# -eq 2 ]] || usage
 
 module_dir="${1#./}"
+while [[ "$module_dir" == */ ]]; do
+    module_dir="${module_dir%/}"
+done
 version="$2"
 
 # Accept semantic versions such as v1.0.0 and v1.2.0-rc.1.
