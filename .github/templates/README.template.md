@@ -1,3 +1,11 @@
++{{- import "commands" "./commands" -}}
+
++{{- import "contents" "./contents" -}}
+
++{{- $cmds := call "commands.renderCommandDocs" -}}
+
++{{- $cmdContents := call "contents.indentTabs" (call "contents.renderContentSection" $cmds 3) 1 -}}
+
 <p align="center">
     <img width="256" height="256" alt="Goplater Logo" src="https://github.com/codeshelldev/goplater/raw/refs/heads/main/logo/goplater.png">
 </p>
@@ -8,14 +16,11 @@
 
 ## Contents
 
+<!-- prettier-ignore -->
 - [Getting Started](#getting-started)
 - [Usage](#usage)
-  - [File Functions](#file-functions)
-  - [String Functions](#string-functions)
-  - [Math Functions](#math-functions)
-  - [Container Functions](#container-functions)
-  - [Parser Functions](#parser-functions)
-  - [Advanced Functions](#advanced-functions)
+- [Standard Library](#standard-library)
++{{ $cmdContents }}
 - [Contributing](#contributing)
 - [Support](#support)
 - [License](#license)
@@ -40,17 +45,22 @@ This will create a new file called `README.md` in your current working directory
 
 ### Format
 
-Goplater uses Go's [builtin templating library](https://pkg.go.dev/text/template) therefor the syntax should be consistent with other projects.
+Goplater uses Go's [built-in templating library](https://pkg.go.dev/text/template) therefore the syntax should be consistent with other projects.
 
 **Example:**
 
 ```
-File Content: +​{​{​{ read "./myfile.txt" }​}​}
+File Content: +​{​​{ read "./myfile.txt" }​}​
 ```
 
-+{{- import "commands" "./commands.gplt" -}}
+## Standard Library
 
-+{{- call "commands.renderCommandDocs" -}}
+Goplater includes a large and growing selection of built-in functions for use in your templates.
+Apart from basic operations goplater includes modules such as json, yaml, html, markdown, http and regex.
+
+Furthermore it is easily extendable both with custom modules and your own goplater function files, that can easily be imported and shared!
+
++{{ $cmds }}
 
 ## Contributing
 
