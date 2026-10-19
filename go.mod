@@ -4,25 +4,25 @@ go 1.27.2
 
 require (
 	github.com/codeshelldev/goplater/pkg/gplt v0.0.1
-	github.com/codeshelldev/goplater/pkg/gplt/collections v0.0.0-20261019173735-3c7bd72f0382
+	github.com/codeshelldev/goplater/pkg/gplt/collections v0.0.1
 	github.com/spf13/cobra v1.10.2
 )
 
 require (
 	github.com/PuerkitoBio/goquery v1.13.0 // indirect
 	github.com/andybalholm/cascadia v1.3.5 // indirect
-	github.com/codeshelldev/goplater/pkg/gplt/modules/base64 v0.0.0-20261019173735-3c7bd72f0382 // indirect
-	github.com/codeshelldev/goplater/pkg/gplt/modules/container v0.0.0-20261019173735-3c7bd72f0382 // indirect
-	github.com/codeshelldev/goplater/pkg/gplt/modules/conversion v0.0.0-20261019173735-3c7bd72f0382 // indirect
-	github.com/codeshelldev/goplater/pkg/gplt/modules/debug v0.0.0-20261019173735-3c7bd72f0382 // indirect
-	github.com/codeshelldev/goplater/pkg/gplt/modules/html v0.0.0-20261019173735-3c7bd72f0382 // indirect
-	github.com/codeshelldev/goplater/pkg/gplt/modules/http v0.0.0-20261019173735-3c7bd72f0382 // indirect
-	github.com/codeshelldev/goplater/pkg/gplt/modules/json v0.0.0-20261019173735-3c7bd72f0382 // indirect
-	github.com/codeshelldev/goplater/pkg/gplt/modules/markdown v0.0.0-20261019173735-3c7bd72f0382 // indirect
-	github.com/codeshelldev/goplater/pkg/gplt/modules/math v0.0.0-20261019173735-3c7bd72f0382 // indirect
-	github.com/codeshelldev/goplater/pkg/gplt/modules/regex v0.0.0-20261019173735-3c7bd72f0382 // indirect
-	github.com/codeshelldev/goplater/pkg/gplt/modules/strings v0.0.0-20261019173735-3c7bd72f0382 // indirect
-	github.com/codeshelldev/goplater/pkg/gplt/modules/yaml v0.0.0-20261019173735-3c7bd72f0382 // indirect
+	github.com/codeshelldev/goplater/pkg/gplt/modules/base64 v0.0.1 // indirect
+	github.com/codeshelldev/goplater/pkg/gplt/modules/container v0.0.1 // indirect
+	github.com/codeshelldev/goplater/pkg/gplt/modules/conversion v0.0.1 // indirect
+	github.com/codeshelldev/goplater/pkg/gplt/modules/debug v0.0.1 // indirect
+	github.com/codeshelldev/goplater/pkg/gplt/modules/html v0.0.1 // indirect
+	github.com/codeshelldev/goplater/pkg/gplt/modules/http v0.0.1 // indirect
+	github.com/codeshelldev/goplater/pkg/gplt/modules/json v0.0.1 // indirect
+	github.com/codeshelldev/goplater/pkg/gplt/modules/markdown v0.0.1 // indirect
+	github.com/codeshelldev/goplater/pkg/gplt/modules/math v0.0.1 // indirect
+	github.com/codeshelldev/goplater/pkg/gplt/modules/regex v0.0.1 // indirect
+	github.com/codeshelldev/goplater/pkg/gplt/modules/strings v0.0.1 // indirect
+	github.com/codeshelldev/goplater/pkg/gplt/modules/yaml v0.0.1 // indirect
 	github.com/google/uuid v1.6.0 // indirect
 	github.com/inconshreveable/mousetrap v1.1.0 // indirect
 	github.com/spf13/pflag v1.0.10 // indirect
