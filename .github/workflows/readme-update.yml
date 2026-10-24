@@ -18,7 +18,7 @@ jobs:
     name: Update
     with:
       path: .github/templates/README.template.md
-      source: README.md
+      output: README.md
       commit-and-push: false
       commit-message: "chore: generate README.md"
       pr-assignees: codeshelldev
