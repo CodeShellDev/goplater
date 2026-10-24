@@ -14,6 +14,7 @@ permissions:
 
 jobs:
   prepare:
+    name: Prepare
     runs-on: ubuntu-latest
 
     steps:
