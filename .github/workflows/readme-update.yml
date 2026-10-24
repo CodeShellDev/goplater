@@ -23,6 +23,7 @@ jobs:
       commit-message: "auto: update README.md"
       branch: "auto/update-README.md-${{ github.run_number }}"
       pr-assignees: codeshelldev
+      pr-title: "auto: update README.md"
       client-id: ${{ vars.GOPLATER_APP_CLIENT_ID }}
     secrets:
       app_private_key: ${{ secrets.GOPLATER_APP_PRIVATE_KEY }}
