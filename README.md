@@ -1,5 +1,3 @@
-Testing one, two, three...
-
 <p align="center">
     <img width="256" height="256" alt="Goplater Logo" src="https://github.com/codeshelldev/goplater/raw/refs/heads/main/logo/goplater.png">
 </p>
