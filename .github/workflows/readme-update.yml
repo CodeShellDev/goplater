@@ -14,7 +14,7 @@ permissions:
 
 jobs:
   update:
-    uses: codeshelldev/goplater-action/.github/workflows/goplater-bot.yml@v0.0.6
+    uses: codeshelldev/goplater-action/.github/workflows/goplater-bot.yml@main
     name: Update
     with:
       path: .github/templates/README.template.md
