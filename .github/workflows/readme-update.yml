@@ -8,15 +8,16 @@ on:
       - examples/**
       - .github/templates/README.template.md
 
-jobs:
-  build:
-    runs-on: ubuntu-latest
-    name: Template README.template.md
+permissions:
+  contents: write
+  pull-requests: write
 
-    steps:
-      - uses: actions/checkout@v7
-      - name: Run goplater
-        uses: codeshelldev/goplater-action@v0.0.4
-        with:
-          source: .github/templates/README.template.md
-          output: README.md
+jobs:
+  update:
+    uses: codeshelldev/goplater-action/.github/workflows/goplater-bot.yml@main
+    name: Update
+    with:
+      path: .github/templates/README.template.md
+      commit-and-push: false
+      commit-message: "chore: generate README.md"
+      pr-assignees: codeshelldev
