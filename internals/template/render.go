@@ -7,6 +7,8 @@ import (
 	"github.com/codeshelldev/goplater/pkg/gplt/collections"
 	"github.com/codeshelldev/goplater/pkg/gplt/resolvers"
 	"github.com/codeshelldev/goplater/pkg/gplt/types"
+	"github.com/codeshelldev/goplater/pkg/parser"
+	"github.com/codeshelldev/goplater/pkg/parser/processors/blanklines"
 )
 
 func (t *Templater) Render(content string, ctx *context.TemplateContext) (string, error) {
@@ -22,11 +24,20 @@ func templateContent(content string, ctx *context.TemplateContext) (string, erro
 }
 
 func templateStr(str string, tmplContext *context.TemplateContext) (string, error) {
+	p := parser.New()
+
+	blankLines := tmplContext.Options.TrimMaxBlankLines
+	if (blankLines >= 0) {
+		p.Use(blanklines.NewWith(
+			blanklines.WithMaxBlankLines(blankLines),
+		))
+	}
+
 	e := gplt.NewEngine()
 
 	e.Use(funcs.Module)
 
-	e.UseSafeModules(collections.All...)
+	e.UseSafe(collections.All...)
 	e.SetResolver(
 		gplt.NewResolverChain(
 			funcs.NewFsResolver(tmplContext),
@@ -41,5 +52,6 @@ func templateStr(str string, tmplContext *context.TemplateContext) (string, erro
 		Delims: types.Delims{
 			Left: "+{{", Right: "}}",
 		},
+		PreparseFunc: p.Process,
 	}, ctx)
 }

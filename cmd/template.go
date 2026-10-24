@@ -36,6 +36,8 @@ func init() {
 	templateCmd.Flags().StringVarP(&templateOptions.Output, "output", "o", ".", "Output directory for templated files")
 	templateCmd.Flags().StringVarP(&templateOptions.Source, "source", "s", ".", "Source directory containing files")
 
+	templateCmd.Flags().IntVar(&templateOptions.TrimMaxBlankLines, "trim-max-blank-lines", -1, "experimental: Max blank lines kept around non-output actions")
+
 	templateCmd.Flags().StringSliceVar(&templateOptions.AllowedOutputs, "allowed-outputs", []string{}, "Allowed output directories, including their subdirectories")
 	templateCmd.Flags().StringSliceVarP(&templateOptions.Match, "match", "m", []string{".*"}, "Regular expressions used to match files for processing")
 

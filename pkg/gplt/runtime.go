@@ -202,13 +202,8 @@ func (rt *Runtime) Params(name string) ([]string, bool) {
 }
 
 func (rt *Runtime) Render(name, body string, data any, ctx *Context) (string, error) {
-	ctx.Set(InputContextKey, TemplateInputContext{Data: data, Body: body})
-	ctx.Set(CurrentTreeKey, TreeScope{Name: "root", Trusted: true})
-
-	t := rt.engine.NewTemplate(name, rt.engineOptions.Delims)
-	t.Funcs(rt.FuncMap(ctx, true))
-
-	_, err := t.Parse(body)
+	t, err := rt.PrepareRender(name, body, data, ctx)
+	
 	if err != nil {
 		return "", err
 	}
@@ -224,4 +219,25 @@ func (rt *Runtime) Render(name, body string, data any, ctx *Context) (string, er
 	var buf bytes.Buffer
 	err = t.Execute(&buf, data)
 	return buf.String(), err
+}
+
+func (rt *Runtime) PrepareRender(name, body string, data any, ctx *Context) (*template.Template, error) {
+	ctx.Set(InputContextKey, TemplateInputContext{Data: data, Body: body})
+	ctx.Set(CurrentTreeKey, TreeScope{Name: "root", Trusted: true})
+
+	t := rt.engine.NewTemplate(name, rt.engineOptions.Delims)
+	t.Funcs(rt.FuncMap(ctx, true))
+
+	_, err := t.Parse(body)
+	if err != nil {
+		return nil, err
+	}
+
+	err = rt.engineOptions.PreparseFunc(t)
+
+	if err != nil {
+		return nil, err
+	}
+
+	return t, nil
 }

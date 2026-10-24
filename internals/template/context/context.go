@@ -3,19 +3,21 @@ package context
 import "github.com/codeshelldev/goplater/pkg/gplt"
 
 type TemplateOptions struct {
-	Root 			string
-	Output 			string
-	Source 			string
+	Root 				string
+	Output 				string
+	Source 				string
 
-	AllowedOutputs 	[]string
+	AllowedOutputs 		[]string
 
-	Match 			[]string
+	Match 				[]string
 
-	Recursive 		bool
-	Flatten 		bool
+	Recursive 			bool
+	Flatten 			bool
 
-	DryRun 			bool
-	IgnoreErrors 	bool
+	TrimMaxBlankLines 	int
+
+	DryRun 				bool
+	IgnoreErrors 		bool
 }
 
 type TemplateContext struct {

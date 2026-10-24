@@ -56,18 +56,22 @@ func parseSignature(name string) (base string, params []string, ok bool) {
 	if open == -1 || !strings.HasSuffix(name, ")") {
 		return "", nil, false
 	}
+
 	base = name[:open]
-	return base, splitParams(name[open+1 : len(name)-1]), true
+	return base, splitParams(name[open + 1:len(name) - 1]), true
 }
 
 func splitParams(raw string) []string {
 	if strings.TrimSpace(raw) == "" {
 		return nil
 	}
+
 	parts := strings.Split(raw, ",")
 	params := make([]string, 0, len(parts))
+
 	for _, p := range parts {
 		params = append(params, strings.TrimSpace(p))
 	}
+	
 	return params
 }

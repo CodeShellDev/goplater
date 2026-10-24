@@ -8,24 +8,21 @@ import (
 )
 
 type Engine struct {
-	modules 	[]modules.Module
-	safeModules []modules.Module // modules that are safe to be called from imported resources
-	resolver 	*ResolverChain
+	modules 		[]modules.Module
+	safeModules 	[]modules.Module // modules that are safe to be called from imported resources
+	resolver 		*ResolverChain
 }
 
 type EngineOptions struct {
-	Delims types.Delims
+	Delims 			types.Delims
+	PreparseFunc	func(t *template.Template) error
 }
 
 func NewEngine() *Engine { 
 	return &Engine{} 
 }
 
-func (e *Engine) Use(m modules.Module) { 
-	e.modules = append(e.modules, m) 
-}
-
-func (e *Engine) UseModules(m ...modules.Module) { 
+func (e *Engine) Use(m ...modules.Module) { 
 	e.modules = append(e.modules, m...) 
 }
 
@@ -33,11 +30,7 @@ func (e *Engine) GetModules() []modules.Module {
 	return modules.UniqueModules(e.modules) 
 }
 
-func (e *Engine) UseSafe(m modules.Module) { 
-	e.safeModules = append(e.safeModules, m) 
-}
-
-func (e *Engine) UseSafeModules(m ...modules.Module) { 
+func (e *Engine) UseSafe(m ...modules.Module) { 
 	e.safeModules = append(e.safeModules, m...) 
 }
 

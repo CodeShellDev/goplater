@@ -1,0 +1,65 @@
+package parser
+
+import (
+	"errors"
+	"text/template"
+	"text/template/parse"
+)
+
+type Document struct {
+	Name  string
+	Trees map[string]*parse.Tree
+}
+
+type Processor interface {
+	Name() string
+	Process(doc *Document) error
+}
+
+type Parser struct {
+	processors []Processor
+}
+
+func New() *Parser { return &Parser{} }
+
+func (p *Parser) Use(processors ...Processor) *Parser {
+	for _, proc := range processors {
+		if proc != nil {
+			p.processors = append(p.processors, proc)
+		}
+	}
+
+	return p
+}
+
+func (p *Parser) Process(t *template.Template) error {
+	if len(p.processors) == 0 {
+		return nil
+	}
+
+	doc := newDocument(t)
+
+	for _, proc := range p.processors {
+		err := proc.Process(doc)
+		if err != nil {
+			return errors.New("processor " + proc.Name() + ": " + err.Error())
+		}
+	}
+
+	return nil
+}
+
+func newDocument(t *template.Template) *Document {
+	doc := &Document{
+		Name:  t.Name(),
+		Trees: make(map[string]*parse.Tree),
+	}
+
+	for _, tmpl := range t.Templates() {
+		if tmpl.Tree != nil && tmpl.Tree.Root != nil {
+			doc.Trees[tmpl.Name()] = tmpl.Tree
+		}
+	}
+
+	return doc
+}
