@@ -33,69 +33,23 @@ func IsFile(path string) bool {
 	return false
 }
 
-func ResolveOutputPreserved(source, output string) string {
-	isDirOutput := strings.HasSuffix(output, "/")
-
-	if isDirOutput && output != "." {
-		// Add output directory and source directory starting at first unequal folder
-		sourceComponents := strings.SplitAfter(source, string(filepath.Separator))
-		outputComponents := strings.SplitAfter(output, string(filepath.Separator))
-
-		for i, component := range sourceComponents {
-			if component != outputComponents[i] {
-				sourceComponents = sourceComponents[i+1:]
-				break
-			}
-		}
-
-		source = strings.Join(sourceComponents, "")
-
-		return output + source
+func SafeRelative(base, path string) (string, error) {
+	baseAbs, err := filepath.Abs(base)
+	if err != nil {
+		return "", err
 	}
 
-	if output == "." {
-		return filepath.Join(output, filepath.Base(source))
+	pathAbs, err := filepath.Abs(path)
+	if err != nil {
+		return "", err
 	}
 
-	// Rename or overwrite file
-	return output
-}
-
-func ResolveOutput(source, output string) string {
-	isDirSource := strings.HasSuffix(source, "/")
-	isDirOutput := strings.HasSuffix(output, "/")
-
-	// Directory source
-	if isDirSource {
-		// Rename or overwrite
-		return output
+	relPath, err := filepath.Rel(baseAbs, pathAbs)
+	if err != nil {
+		return "", err
 	}
 
-	// File source
-	if isDirOutput || output == "." {
-		// Place inside output directory
-		return filepath.Join(output, filepath.Base(source))
-	}
-
-	// Rename or overwrite file
-	return output
-}
-
-func Relative(base, path string) (string, error) {
-	if !filepath.IsAbs(base) {
-		var err error
-		base, err = filepath.Abs(base)
-		
-		if err != nil {
-			return "", err
-		}
-	}
-
-	if filepath.IsAbs(path) {
-		return filepath.Clean(path), nil
-	}
-
-	return filepath.Join(base, path), nil
+	return relPath, nil
 }
 
 func IsInside(file, dir string) bool {
@@ -109,10 +63,10 @@ func IsInside(file, dir string) bool {
 		return false
 	}
 
-	rel, err := filepath.Rel(dir, file)
+	relPath, err := filepath.Rel(dir, file)
 	if err != nil {
 		return false
 	}
 
-	return rel == "." || (rel != ".." && !strings.HasPrefix(rel, ".." + string(filepath.Separator)))
+	return relPath == "." || (relPath != ".." && !strings.HasPrefix(relPath, ".." + string(filepath.Separator)))
 }

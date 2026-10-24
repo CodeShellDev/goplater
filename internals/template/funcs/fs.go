@@ -14,7 +14,7 @@ import (
 func isPathAllowed(path string, tmplContext *context.TemplateContext) bool {
 	allowed := false
 
-	for _, try := range tmplContext.Options.AllowedOutputFolders {
+	for _, try := range tmplContext.Options.AllowedOutputs {
 		if fsutils.IsInside(path, try) {
 			allowed = true
 		}
@@ -408,12 +408,12 @@ func fileExt(_ *gplt.Runtime, _ *gplt.Context, path string) string {
 var absPathFunc = modules.NewFunc("absPath", absPath)
 
 func absPath(_ *gplt.Runtime, _ *gplt.Context, path string) (string, error) {
-	abs, err := filepath.Abs(path)
+	absPath, err := filepath.Abs(path)
 	if err != nil {
 		return "", err
 	}
 
-	return abs, nil
+	return absPath, nil
 }
 
 // Returns a relative path that is lexically equivalent to targetPath when joined to basePath with an intervening separator.
@@ -426,10 +426,10 @@ func absPath(_ *gplt.Runtime, _ *gplt.Context, path string) (string, error) {
 var relPathFunc = modules.NewFunc("relPath", relPath)
 
 func relPath(_ *gplt.Runtime, _ *gplt.Context, basePath string, targetPath string) (string, error) {
-	rel, err := filepath.Rel(basePath, targetPath)
+	relPath, err := filepath.Rel(basePath, targetPath)
 	if err != nil {
 		return "", err
 	}
 
-	return rel, nil
+	return relPath, nil
 }

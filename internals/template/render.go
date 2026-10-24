@@ -2,7 +2,6 @@ package template
 
 import (
 	"github.com/codeshelldev/goplater/internals/template/context"
-	"github.com/codeshelldev/goplater/internals/template/core"
 	"github.com/codeshelldev/goplater/internals/template/funcs"
 	"github.com/codeshelldev/goplater/pkg/gplt"
 	"github.com/codeshelldev/goplater/pkg/gplt/collections"
@@ -13,8 +12,6 @@ import (
 func (t *Templater) Render(content string, ctx *context.TemplateContext) (string, error) {
     return templateContent(content, ctx)
 }
-
-var _ core.IRenderer = (*Templater)(nil)
 
 func templateContent(content string, ctx *context.TemplateContext) (string, error) {
 	normalized := content

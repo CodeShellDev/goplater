@@ -2,20 +2,24 @@ package template
 
 import (
 	"errors"
-	"fmt"
 	"os"
 	"path/filepath"
 
 	"github.com/codeshelldev/goplater/internals/template/context"
 	"github.com/codeshelldev/goplater/utils/fsutils"
+	"github.com/codeshelldev/goplater/utils/outputresolver"
 )
 
-func resolveOutput(source, output string, preserveStruct bool) string {
+func resolveOutput(root, source, output string, preserveStruct bool) (string, error) {
 	if preserveStruct {
-		return fsutils.ResolveOutputPreserved(source, output)
+		if root != "" {
+			return outputresolver.ResolveOutputPreserved(root, source, output)
+		}
+
+		return outputresolver.ResolveOutputInferred(source, output)
 	}
 
-	return fsutils.ResolveOutput(source, output)
+	return outputresolver.ResolveOutput(source, output), nil
 }
 
 func templateFile(ctx *context.TemplateContext) (string, error) {
@@ -42,62 +46,54 @@ func templateFile(ctx *context.TemplateContext) (string, error) {
 	return tmplStr, nil
 }
 
-func handleFile(ctx *context.TemplateContext) {
-	if !matchFile(ctx) {
-		if ctx.Options.Verbose {
-			fmt.Println("skipped", ctx.Path)
-		}
-		return
+func handleFile(ctx *context.TemplateContext) error {
+	output, err := resolveOutput(ctx.Options.Root, ctx.Path, ctx.Options.Output, !ctx.Options.Flatten)
+
+	if err != nil {
+		return err
 	}
 
-	if ctx.Options.Verbose {
-		fmt.Println("templating", ctx.Path)
-	}
+	ctx.OutputPath, err = filepath.Abs(output)
 
-	ctx.OutputPath, _= filepath.Abs(resolveOutput(ctx.Path, ctx.Options.Output, !ctx.Options.Flatten))
+	if err != nil {
+		return err
+	}
 
 	content, err := templateFile(ctx)
 
-	if err != nil && !ctx.Options.Supress {
-		fmt.Println("error templating:", err.Error())
-		return
+	if err != nil {
+		if !ctx.Options.IgnoreErrors {
+			return err
+		}
 	}
 
-	handleFileWrite(content, ctx)
+	return handleFileWrite(content, ctx)
 }
 
 func handleFileWrite(content string, ctx *context.TemplateContext) error {
 	filePathAbs, _ := filepath.Abs(ctx.OutputPath)
 
 	allowed := false
-	for _, try := range ctx.Options.AllowedOutputFolders {
+	for _, try := range ctx.Options.AllowedOutputs {
 		if fsutils.IsInside(filePathAbs, try) {
 			allowed = true
 		}
 	}
 
 	if !allowed {
-		absPath, _ := filepath.Abs(ctx.Path)
-		fmt.Println("error outputting " + absPath + " to " + filePathAbs)
+		return errors.New("not allowed to output to " + filePathAbs)
+	}
+
+	if ctx.Options.DryRun {
 		return nil
 	}
-
-	if ctx.Options.Verbose {
-		fmt.Println("writing to", filePathAbs)
-	}
-
+	
 	dir := filepath.Dir(filePathAbs)
-	err := os.MkdirAll(dir, 0755);
+	err := os.MkdirAll(dir, 0755)
 
 	if err != nil {
 		return err
 	}
 
-	err = os.WriteFile(filePathAbs, []byte(content), 0644)
-
-	if err != nil {
-		return err
-	}
-
-	return nil
+	return os.WriteFile(filePathAbs, []byte(content), 0644)
 }

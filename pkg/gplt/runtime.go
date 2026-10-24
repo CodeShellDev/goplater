@@ -152,7 +152,7 @@ func onlyWhitespace(node *parse.ListNode) error {
 		tn, ok := n.(*parse.TextNode)
 
 		if !ok {
-			return errors.New("found " + n.String() + "node")
+			return errors.New("found " + n.String() + " node")
 		}
 
 		if strings.TrimSpace(string(tn.Text)) != "" {

@@ -56,9 +56,9 @@ func resolvePath(ctx context.TemplateContext, path string) string {
 	var filePathAbs string
 
 	if isRel {
-		abs, _ := filepath.Abs(ctx.Invoker)
+		absPath, _ := filepath.Abs(ctx.Invoker)
 
-		filePathAbs = getAbsPathWithSource(path, filepath.Dir(abs))
+		filePathAbs = getAbsPathWithSource(path, filepath.Dir(absPath))
 	} else if isRelToSource {
 		path, _ = strings.CutPrefix(path, "~/")
 		path = "./" + path
@@ -84,7 +84,7 @@ func readFile(path string) (string, error) {
 func getAbsPathWithSource(path, source string) string {
 	sourceAbs, _ := filepath.Abs(source)
 
-	fullPath, _ := fsutils.Relative(sourceAbs, path)
+	fullPath, _ := fsutils.SafeRelative(sourceAbs, path)
 	
 	fullPath, _ = filepath.Abs(fullPath)
 

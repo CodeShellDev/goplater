@@ -2,10 +2,13 @@ package template
 
 import (
 	"io/fs"
+	"os"
 	"path/filepath"
 
 	"github.com/codeshelldev/goplater/internals/template/context"
 	"github.com/codeshelldev/goplater/utils/fsutils"
+	"github.com/codeshelldev/goplater/utils/printer"
+	"github.com/codeshelldev/goplater/utils/tree"
 )
 
 type Templater struct{}
@@ -19,32 +22,71 @@ func New() *Templater {
 }
 
 func run(ctx *context.TemplateContext) {
-	fullPath, _ := filepath.Abs(ctx.Path)
+	isDir := fsutils.IsDir(ctx.Path)
+	isFile := fsutils.IsFile(ctx.Path)
 	
-	isDir := fsutils.IsDir(fullPath)
-	isFile := fsutils.IsFile(fullPath)
-
 	ctx.Invoker = ctx.Path
 
 	if isDir {
+		t := tree.NewTree(os.Stdout, ctx.Path)
+
 		filepath.WalkDir(ctx.Path, func(path string, d fs.DirEntry, err error) error {
 			if err != nil {
 				return err
 			}
 
-			if !d.IsDir() {
-				newContext := ctx
-				newContext.Path = path
-				newContext.Invoker = path
-
-				handleFile(newContext)
-			} else if path != ctx.Path && !ctx.Options.Recursive {
-				return filepath.SkipDir
+			if d.IsDir() {
+				if path != ctx.Path && !ctx.Options.Recursive {
+					return filepath.SkipDir
+				}
+				return nil
 			}
 
+			absPath, _ := filepath.Abs(path)
+
+			newContext := *ctx
+			newContext.Path = absPath
+			newContext.Invoker = absPath
+
+			if !matchFile(&newContext) {
+				return nil
+			}
+
+			relPath, err := filepath.Rel(ctx.Path, path)
+			if err != nil {
+				return err
+			}
+
+			file := t.Add(relPath)
+
+			err = handleFile(&newContext)
+
+			if err != nil {
+				file.Fail(err)
+				return err
+			}
+
+			relOutput, err := fsutils.SafeRelative(ctx.Options.Source, newContext.OutputPath)
+
+			if err != nil {
+				file.Fail(err)
+				return err
+			}
+
+			if newContext.OutputPath != "" {
+				file.SetOutput(relOutput)
+			}
+
+			file.Success()
 			return nil
 		})
+
+		t.Start()
+		t.Close()
 	} else if isFile {
-		handleFile(ctx)
+		err := handleFile(ctx)
+		if err != nil {
+			printer.Error(err.Error())
+		}
 	}
 }

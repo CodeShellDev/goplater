@@ -2,13 +2,13 @@ package cmd
 
 import (
 	"errors"
-	"fmt"
 	"os"
+	"path/filepath"
 
 	"github.com/codeshelldev/goplater/internals/template"
 	tmplContext "github.com/codeshelldev/goplater/internals/template/context"
 	"github.com/codeshelldev/goplater/internals/template/core"
-	"github.com/codeshelldev/goplater/utils/fsutils"
+	"github.com/codeshelldev/goplater/utils/printer"
 
 	"github.com/spf13/cobra"
 )
@@ -28,20 +28,19 @@ var templater template.Templater = *template.New()
 func init() {
 	rootCmd.AddCommand(templateCmd)
 
-	templateCmd.Flags().BoolVarP(&templateOptions.Recursive, "recursive", "r", false, "recusively template files")
-	templateCmd.Flags().BoolVarP(&templateOptions.Flatten, "flatten", "f", false, "flatten output path: don't preserve source folder structure")
+	templateCmd.Flags().BoolVarP(&templateOptions.Recursive, "recursive", "r", false, "Recursively process files")
 
-	templateCmd.Flags().StringVarP(&templateOptions.Output, "output", "o", ".", "output path for templated files")
-	templateCmd.Flags().StringVarP(&templateOptions.Source, "source", "s", ".", "source path for local files")
+	templateCmd.Flags().BoolVarP(&templateOptions.Flatten, "flatten", "f", false, "Flatten output paths without preserving source directory structure")
 
-	templateCmd.Flags().StringSliceVar(&templateOptions.AllowedOutputFolders, "allowed-output-folders", []string{}, "allowed output folders (recursively)")
+	templateCmd.Flags().StringVar(&templateOptions.Root, "root", "", "Source root, output keeps paths relative to it (default: inferred)")
+	templateCmd.Flags().StringVarP(&templateOptions.Output, "output", "o", ".", "Output directory for templated files")
+	templateCmd.Flags().StringVarP(&templateOptions.Source, "source", "s", ".", "Source directory containing files")
 
-	templateCmd.Flags().StringSliceVarP(&templateOptions.Match, "match", "m", []string{".*"}, "regexes used for matching files to process")
+	templateCmd.Flags().StringSliceVar(&templateOptions.AllowedOutputs, "allowed-outputs", []string{}, "Allowed output directories, including their subdirectories")
+	templateCmd.Flags().StringSliceVarP(&templateOptions.Match, "match", "m", []string{".*"}, "Regular expressions used to match files for processing")
 
-	templateCmd.Flags().StringSliceVarP(&templateOptions.Whitespace, "whitespace", "w", []string{"l","t"}, "remove leading and trailing whitespace from files")
-
-	templateCmd.Flags().BoolVarP(&templateOptions.Verbose, "verbose", "v", false, "print additional information")
-	templateCmd.Flags().BoolVarP(&templateOptions.Supress, "ignore-errors", "i", false, "supress errors")
+	templateCmd.Flags().BoolVar(&templateOptions.DryRun, "dry-run", false, "Show what would be written, change nothing")
+	templateCmd.Flags().BoolVarP(&templateOptions.IgnoreErrors, "ignore-errors", "i", false, "Continue processing when errors occur")
 }
 
 func validate(cmd *cobra.Command, args []string) error {
@@ -51,7 +50,7 @@ func validate(cmd *cobra.Command, args []string) error {
 		_, err := os.Stat(args[0])
 
 		if errors.Is(err, os.ErrNotExist) {
-			return errors.New("invalid context path")
+			printer.Error("invalid context path: " + args[0])
 		}
 	}
 
@@ -61,21 +60,50 @@ func validate(cmd *cobra.Command, args []string) error {
 func run(cmd *cobra.Command, args []string) {
 	templateContext := tmplContext.New(templateOptions)
 
-	allowedOutputFolders := append(templateOptions.AllowedOutputFolders, templateOptions.Output)
+	allowedOutputFolders := append(templateOptions.AllowedOutputs, templateOptions.Output)
 
-	templateOptions.AllowedOutputFolders = []string{}
+	templateOptions.AllowedOutputs = []string{}
 
 	for _, path := range allowedOutputFolders {
-		absPath, err := fsutils.Relative(templateOptions.Source, path)
+		absPath := path
 
-		if err != nil {
-			fmt.Println("could not convert " + path +  " to absolute: " + err.Error())
+		if !filepath.IsAbs(path) {
+			var err error
+			absPath, err = filepath.Abs(path)
+
+			if err != nil {
+				printer.Error(err.Error())
+			}
 		}
 
-		templateOptions.AllowedOutputFolders = append(templateOptions.AllowedOutputFolders, absPath)
+		templateOptions.AllowedOutputs = append(templateOptions.AllowedOutputs, absPath)
 	}
 
-	templateContext.Path = args[0]
+	outputPathAbs, err := filepath.Abs(templateOptions.Output)
+
+	if err != nil {
+		printer.Error(err.Error())
+	}
+
+	templateOptions.Output = outputPathAbs
+
+	if templateOptions.Root != "" {
+		rootPathAbs, err := filepath.Abs(templateOptions.Root)
+
+		if err != nil {
+			printer.Error(err.Error())
+		}
+
+		templateOptions.Root = rootPathAbs
+	}
+
+	sourcePathAbs, err := filepath.Abs(args[0])
+
+	if err != nil {
+		printer.Error(err.Error())
+	}
+
+	templateContext.Path = sourcePathAbs
 
 	core.Renderer = &templater
 	core.Matcher = &templater
