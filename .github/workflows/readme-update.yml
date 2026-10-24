@@ -9,8 +9,14 @@ on:
       - .github/templates/README.template.md
 
 jobs:
-  update:
-    uses: codeshelldev/gh-actions/.github/workflows/readme-update.yml@main
-    name: Update
-    secrets:
-      GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  build:
+    runs-on: ubuntu-latest
+    name: Template README.template.md
+
+    steps:
+      - uses: actions/checkout@v7
+      - name: Run goplater
+        uses: codeshelldev/goplater-action@v0.0.2
+        with:
+          source: .github/templates/README.template.md
+          output: README.md
