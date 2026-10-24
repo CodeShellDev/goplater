@@ -13,20 +13,7 @@ permissions:
   pull-requests: write
 
 jobs:
-  prepare:
-    name: Prepare
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Generate Goplater App token
-        id: app-token
-        uses: actions/create-github-app-token@v3
-        with:
-          client-id: ${{ secrets.GOPLATER_APP_CLIENT_ID }}
-          private-key: ${{ secrets.GOPLATER_APP_PRIVATE_KEY }}
-
   update:
-    needs: prepare
     uses: codeshelldev/goplater-action/.github/workflows/goplater-bot.yml@main
     name: Update
     with:
@@ -36,5 +23,6 @@ jobs:
       commit-message: "auto: update README.md"
       branch: "auto/update-README.md-${{ github.run_number }}"
       pr-assignees: codeshelldev
+      client-id: ${{ vars.GOPLATER_APP_CLIENT_ID }}
     secrets:
-      token: ${{ needs.prepare.outputs.app-token }}
+      app_private_key: ${{ secrets.GOPLATER_APP_PRIVATE_KEY }}
