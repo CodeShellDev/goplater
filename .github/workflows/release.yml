@@ -44,7 +44,7 @@ jobs:
           cp LICENSE npm/
           cd npm/
           npm whoami
-          npm install --global npm@latest
+          npm --version
           npm version ${{ github.event.release.tag_name }} --no-git-tag-version
           npm stage publish --access public
         env:
