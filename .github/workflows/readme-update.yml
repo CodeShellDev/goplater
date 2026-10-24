@@ -16,7 +16,7 @@ jobs:
     steps:
       - uses: actions/checkout@v7
       - name: Run goplater
-        uses: codeshelldev/goplater-action@v0.0.3
+        uses: codeshelldev/goplater-action@v0.0.4
         with:
           source: .github/templates/README.template.md
           output: README.md
