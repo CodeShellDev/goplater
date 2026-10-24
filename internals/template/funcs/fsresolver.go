@@ -8,7 +8,6 @@ import (
 
 	"github.com/codeshelldev/goplater/internals/template/context"
 	"github.com/codeshelldev/goplater/pkg/gplt"
-	"github.com/codeshelldev/goplater/utils/fsutils"
 )
 
 type FsResolver struct {
@@ -82,11 +81,19 @@ func readFile(path string) (string, error) {
 }
 
 func getAbsPathWithSource(path, source string) string {
-	sourceAbs, _ := filepath.Abs(source)
+	if !filepath.IsAbs(source) {
+		var err error
 
-	fullPath, _ := fsutils.SafeRelative(sourceAbs, path)
-	
-	fullPath, _ = filepath.Abs(fullPath)
+		source, err = filepath.Abs(source)
+		
+		if err != nil {
+			return ""
+		}
+	}
 
-	return fullPath
+	if filepath.IsAbs(path) {
+		return filepath.Clean(path)
+	}
+
+	return filepath.Join(source, path)
 }
