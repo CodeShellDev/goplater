@@ -20,5 +20,6 @@ jobs:
       path: .github/templates/README.template.md
       output: README.md
       commit-and-push: false
-      commit-message: "chore: generate README.md"
+      commit-message: "auto: update README.md"
+      branch: "auto/update-README.md-${{ github.run_number }}"
       pr-assignees: codeshelldev
