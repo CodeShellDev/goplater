@@ -3,7 +3,7 @@ module github.com/codeshelldev/goplater
 go 1.27.2
 
 require (
-	github.com/codeshelldev/goplater/pkg/gplt v0.1.0
+	github.com/codeshelldev/goplater/pkg/gplt v0.1.1
 	github.com/codeshelldev/goplater/pkg/gplt/collections v0.0.2
 	github.com/codeshelldev/goplater/pkg/parser v0.1.0
 	github.com/spf13/cobra v1.10.2
@@ -22,7 +22,7 @@ require (
 	github.com/codeshelldev/goplater/pkg/gplt/modules/markdown v0.0.2 // indirect
 	github.com/codeshelldev/goplater/pkg/gplt/modules/math v0.0.2 // indirect
 	github.com/codeshelldev/goplater/pkg/gplt/modules/regex v0.0.2 // indirect
-	github.com/codeshelldev/goplater/pkg/gplt/modules/strings v0.0.2 // indirect
+	github.com/codeshelldev/goplater/pkg/gplt/modules/strings v0.0.3 // indirect
 	github.com/codeshelldev/goplater/pkg/gplt/modules/yaml v0.0.2 // indirect
 	github.com/google/uuid v1.6.0 // indirect
 	github.com/inconshreveable/mousetrap v1.1.0 // indirect

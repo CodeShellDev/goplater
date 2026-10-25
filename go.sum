@@ -2,8 +2,8 @@ github.com/PuerkitoBio/goquery v1.13.0 h1:mqHbjD7Jmnul4DTR24LKTjo1uUmHUh072kteGV
 github.com/PuerkitoBio/goquery v1.13.0/go.mod h1:Hip5mdBL8K2wEGKJdr27sRaNwIdDajmCwB/ExUPwW+g=
 github.com/andybalholm/cascadia v1.3.5 h1:RLjq12WJy58dN6eCIQrz0bAGZkztHWsEPFxP53Y7Ms8=
 github.com/andybalholm/cascadia v1.3.5/go.mod h1:BLRmbRjpEtNKieZOCCvYj4RqN+KRA41GBe/5O+G93kM=
-github.com/codeshelldev/goplater/pkg/gplt v0.1.0 h1:5xFs9Ck1uaYDKZbiGQq/JWvzOG/2XxKn1dXpd97F0fE=
-github.com/codeshelldev/goplater/pkg/gplt v0.1.0/go.mod h1:DTTE3ME09p9/HnnTTlR9zZYwzUDBRfHu1j1xJLy8cHg=
+github.com/codeshelldev/goplater/pkg/gplt v0.1.1 h1:nov5OHgEPeV5juywxuJAED3K/umPukjcXORVJREU6no=
+github.com/codeshelldev/goplater/pkg/gplt v0.1.1/go.mod h1:DTTE3ME09p9/HnnTTlR9zZYwzUDBRfHu1j1xJLy8cHg=
 github.com/codeshelldev/goplater/pkg/gplt/collections v0.0.2 h1:QpkD/ch9fSVXw3ZuvBQxiG+urESY6BJFsdrDmXLsVpc=
 github.com/codeshelldev/goplater/pkg/gplt/collections v0.0.2/go.mod h1:F9LttNaps8gOe/H+qvBF2dzjn417Ezc8Z1g16/2WLwY=
 github.com/codeshelldev/goplater/pkg/gplt/modules/base64 v0.0.2 h1:HvEb/wQrYRazpevXIClIJVXlZpNbBfFXqlxtUXumo1A=
@@ -26,8 +26,8 @@ github.com/codeshelldev/goplater/pkg/gplt/modules/math v0.0.2 h1:fhjDKm0TndfSkjl
 github.com/codeshelldev/goplater/pkg/gplt/modules/math v0.0.2/go.mod h1:yMZ7R225qrwlTGBhcArKqUFM5sXMCzpk0/PSxi7F2Mw=
 github.com/codeshelldev/goplater/pkg/gplt/modules/regex v0.0.2 h1:99yHYI7bgr8ju+OBCkfeak3cYWtasTRUKS3Ta67LM0g=
 github.com/codeshelldev/goplater/pkg/gplt/modules/regex v0.0.2/go.mod h1:f2RjVBPaZrKYPqFhjpLG1IGHbk89pkeYGJziVfqW2SA=
-github.com/codeshelldev/goplater/pkg/gplt/modules/strings v0.0.2 h1:oYwKdTp7ngXSZcYv8tjJGqGXJfGtIRuDcTOZJ/xjmd0=
-github.com/codeshelldev/goplater/pkg/gplt/modules/strings v0.0.2/go.mod h1:jro9BEv7XJbehm/fSPBNcQu7YPJgt6Gd7jn9tz1s9BE=
+github.com/codeshelldev/goplater/pkg/gplt/modules/strings v0.0.3 h1:kztOy+ISIXlnm6OAGm/7CLL3L62aeIx1jk2PhO6eogk=
+github.com/codeshelldev/goplater/pkg/gplt/modules/strings v0.0.3/go.mod h1:jro9BEv7XJbehm/fSPBNcQu7YPJgt6Gd7jn9tz1s9BE=
 github.com/codeshelldev/goplater/pkg/gplt/modules/yaml v0.0.2 h1:Oe3Rqi5q/8siphknxODAPknr9IArHL4JEtnon79Iuq8=
 github.com/codeshelldev/goplater/pkg/gplt/modules/yaml v0.0.2/go.mod h1:tnjB3LYz9jR1X8kwzsx97bJUOTZYMZPeTBNRIwFbubU=
 github.com/codeshelldev/goplater/pkg/parser v0.1.0 h1:vQfYmjUftAbWl/nsm8FnPm1PngT6X/qnaAe4/iOVmMU=
