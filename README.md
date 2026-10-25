@@ -69,7 +69,7 @@ Apart from basic operations goplater includes modules such as json, yaml, html, 
 
 Furthermore it is easily extendable both with custom modules and your own goplater function files, that can easily be imported and shared!
 
-<h3><a href="https://pkg.go.dev/github.com/codeshelldev/goplater/goplater/internals/template/funcs/fs">fs</a></h3>
+<h3><a href="https://github.com/codeshelldev/goplater/blob/main/internals/template/funcs/fs.go">fs</a></h3>
 
 
 <table width="100%">
@@ -354,7 +354,7 @@ The returned path will always be relative to basePath, even if basePath and targ
 
 
 </td></tr></table>
-<h3><a href="https://pkg.go.dev/github.com/codeshelldev/goplater/goplater/internals/template/funcs/outputto">outputto</a></h3>
+<h3><a href="https://github.com/codeshelldev/goplater/blob/main/internals/template/funcs/outputto.go">outputto</a></h3>
 
 
 <table width="100%">
@@ -365,7 +365,7 @@ Errors if path is not allowed.</p>
 
 
 </td></tr></table>
-<h3><a href="https://pkg.go.dev/github.com/codeshelldev/goplater/goplater/pkg/gplt/modules/base64/base64">base64</a></h3>
+<h3><a href="https://github.com/codeshelldev/goplater/blob/main/pkg/gplt/modules/base64/base64.go">base64</a></h3>
 
 
 <table width="100%">
@@ -384,7 +384,7 @@ Errors if path is not allowed.</p>
 
 
 </td></tr></table>
-<h3><a href="https://pkg.go.dev/github.com/codeshelldev/goplater/goplater/pkg/gplt/modules/container/container">container</a></h3>
+<h3><a href="https://github.com/codeshelldev/goplater/blob/main/pkg/gplt/modules/container/container.go">container</a></h3>
 
 
 <table width="100%">
@@ -518,7 +518,7 @@ Currently only supports string keys!</p>
 </details>
 
 </td></tr></table>
-<h3><a href="https://pkg.go.dev/github.com/codeshelldev/goplater/goplater/pkg/gplt/modules/conversion/conversion">conversion</a></h3>
+<h3><a href="https://github.com/codeshelldev/goplater/blob/main/pkg/gplt/modules/conversion/conversion.go">conversion</a></h3>
 
 
 <table width="100%">
@@ -564,7 +564,7 @@ Currently only supports string keys!</p>
 
 
 </td></tr></table>
-<h3><a href="https://pkg.go.dev/github.com/codeshelldev/goplater/goplater/pkg/gplt/modules/core/globals">globals</a></h3>
+<h3><a href="https://github.com/codeshelldev/goplater/blob/main/pkg/gplt/modules/core/globals.go">globals</a></h3>
 
 
 <table width="100%">
@@ -592,7 +592,7 @@ Currently only supports string keys!</p>
 
 
 </td></tr></table>
-<h3><a href="https://pkg.go.dev/github.com/codeshelldev/goplater/goplater/pkg/gplt/modules/core/import">import</a></h3>
+<h3><a href="https://github.com/codeshelldev/goplater/blob/main/pkg/gplt/modules/core/import.go">import</a></h3>
 
 
 <table width="100%">
@@ -622,7 +622,7 @@ The fs resolver is only available as an internal module and does not ship with t
 </details>
 
 </td></tr></table>
-<h3><a href="https://pkg.go.dev/github.com/codeshelldev/goplater/goplater/pkg/gplt/modules/core/return">return</a></h3>
+<h3><a href="https://github.com/codeshelldev/goplater/blob/main/pkg/gplt/modules/core/return.go">return</a></h3>
 
 
 <table width="100%">
@@ -669,7 +669,7 @@ The fs resolver is only available as an internal module and does not ship with t
 
 
 </td></tr></table>
-<h3><a href="https://pkg.go.dev/github.com/codeshelldev/goplater/goplater/pkg/gplt/modules/debug/debug">debug</a></h3>
+<h3><a href="https://github.com/codeshelldev/goplater/blob/main/pkg/gplt/modules/debug/debug.go">debug</a></h3>
 
 
 <table width="100%">
@@ -679,7 +679,7 @@ The fs resolver is only available as an internal module and does not ship with t
 
 
 </td></tr></table>
-<h3><a href="https://pkg.go.dev/github.com/codeshelldev/goplater/goplater/pkg/gplt/modules/html/html">html</a></h3>
+<h3><a href="https://github.com/codeshelldev/goplater/blob/main/pkg/gplt/modules/html/html.go">html</a></h3>
 
 
 <table width="100%">
@@ -752,7 +752,7 @@ The fs resolver is only available as an internal module and does not ship with t
 
 
 </td></tr></table>
-<h3><a href="https://pkg.go.dev/github.com/codeshelldev/goplater/goplater/pkg/gplt/modules/http/http">http</a></h3>
+<h3><a href="https://github.com/codeshelldev/goplater/blob/main/pkg/gplt/modules/http/http.go">http</a></h3>
 
 
 <table width="100%">
@@ -773,7 +773,7 @@ Throws error instead of outputting it.</p>
 
 
 </td></tr></table>
-<h3><a href="https://pkg.go.dev/github.com/codeshelldev/goplater/goplater/pkg/gplt/modules/json/json">json</a></h3>
+<h3><a href="https://github.com/codeshelldev/goplater/blob/main/pkg/gplt/modules/json/json.go">json</a></h3>
 
 
 <table width="100%">
@@ -792,7 +792,7 @@ Throws error instead of outputting it.</p>
 
 
 </td></tr></table>
-<h3><a href="https://pkg.go.dev/github.com/codeshelldev/goplater/goplater/pkg/gplt/modules/markdown/markdown">markdown</a></h3>
+<h3><a href="https://github.com/codeshelldev/goplater/blob/main/pkg/gplt/modules/markdown/markdown.go">markdown</a></h3>
 
 
 <table width="100%">
@@ -1000,7 +1000,7 @@ Throws error instead of outputting it.</p>
 
 
 </td></tr></table>
-<h3><a href="https://pkg.go.dev/github.com/codeshelldev/goplater/goplater/pkg/gplt/modules/math/funcs">funcs</a></h3>
+<h3><a href="https://github.com/codeshelldev/goplater/blob/main/pkg/gplt/modules/math/funcs.go">funcs</a></h3>
 
 
 <table width="100%">
@@ -1082,7 +1082,7 @@ Throws error instead of outputting it.</p>
 
 
 </td></tr></table>
-<h3><a href="https://pkg.go.dev/github.com/codeshelldev/goplater/goplater/pkg/gplt/modules/math/operators">operators</a></h3>
+<h3><a href="https://github.com/codeshelldev/goplater/blob/main/pkg/gplt/modules/math/operators.go">operators</a></h3>
 
 
 <table width="100%">
@@ -1128,7 +1128,7 @@ Throws error instead of outputting it.</p>
 
 
 </td></tr></table>
-<h3><a href="https://pkg.go.dev/github.com/codeshelldev/goplater/goplater/pkg/gplt/modules/regex/regex">regex</a></h3>
+<h3><a href="https://github.com/codeshelldev/goplater/blob/main/pkg/gplt/modules/regex/regex.go">regex</a></h3>
 
 
 <table width="100%">
@@ -1174,7 +1174,7 @@ Throws error instead of outputting it.</p>
 
 
 </td></tr></table>
-<h3><a href="https://pkg.go.dev/github.com/codeshelldev/goplater/goplater/pkg/gplt/modules/strings/strings">strings</a></h3>
+<h3><a href="https://github.com/codeshelldev/goplater/blob/main/pkg/gplt/modules/strings/strings.go">strings</a></h3>
 
 
 <table width="100%">
@@ -1268,7 +1268,7 @@ Throws error instead of outputting it.</p>
 
 
 <table width="100%">
-<tr><th align="left"><h4><code>split(str string, sub string, sep string) []string</code></h4></th>
+<tr><th align="left"><h4><code>split(str string, sep string) []string</code></h4></th>
 </tr><tr><td>
 <p>Split a string by the given seperator.</p>
 
@@ -1286,9 +1286,27 @@ Throws error instead of outputting it.</p>
 
 
 <table width="100%">
+<tr><th align="left"><h4><code>afterLast(str string, sub string) string</code></h4></th>
+</tr><tr><td>
+<p>Returns the string after the last occurrence of the given substring.</p>
+
+
+</td></tr></table>
+
+
+<table width="100%">
 <tr><th align="left"><h4><code>before(str string, sub string) string</code></h4></th>
 </tr><tr><td>
 <p>Returns the string before the given substring in a string.</p>
+
+
+</td></tr></table>
+
+
+<table width="100%">
+<tr><th align="left"><h4><code>beforeLast(str string, sub string) string</code></h4></th>
+</tr><tr><td>
+<p>Returns the string before the last occurrence of the given substring.</p>
 
 
 </td></tr></table>
@@ -1346,7 +1364,7 @@ Throws error instead of outputting it.</p>
 
 
 </td></tr></table>
-<h3><a href="https://pkg.go.dev/github.com/codeshelldev/goplater/goplater/pkg/gplt/modules/yaml/yaml">yaml</a></h3>
+<h3><a href="https://github.com/codeshelldev/goplater/blob/main/pkg/gplt/modules/yaml/yaml.go">yaml</a></h3>
 
 
 <table width="100%">
