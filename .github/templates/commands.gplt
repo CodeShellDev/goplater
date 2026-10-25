@@ -20,7 +20,7 @@
 +{{- $decls := .declarations }}
 +{{- $level := .level -}}
 
-<h+{{ sub $level 1 }}><a href="+{{ concat "https://pkg.go.dev/github.com/codeshelldev/goplater/" (after $pathNoExt "goplater/" ) }}">+{{ $filename }}</a></h+{{ sub $level 1 }}>
+<h+{{ sub $level 1 }}><a href="+{{ concat "https://github.com/codeshelldev/goplater/blob/" (after .path "goplater/" ) }}">+{{ $filename }}</a></h+{{ sub $level 1 }}>
 +{{ range $decl := $decls -}}
 
     +{{ call "renderCommand" $decl $level }}
