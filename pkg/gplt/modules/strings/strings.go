@@ -154,7 +154,6 @@ func replace(_ *gplt.Runtime, _ *gplt.Context, str string, sub string, replaceWi
 // Split a string by the given seperator.
 //
 // @param str string
-// @param sub string
 // @param sep string
 // @returns []string
 var splitFunc = modules.NewFunc("split", split)
@@ -171,13 +170,11 @@ func split(_ *gplt.Runtime, _ *gplt.Context, str string, sep string) []string  {
 var afterFunc = modules.NewFunc("after", after)
 
 func after(_ *gplt.Runtime, _ *gplt.Context, str string, sub string) string  {
-	substrings := strings.SplitN(str, sub, 2)
-
-	if len(substrings) < 2 {
+	_, a, found := strings.Cut(str, sub)
+	if !found {
 		return str
 	}
-
-	return substrings[1]
+	return a
 }
 
 // Returns the string before the given substring in a string.
@@ -188,13 +185,11 @@ func after(_ *gplt.Runtime, _ *gplt.Context, str string, sub string) string  {
 var beforeFunc = modules.NewFunc("before", before)
 
 func before(_ *gplt.Runtime, _ *gplt.Context, str string, sub string) string  {
-	substrings := strings.SplitN(str, sub, 2)
-
-	if len(substrings) < 2 {
+	b, _, found := strings.Cut(str, sub)
+	if !found {
 		return str
 	}
-
-	return substrings[1]
+	return b
 }
 
 // Returns the substring between the start and end substring.
