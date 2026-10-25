@@ -15,9 +15,9 @@
 +{{ end }}
 
 +{{ define "renderCommandSection(path, declarations, level)" }}
-+{{- $pathNoExt := cutSuffix .path ".go" }}
++{{- $pathNoExt := cutSuffix .path ".go" -}}
 +{{- $filename := basePath $pathNoExt -}}
-+{{- $decls := .declarations }}
++{{- $decls := .declarations -}}
 +{{- $level := .level -}}
 
 <h+{{ sub $level 1 }}><a href="+{{ concat "https://github.com/codeshelldev/goplater/blob/" (after .path "goplater/" ) }}">+{{ $filename }}</a></h+{{ sub $level 1 }}>
