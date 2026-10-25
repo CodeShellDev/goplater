@@ -27,9 +27,11 @@ var Module = modules.NewModule(
 
 	splitFunc, 
 
-	afterFunc, 
-	beforeFunc, 
-	betweenFunc, 
+	afterFunc,
+	afterLastFunc,
+	beforeFunc,
+	beforeLastFunc,
+	betweenFunc,
 
 	cutPrefixFunc,
 	cutSuffixFunc,
@@ -177,6 +179,21 @@ func after(_ *gplt.Runtime, _ *gplt.Context, str string, sub string) string  {
 	return a
 }
 
+// Returns the string after the last occurrence of the given substring.
+//
+// @param str string
+// @param sub string
+// @returns string
+var afterLastFunc = modules.NewFunc("afterLast", afterLast)
+
+func afterLast(_ *gplt.Runtime, _ *gplt.Context, str string, sub string) string {
+	i := strings.LastIndex(str, sub)
+	if i == -1 {
+		return str
+	}
+	return str[i + len(sub):]
+}
+
 // Returns the string before the given substring in a string.
 //
 // @param str string
@@ -190,6 +207,21 @@ func before(_ *gplt.Runtime, _ *gplt.Context, str string, sub string) string  {
 		return str
 	}
 	return b
+}
+
+// Returns the string before the last occurrence of the given substring.
+//
+// @param str string
+// @param sub string
+// @returns string
+var beforeLastFunc = modules.NewFunc("beforeLast", beforeLast)
+
+func beforeLast(_ *gplt.Runtime, _ *gplt.Context, str string, sub string) string {
+	i := strings.LastIndex(str, sub)
+	if i == -1 {
+		return str
+	}
+	return str[:i]
 }
 
 // Returns the substring between the start and end substring.
