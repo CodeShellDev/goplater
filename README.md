@@ -98,7 +98,7 @@ Run `npm install my-app`
 	- [http](#http)
 	- [json](#json)
 	- [markdown](#markdown)
-	- [funcs](#funcs)
+	- [formulas](#formulas)
 	- [operators](#operators)
 	- [regex](#regex)
 	- [strings](#strings)
@@ -214,8 +214,10 @@ Browse the packages on [pkg.go.dev](https://pkg.go.dev/github.com/CodeShellDev/g
 
 Use Goplater in your CI/CD workflows to generate files automatically.
 
-- **[Goplater GitHub Action](https://github.com/CodeShellDev/goplater-action)** — render templates directly in your GitHub Actions workflows.
-- **[Goplater Bot](https://github.com/CodeShellDev/goplater-action/blob/main/.github/workflows/goplater-bot.yml)** — automate file generation in a repository and have the results submitted as a pull request or pushed as a commit.
+- **[Goplater GitHub Action](https://github.com/CodeShellDev/goplater-action)**: render templates directly in your GitHub Actions workflows.
+- **[Goplater Bot](https://github.com/CodeShellDev/goplater-action/blob/main/.github/workflows/goplater-bot.yml)**: automate file generation in a repository and have the results submitted as a pull request or pushed as a commit.
+
+We use [Goplater Bot](https://github.com/CodeShellDev/goplater-action/blob/main/.github/workflows/goplater-bot.yml) as well, check him out [PR #20](https://github.com/CodeShellDev/goplater/pull/20)!
 
 ## Standard Library
 
@@ -1171,7 +1173,7 @@ Throws error instead of outputting it.</p>
 
 
 </td></tr></table>
-<h3><a href="https://github.com/codeshelldev/goplater/blob/main/pkg/gplt/modules/math/funcs.go">funcs</a></h3>
+<h3><a href="https://github.com/codeshelldev/goplater/blob/main/pkg/gplt/modules/math/formulas.go">formulas</a></h3>
 
 
 <table width="100%">
