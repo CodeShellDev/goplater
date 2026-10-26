@@ -75,7 +75,7 @@ Version: 1.0.0
 Run `npm install my-app`
 ```
 
-[This very README is generated with Goplater.](./github/templates/README.template.md)
+[This very README is generated with Goplater.](./.github/templates/README.template.md)
 
 
 ## Contents
