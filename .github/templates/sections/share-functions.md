@@ -1,7 +1,7 @@
 Keep your functions in one file and import them from the filesystem or from a URL:
 
 ```
-+{{ import "funcs" "https://github.com/CodeShellDev/goplater/blob/main/examples/importing-funcs/funcs" }}
++{{ import "funcs" "https://raw.githubusercontent.com/CodeShellDev/goplater/refs/heads/main/examples/funcs.gplt" }}
 +{{ call "funcs.greet" "John" }}
 ```
 
