@@ -10,7 +10,7 @@
 -->
 
 <p align="center">
-    <img width="256" height="256" alt="Goplater Logo" src="https://github.com/codeshelldev/goplater/raw/refs/heads/main/logo/goplater.png">
+    <img width="256" height="256" alt="Goplater Logo" src="https://github.com/CodeShellDev/goplater/raw/refs/heads/main/logo/goplater.png">
 </p>
 
 <h1 align="center">Goplater</h1>
@@ -23,14 +23,14 @@
 <br>
 
 <div align="center">
-    <a href="https://github.com/codeshelldev/goplater/releases">
+    <a href="https://github.com/CodeShellDev/goplater/releases">
         <img 
-            src="https://img.shields.io/github/v/release/codeshelldev/goplater?sort=semver&logo=github&label=Release" 
+            src="https://img.shields.io/github/v/release/CodeShellDev/goplater?sort=semver&logo=github&label=Release" 
             alt="GitHub release">
     </a>
-    <a href="https://github.com/codeshelldev/goplater/stargazers">
+    <a href="https://github.com/CodeShellDev/goplater/stargazers">
     <img 
-		src="https://img.shields.io/github/stars/codeshelldev/goplater?style=flat&logo=github&label=Stars" 
+		src="https://img.shields.io/github/stars/CodeShellDev/goplater?style=flat&logo=github&label=Stars" 
 		alt="GitHub stars">
     </a>
     <a href="https://matrix.to/#/#codeshelldev.oss.goplater:matrix.org">
@@ -118,6 +118,7 @@ Need help? Come join our [Matrix Server](https://matrix.to/#/#codeshelldev.oss.g
 - **Share and import functions.** Put your functions in a file, import them from disk or from a URL and reuse them everywhere.
 - **Not just a CLI.** The engine behind it, `gplt-engine`, is a separate library you can embed in your own Go program.
 - **Modular.** The library is split into independent modules. Load only what you need. Or let the CLI load them all.
+- **Automated.** Use the [GitHub Action and Bot](https://github.com/CodeShellDev/goplater-action) to render templates and automate pull requests. See [Automation](#automate-with-github-actions).
 
 ## Getting Started
 
@@ -207,7 +208,14 @@ Pin remote imports to a tag or a commit and treat them like any other dependency
 
 `gplt-engine` is not tied to the CLI.
 Load the modules you want and embed templating in your own Go application.
-Browse the packages on [pkg.go.dev](https://pkg.go.dev/github.com/codeshelldev/goplater/pkg/gplt).
+Browse the packages on [pkg.go.dev](https://pkg.go.dev/github.com/CodeShellDev/goplater/pkg/gplt).
+
+## Automate with GitHub Actions
+
+Use Goplater in your CI/CD workflows to generate files automatically.
+
+- **[Goplater GitHub Action](https://github.com/CodeShellDev/goplater-action)** — render templates directly in your GitHub Actions workflows.
+- **[Goplater Bot](https://github.com/CodeShellDev/goplater-action/blob/main/.github/workflows/goplater-bot.yml)** — automate file generation in a repository and have the results submitted as a pull request or pushed as a commit.
 
 ## Standard Library
 
@@ -1564,7 +1572,7 @@ This Project is licensed under the [MIT License](./LICENSE).
 
 ## Legal
 
-Logo designed by [@CodeShellDev](https://github.com/codeshelldev) — All Rights Reserved.
+Logo designed by [@CodeShellDev](https://github.com/CodeShellDev) — All Rights Reserved.
 
 Go gopher mascot originally created by [Renée French](https://instagram.com/reneefrench/),
 used under the [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/) license.
