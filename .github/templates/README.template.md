@@ -15,10 +15,12 @@
 
 <h1 align="center">Goplater</h1>
 
-<p align="center">
-    <strong>Go templates with superpowers</strong><br>
+<div align="center">
+    <h3>Go templates with superpowers</h3>
     Read files, call APIs, parse JSON, YAML and Markdown and write your own template functions<br>
-</p>
+</div>
+
+<br>
 
 <div align="center">
     <a href="https://github.com/codeshelldev/goplater/releases">
