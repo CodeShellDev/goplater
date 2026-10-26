@@ -19,7 +19,7 @@
 +{{- $filename := basePath $pathNoExt -}}
 +{{- $decls := .declarations -}}
 +{{- $level := .level -}}
-+{{- echo .path -}}
+
 <h+{{ sub $level 1 }}><a href="+{{ concat "https://github.com/codeshelldev/goplater/blob/main/" (afterLast .path "goplater/" ) }}">+{{ $filename }}</a></h+{{ sub $level 1 }}>
 +{{ range $decl := $decls -}}
 

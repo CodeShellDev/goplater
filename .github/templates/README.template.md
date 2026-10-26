@@ -1,10 +1,13 @@
-+{{- import "commands" "./commands" -}}
+<!--
+# imports
++{{ import "commands" "./commands" }}
++{{ import "contents" "./contents" }}
++{{ import "composer" "./composer" }}
 
-+{{- import "contents" "./contents" -}}
-
-+{{- $cmds := call "commands.renderCommandDocs" -}}
-
-+{{- $cmdContents := call "contents.indentTabs" (call "contents.renderContentSection" $cmds 3) 1 -}}
+# library commands
++{{ $cmds := call "commands.renderCommandDocs" }}
++{{ $cmdContents := call "contents.indentTabs" (call "contents.renderContentSection" $cmds 3) 1 }}
+-->
 
 <p align="center">
     <img width="256" height="256" alt="Goplater Logo" src="https://github.com/codeshelldev/goplater/raw/refs/heads/main/logo/goplater.png">
@@ -12,11 +15,42 @@
 
 <h1 align="center">Goplater</h1>
 
-<p align="center"><strong>Goplater</strong> is a Go commandline program that helps you template your files</p>
+<p align="center">
+    <strong>Go templates with superpowers</strong><br>
+    Read files, call APIs, parse JSON, YAML and Markdown and write your own template functions<br>
+</p>
+
+<div align="center">
+    <a href="https://github.com/codeshelldev/goplater/releases">
+        <img 
+            src="https://img.shields.io/github/v/release/codeshelldev/goplater?sort=semver&logo=github&label=Release" 
+            alt="GitHub release">
+    </a>
+    <a href="https://github.com/codeshelldev/goplater/stargazers">
+    <img 
+		src="https://img.shields.io/github/stars/codeshelldev/goplater?style=flat&logo=github&label=Stars" 
+		alt="GitHub stars">
+    </a>
+    <a href="https://matrix.to/#/#codeshelldev.oss.goplater:matrix.org">
+        <img 
+            alt="Matrix" 
+            src="https://img.shields.io/matrix/codeshelldev.oss.goplater%3Amatrix.org?style=flat&color=blue&logo=matrix&label=Chat">
+    </a>
+    <a href="./LICENSE">
+        <img 
+            src="https://img.shields.io/badge/License-MIT-green.svg"
+            alt="License: MIT">
+    </a>
+</div>
+
+## See it in action
+
++{{ call "composer.section" "see-it-in-action" }}
 
 ## Contents
 
 <!-- prettier-ignore -->
+- [Why Goplater?](#why-goplater)
 - [Getting Started](#getting-started)
 - [Usage](#usage)
 - [Standard Library](#standard-library)
@@ -28,37 +62,102 @@
 
 Need help? Come join our [Matrix Server](https://matrix.to/#/#codeshelldev.oss.goplater:matrix.org)!
 
+## Why Goplater?
+
+- **Familiar.** It is Go's [`text/template`](https://pkg.go.dev/text/template) syntax. If you know it, you already know Goplater.
+- **Batteries included.** Read and write files, fetch URLs, work with JSON, YAML, HTML and Markdown, run regex and string operations. See the [Standard Library](#standard-library).
+- **Write your own functions, inside the template.** Define them with `define`, call them with `call`. Arguments and return values included.
+- **Share and import functions.** Put your functions in a file, import them from disk or from a URL and reuse them everywhere.
+- **Not just a CLI.** The engine behind it, `gplt-engine`, is a separate library you can embed in your own Go program.
+- **Modular.** The library is split into independent modules. Load only what you need. Or let the CLI load them all.
+
 ## Getting Started
 
-Download the latest binary from the Release page.
-Make it executable with `chmod +x goplater` and run it for the first time.
-
-Use the `goplater template` command to template files:
+Install with Go:
 
 ```bash
-./goplater template TEMPLATE.md -o README.md
+go install github.com/codeshelldev/goplater@latest
 ```
 
-This will create a new file called `README.md` in your current working directory.
+Or download the latest binary from the [Releases page](https://github.com/CodeShellDev/goplater/releases), make it executable with `chmod +x goplater` and run it.
+
+Template your first file:
+
+```bash
+goplater template examples/app-readme/template.md -o README.md
+```
+
+This creates `README.md` in your current working directory.
 
 ## Usage
 
-### Format
+### Templating files
 
-Goplater uses Go's [built-in templating library](https://pkg.go.dev/text/template) therefore the syntax should be consistent with other projects.
-
-**Example:**
+Goplater uses Go's [built-in templating library](https://pkg.go.dev/text/template), with actions written as `+{{ printf "+{{ ... }}" }}`. Files that already contain plain `{{ }}` (Helm charts, GitHub Actions, Mustache) pass through untouched.
 
 ```
-File Content: +​{​​{ read "./myfile.txt" }​}​
+File Content: +{{ printf "+{{ read \"./myfile.txt" }}\" }}
 ```
+
+### Whole folders
+
+Point Goplater at a directory and it mirrors the structure into the output:
+
+```bash
+goplater template ./examples -o ./out -r
+```
+
+Useful flags:
+
+| Flag                     | What it does                                                       |
+| ------------------------ | ------------------------------------------------------------------ |
+| `-o`                     | Output file or directory                                           |
+| `-s`                     | Source directory for `~/` paths                                    |
+| `-r`                     | Walk directories                                                   |
+| `--match`                | Only template files matching a regex                               |
+| `--flatten`              | Drop the directory structure                                       |
+| `--root`                 | Choose the root that output paths are relative to                  |
+| `--allowed-outputs`      | Limit where templates may write                                    |
+| `--trim-max-blank-lines` | Experimental: Remove blank lines left behind by non-output actions |
+| `--dry-run`              | Show what would be written, change nothing                         |
+| `--ignore-errors`        | Continue processing when errors occur                              |
+
+### Your own functions
+
++{{ call "composer.sectionRaw" "your-own-functions" }}
+
+### Share functions
+
++{{ call "composer.sectionRaw" "share-functions" }}
+
+### Use the engine instead
+
+`gplt-engine` is not tied to the CLI.
+Load the modules you want and embed templating in your own Go application.
+Browse the packages on [pkg.go.dev](https://pkg.go.dev/github.com/codeshelldev/goplater/pkg/gplt).
 
 ## Standard Library
 
-Goplater includes a large and growing selection of built-in functions for use in your templates.
-Apart from basic operations goplater includes modules such as json, yaml, html, markdown, http and regex.
+`gplt-engine` includes a large and growing selection of built-in functions for use in your templates.
+Every module is independent, load all of them or only the ones you need.
 
-Furthermore it is easily extendable both with custom modules and your own goplater function files, that can easily be imported and shared!
+Goplater ships with all implemented modules in addition to `fs`-specific and cli dependent functions.
+
+| Module                        | Use it for                                         |
+| ----------------------------- | -------------------------------------------------- |
+| `fs`                          | Reading, writing and walking files and directories |
+| `outputto`                    | Choosing the output path from inside a template    |
+| `strings`, `regex`            | Trimming, splitting, replacing, matching           |
+| `json`, `yaml`                | Decoding and encoding structured data              |
+| `html`, `markdown`            | Querying and editing documents                     |
+| `http`                        | Fetching remote resources                          |
+| `math`                        | Operators and number helpers                       |
+| `container`                   | Maps and slices                                    |
+| `base64`, `conversion`        | Encoding and type conversion                       |
+| `import`, `return`, `globals` | Sharing functions and passing values around        |
+| `debug`                       | Printing while you develop                         |
+
+Need something that is not there? Add your own with a custom module or your own Goplater function file and share it.
 
 +{{ $cmds }}
 
@@ -78,4 +177,7 @@ This Project is licensed under the [MIT License](./LICENSE).
 
 ## Legal
 
-Logo designed by [@CodeShellDev](https://github.com/codeshelldev) — All Rights Reserved. Go gopher mascot originally created by [Renée French](https://instagram.com/reneefrench/), used under the [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/) license.
+Logo designed by [@CodeShellDev](https://github.com/codeshelldev) — All Rights Reserved.
+
+Go gopher mascot originally created by [Renée French](https://instagram.com/reneefrench/),
+used under the [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/) license.

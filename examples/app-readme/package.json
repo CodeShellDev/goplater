@@ -1,0 +1,9 @@
+{
+  "name": "my-app",
+  "version": "1.0.0",
+  "description": "A small demo project for Goplater",
+  "scripts": {
+    "build": "echo \"Building project...\"",
+    "test": "echo \"Running tests...\""
+  }
+}

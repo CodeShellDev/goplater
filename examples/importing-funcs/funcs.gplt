@@ -1,0 +1,3 @@
++{{ define "greet(name)" }}
+    +{{ returnNext (printf "Hello, %s!" $name) }}
++{{ end }}
