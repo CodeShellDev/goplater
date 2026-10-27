@@ -62,11 +62,15 @@
 +{{- range $i, $example := $examples }}
 
 **Example**:
-<pre><code class="language-handlebars">+{{ $example }}</code></pre>
+```handlebars
++{{ $example }}
+```
 +{{- $outputs := (index $decl "outputs") -}}
 +{{- if gt (len $outputs) $i }}
 **Output**:
-<pre><code>+{{ index $outputs $i }}</code></pre>
+```
++{{ index $outputs $i }}
+```
 +{{ end -}}
 +{{- end }}
 
