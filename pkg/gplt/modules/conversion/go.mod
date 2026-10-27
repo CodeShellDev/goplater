@@ -1,5 +1,5 @@
 module github.com/codeshelldev/goplater/pkg/gplt/modules/conversion
 
-go 1.27.2
+go 1.27.3
 
 require github.com/codeshelldev/goplater/pkg/gplt v0.0.1
