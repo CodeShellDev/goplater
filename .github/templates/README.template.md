@@ -96,11 +96,15 @@ This creates `README.md` in your current working directory.
 
 ### Templating files
 
-Goplater uses Go's [built-in templating library](https://pkg.go.dev/text/template), with actions written as `+{{ printf "+{{ ... }}" }}`. Files that already contain plain `{{ }}` (Helm charts, GitHub Actions, Mustache) pass through untouched.
++{{ GOPLATER_IGNORE }}
 
+Goplater uses Go's [built-in templating library](https://pkg.go.dev/text/template), with actions written as `+{{ ... }}`. Files that already contain plain `{{ }}` (Helm charts, GitHub Actions, Mustache) pass through untouched.
+
+```gotmpl
+File Content: +{{ read "./myfile.txt" }}
 ```
-File Content: +{{ printf "+{{ read \"./myfile.txt\" }}" }}
-```
+
++{{ GOPLATER_ENDIGNORE }}
 
 ### Whole folders
 
@@ -127,11 +131,11 @@ Useful flags:
 
 ### Your own functions
 
-+{{ call "composer.sectionRaw" "your-own-functions" }}
++{{ call "composer.section" "your-own-functions" }}
 
 ### Share functions
 
-+{{ call "composer.sectionRaw" "share-functions" }}
++{{ call "composer.section" "share-functions" }}
 
 ### Use the engine instead
 
