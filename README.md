@@ -1,4 +1,7 @@
 <!--
+The following comment will appear as empty,
+because it has already been consumed and processed by Goplater.
+
 # imports
 
 
@@ -142,11 +145,15 @@ This creates `README.md` in your current working directory.
 
 ### Templating files
 
+
+
 Goplater uses Go's [built-in templating library](https://pkg.go.dev/text/template), with actions written as `+{{ ... }}`. Files that already contain plain `{{ }}` (Helm charts, GitHub Actions, Mustache) pass through untouched.
 
-```
+```gotmpl
 File Content: +{{ read "./myfile.txt" }}
 ```
+
+
 
 ### Whole folders
 
@@ -175,13 +182,17 @@ Useful flags:
 
 Define a function in the template and call it:
 
+
+
 ```
 +{{ define "greet(name)" }}
-    +{{ returnNext (printf "Hello, %s!" $name) }}
+    +{{ returnNext (printf "Hello, %s!" .name) }}
 +{{ end }}
 
 +{{ call "greet" "Gopher" }}
 ```
+
+
 
 Output:
 
@@ -196,10 +207,14 @@ Prefer Go? Register custom Go functions as well.
 
 Keep your functions in one file and import them from the filesystem or from a URL:
 
+
+
 ```
 +{{ import "funcs" "https://raw.githubusercontent.com/CodeShellDev/goplater/refs/heads/main/examples/funcs.gplt" }}
 +{{ call "funcs.greet" "John" }}
 ```
+
+
 
 Pin remote imports to a tag or a commit and treat them like any other dependency: imported functions run inside your template.
 
