@@ -1,4 +1,7 @@
 <!--
+THIS IS A GOPLATER COMMAND HEADER,
+ALL INSTRUCTIONS HAVE BEEN CONSUMED BY IT!
+
 # imports
 +{{ import "commands" "./commands" }}
 +{{ import "contents" "./contents" }}
