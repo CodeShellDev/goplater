@@ -135,7 +135,7 @@ Or download the latest binary from the [Releases page](https://github.com/CodeSh
 
 Template your first file:
 
-```bash
+```sh
 goplater template examples/app-readme/template.md -o README.md
 ```
 
@@ -149,7 +149,7 @@ This creates `README.md` in your current working directory.
 
 Goplater uses Go's [built-in templating library](https://pkg.go.dev/text/template), with actions written as `+{{ ... }}`. Files that already contain plain `{{ }}` (Helm charts, GitHub Actions, Mustache) pass through untouched.
 
-```gotmpl
+```django
 File Content: +{{ read "./myfile.txt" }}
 ```
 
