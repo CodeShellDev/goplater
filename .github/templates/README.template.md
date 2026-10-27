@@ -1,6 +1,6 @@
 <!--
-THIS IS A GOPLATER COMMAND HEADER,
-ALL INSTRUCTIONS HAVE BEEN CONSUMED BY IT!
+The following comment will appear as empty,
+because it has already been consumed and processed by Goplater.
 
 # imports
 +{{ import "commands" "./commands" }}
