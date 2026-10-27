@@ -1,6 +1,6 @@
 <!--
-The following comment will appear as empty,
-because it has already been consumed and processed by Goplater.
+# The following comment will appear as empty,
+# because it has already been consumed and processed by Goplater
 
 # imports
 
@@ -276,7 +276,7 @@ Need something that is not there? Add your own with a custom module or your own 
   <br/>
 
 **Example**:
-<pre><code>+{{ read "/path/to/file" }}</code></pre>
+<pre><code class="language-handlebars">+{{ read "/path/to/file" }}</code></pre>
 
 </details>
 
@@ -294,7 +294,7 @@ Need something that is not there? Add your own with a custom module or your own 
   <br/>
 
 **Example**:
-<pre><code>+{{ readRaw "/path/to/file" }}</code></pre>
+<pre><code class="language-handlebars">+{{ readRaw "/path/to/file" }}</code></pre>
 
 </details>
 
@@ -312,7 +312,7 @@ Need something that is not there? Add your own with a custom module or your own 
   <br/>
 
 **Example**:
-<pre><code>+{{ readArgs "/path/to/file" (sliceCreate "my" "args") }}</code></pre>
+<pre><code class="language-handlebars">+{{ readArgs "/path/to/file" (sliceCreate "my" "args") }}</code></pre>
 
 </details>
 
@@ -330,7 +330,7 @@ Need something that is not there? Add your own with a custom module or your own 
   <br/>
 
 **Example**:
-<pre><code>+{{ write "/path/to/file" "Hello" }}</code></pre>
+<pre><code class="language-handlebars">+{{ write "/path/to/file" "Hello" }}</code></pre>
 
 </details>
 
@@ -348,7 +348,7 @@ Need something that is not there? Add your own with a custom module or your own 
   <br/>
 
 **Example**:
-<pre><code>+{{ mkdir "/path/to/somewhere/" }}</code></pre>
+<pre><code class="language-handlebars">+{{ mkdir "/path/to/somewhere/" }}</code></pre>
 
 </details>
 
@@ -366,7 +366,7 @@ Need something that is not there? Add your own with a custom module or your own 
   <br/>
 
 **Example**:
-<pre><code>+{{ appendFile "/path/to/somewhere/" "Goodbye" }}</code></pre>
+<pre><code class="language-handlebars">+{{ appendFile "/path/to/somewhere/" "Goodbye" }}</code></pre>
 
 </details>
 
@@ -384,7 +384,7 @@ Need something that is not there? Add your own with a custom module or your own 
   <br/>
 
 **Example**:
-<pre><code>+{{ if (fsExists "/path/to/somewhere") }}
+<pre><code class="language-handlebars">+{{ if (fsExists "/path/to/somewhere") }}
 Path exists!
 +{{ end }}</code></pre>
 
@@ -404,7 +404,7 @@ Path exists!
   <br/>
 
 **Example**:
-<pre><code>+{{ if (isFile "/path/to/file") }}
+<pre><code class="language-handlebars">+{{ if (isFile "/path/to/file") }}
 Path is a file!
 +{{ end }}</code></pre>
 
@@ -424,7 +424,7 @@ Path is a file!
   <br/>
 
 **Example**:
-<pre><code>+{{ if (isDir "/path/to/somewhere") }}
+<pre><code class="language-handlebars">+{{ if (isDir "/path/to/somewhere") }}
 Path is a folder!
 +{{ end }}</code></pre>
 
@@ -444,7 +444,7 @@ Path is a folder!
   <br/>
 
 **Example**:
-<pre><code>+{{ join ", " (listDir "/path/to") }}</code></pre>
+<pre><code class="language-handlebars">+{{ join ", " (listDir "/path/to") }}</code></pre>
 **Output**:
 <pre><code>/path/to/file1.txt, /path/to/file2.txt, /path/to/folder</code></pre>
 
@@ -465,7 +465,7 @@ Path is a folder!
   <br/>
 
 **Example**:
-<pre><code>+{{ join ", " (walkDir "/path/to") }}</code></pre>
+<pre><code class="language-handlebars">+{{ join ", " (walkDir "/path/to") }}</code></pre>
 **Output**:
 <pre><code>/path/to/file1.txt, /path/to/file2.txt, /path/to/folder, /path/to/folder/file3.txt</code></pre>
 
@@ -486,7 +486,7 @@ Path is a folder!
   <br/>
 
 **Example**:
-<pre><code>+{{ fsRemove "/path/to/file/or/folder" }}</code></pre>
+<pre><code class="language-handlebars">+{{ fsRemove "/path/to/file/or/folder" }}</code></pre>
 
 </details>
 
@@ -591,7 +591,7 @@ Errors if path is not allowed.</p>
   <br/>
 
 **Example**:
-<pre><code>+{{ $newSlice := delete (sliceCreate "Apple" "Banana") 0 }}
+<pre><code class="language-handlebars">+{{ $newSlice := delete (sliceCreate "Apple" "Banana") 0 }}
 +{{ echo $newSlice }}</code></pre>
 **Output**:
 <pre><code>[Banana]</code></pre>
@@ -613,7 +613,7 @@ Errors if path is not allowed.</p>
   <br/>
 
 **Example**:
-<pre><code>+{{ $newSlice := set (sliceCreate "Apple" "Banana") 0 "Strawberry" }}
+<pre><code class="language-handlebars">+{{ $newSlice := set (sliceCreate "Apple" "Banana") 0 "Strawberry" }}
 +{{ echo $newSlice }}</code></pre>
 **Output**:
 <pre><code>[Strawberry Banana]</code></pre>
@@ -635,7 +635,7 @@ Errors if path is not allowed.</p>
   <br/>
 
 **Example**:
-<pre><code>+{{ if (has (mapCreate "version" "v1") "version") }}
+<pre><code class="language-handlebars">+{{ if (has (mapCreate "version" "v1") "version") }}
 Container has "version"!
 +{{ end }}</code></pre>
 
@@ -655,7 +655,7 @@ Container has "version"!
   <br/>
 
 **Example**:
-<pre><code>+{{ $newSlice := sliceCreate "Apple" "Banana" }}
+<pre><code class="language-handlebars">+{{ $newSlice := sliceCreate "Apple" "Banana" }}
 +{{ $newSlice = slicePush $newSlice "Strawberry" }}
 +{{ echo $newSlice }}</code></pre>
 **Output**:
@@ -678,7 +678,7 @@ Container has "version"!
   <br/>
 
 **Example**:
-<pre><code>+{{ $newSlice := sliceCreate "Apple" "Banana" }}
+<pre><code class="language-handlebars">+{{ $newSlice := sliceCreate "Apple" "Banana" }}
 +{{ echo $newSlice }}</code></pre>
 **Output**:
 <pre><code>[Apple Banana]</code></pre>
@@ -702,7 +702,7 @@ Currently only supports string keys!</p>
   <br/>
 
 **Example**:
-<pre><code>+{{ $newMap := mapCreate "key1" "value1" "key2" "value2" }}
+<pre><code class="language-handlebars">+{{ $newMap := mapCreate "key1" "value1" "key2" "value2" }}
 +{{ echo $newMap }}</code></pre>
 **Output**:
 <pre><code>map[key1:value1 key2:value2]</code></pre>
@@ -801,13 +801,13 @@ The fs resolver is only available as an internal module and does not ship with t
   <br/>
 
 **Example**:
-<pre><code>+{{ import "https://domain.com/functions" }}</code></pre>
+<pre><code class="language-handlebars">+{{ import "https://domain.com/functions" }}</code></pre>
 **Output**:
 <pre><code>+{{ call "functions.greet" "John" }}</code></pre>
 
 
 **Example**:
-<pre><code>+{{ import "funcs" "https://domain.com/functions" }}</code></pre>
+<pre><code class="language-handlebars">+{{ import "funcs" "https://domain.com/functions" }}</code></pre>
 **Output**:
 <pre><code>+{{ call "funcs.greet" "John" }}</code></pre>
 
@@ -847,7 +847,7 @@ The fs resolver is only available as an internal module and does not ship with t
   <br/>
 
 **Example**:
-<pre><code>+{{ returnAll "1" "2" "3" }}
+<pre><code class="language-handlebars">+{{ returnAll "1" "2" "3" }}
 +{{ returnAll (sliceCreate "1" "2" "3") }}</code></pre>
 
 </details>
