@@ -1,4 +1,4 @@
-package parser
+package transformer
 
 import (
 	"errors"
@@ -16,13 +16,13 @@ type Processor interface {
 	Process(doc *Document) error
 }
 
-type Parser struct {
+type Transformer struct {
 	processors []Processor
 }
 
-func New() *Parser { return &Parser{} }
+func New() *Transformer { return &Transformer{} }
 
-func (p *Parser) Use(processors ...Processor) *Parser {
+func (p *Transformer) Use(processors ...Processor) *Transformer {
 	for _, proc := range processors {
 		if proc != nil {
 			p.processors = append(p.processors, proc)
@@ -32,7 +32,7 @@ func (p *Parser) Use(processors ...Processor) *Parser {
 	return p
 }
 
-func (p *Parser) Process(t *template.Template) error {
+func (p *Transformer) Process(t *template.Template) error {
 	if len(p.processors) == 0 {
 		return nil
 	}

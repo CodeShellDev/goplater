@@ -5,7 +5,7 @@ import (
 	"strings"
 	"text/template/parse"
 
-	"github.com/codeshelldev/goplater/pkg/parser"
+	"github.com/codeshelldev/goplater/pkg/transformer"
 )
 
 type config struct {
@@ -41,12 +41,12 @@ func NewWith(opts ...Option) *Processor {
 
 func (p *Processor) Name() string { return "blanklines" }
 
-func (p *Processor) Process(doc *parser.Document) error {
+func (p *Processor) Process(doc *transformer.Document) error {
 	for name, tree := range doc.Trees {
 		isMain := name == doc.Name
 		root := tree.Root
 
-		parser.WalkLists(root, func(list *parse.ListNode) {
+		transformer.WalkLists(root, func(list *parse.ListNode) {
 			top := isMain && list == root
 			p.processList(list, top, top)
 		})

@@ -228,15 +228,25 @@ func (rt *Runtime) PrepareRender(name, body string, data any, ctx *Context) (*te
 	t := rt.engine.NewTemplate(name, rt.engineOptions.Delims)
 	t.Funcs(rt.FuncMap(ctx, true))
 
-	_, err := t.Parse(body)
+	if rt.engineOptions.ParseFunc == nil {
+		rt.engineOptions.ParseFunc = func(s string, t *template.Template) (error) {
+			_, err := t.Parse(s)
+			return err
+		}
+	}
+
+	err := rt.engineOptions.ParseFunc(body, t)
+
 	if err != nil {
 		return nil, err
 	}
 
-	err = rt.engineOptions.PreparseFunc(t)
+	if rt.engineOptions.ProcessFunc != nil {
+		err = rt.engineOptions.ProcessFunc(t)
 
-	if err != nil {
-		return nil, err
+		if err != nil {
+			return nil, err
+		}
 	}
 
 	return t, nil
