@@ -5,7 +5,7 @@ go 1.27.2
 require (
 	github.com/codeshelldev/goplater/pkg/gplt v0.1.1
 	github.com/codeshelldev/goplater/pkg/gplt/collections v0.0.2
-	github.com/codeshelldev/goplater/pkg/parser v0.1.0
+	github.com/codeshelldev/goplater/pkg/transformer v0.0.1
 	github.com/spf13/cobra v1.10.2
 )
 

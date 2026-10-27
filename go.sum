@@ -30,8 +30,8 @@ github.com/codeshelldev/goplater/pkg/gplt/modules/strings v0.0.3 h1:kztOy+ISIXln
 github.com/codeshelldev/goplater/pkg/gplt/modules/strings v0.0.3/go.mod h1:jro9BEv7XJbehm/fSPBNcQu7YPJgt6Gd7jn9tz1s9BE=
 github.com/codeshelldev/goplater/pkg/gplt/modules/yaml v0.0.2 h1:Oe3Rqi5q/8siphknxODAPknr9IArHL4JEtnon79Iuq8=
 github.com/codeshelldev/goplater/pkg/gplt/modules/yaml v0.0.2/go.mod h1:tnjB3LYz9jR1X8kwzsx97bJUOTZYMZPeTBNRIwFbubU=
-github.com/codeshelldev/goplater/pkg/parser v0.1.0 h1:vQfYmjUftAbWl/nsm8FnPm1PngT6X/qnaAe4/iOVmMU=
-github.com/codeshelldev/goplater/pkg/parser v0.1.0/go.mod h1:wMGbk5dHZzuGEE3Fz9gR/CeSTv2RTwfUi01i/Vzi2Sw=
+github.com/codeshelldev/goplater/pkg/transformer v0.0.1 h1:Su/2jG3dR/pdQZZefLMlw5/UK79GUBZ4cvVYoiIb3Lo=
+github.com/codeshelldev/goplater/pkg/transformer v0.0.1/go.mod h1:SQ5WQXwC9hpaqeeeU1nx+Xxf90yQvtTF2MhpNCNkquY=
 github.com/cpuguy83/go-md2man/v2 v2.0.6/go.mod h1:oOW0eioCTA6cOiMLiUPZOpcVxMig6NIQQ7OS05n1F4g=
 github.com/google/uuid v1.6.0 h1:NIvaJDMOsjHA8n1jAhLSgzrAzy1Hgr+hNrb57e+94F0=
 github.com/google/uuid v1.6.0/go.mod h1:TIyPZe4MgqvfeYDBFedMoGGpEw/LqOeaOT+nhxU+yHo=
