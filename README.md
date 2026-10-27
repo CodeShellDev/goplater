@@ -52,7 +52,8 @@ because it has already been consumed and processed by Goplater.
 
 **`TEMPLATE.md`**
 
-```markdown
+<!-- prettier-ignore -->
+```handlebars
 +{{- $app := jsonDecode (readRaw "./package.json") -}}
 
 # +{{ upper (index $app "name") }}
@@ -135,7 +136,7 @@ Or download the latest binary from the [Releases page](https://github.com/CodeSh
 
 Template your first file:
 
-```sh
+```bash
 goplater template examples/app-readme/template.md -o README.md
 ```
 
@@ -149,7 +150,8 @@ This creates `README.md` in your current working directory.
 
 Goplater uses Go's [built-in templating library](https://pkg.go.dev/text/template), with actions written as `+{{ ... }}`. Files that already contain plain `{{ }}` (Helm charts, GitHub Actions, Mustache) pass through untouched.
 
-```django
+<!-- prettier-ignore -->
+```handlebars
 File Content: +{{ read "./myfile.txt" }}
 ```
 
@@ -184,7 +186,8 @@ Define a function in the template and call it:
 
 
 
-```
+<!-- prettier-ignore -->
+```handlebars
 +{{ define "greet(name)" }}
     +{{ returnNext (printf "Hello, %s!" .name) }}
 +{{ end }}
@@ -196,7 +199,8 @@ Define a function in the template and call it:
 
 Output:
 
-```
+<!-- prettier-ignore -->
+```handlebars
 Hello, Gopher!
 ```
 
@@ -209,7 +213,8 @@ Keep your functions in one file and import them from the filesystem or from a UR
 
 
 
-```
+<!-- prettier-ignore -->
+```handlebars
 +{{ import "funcs" "https://raw.githubusercontent.com/CodeShellDev/goplater/refs/heads/main/examples/funcs.gplt" }}
 +{{ call "funcs.greet" "John" }}
 ```
