@@ -1,6 +1,6 @@
 <!--
-The following comment will appear as empty,
-because it has already been consumed and processed by Goplater.
+# The following comment will appear as empty,
+# because it has already been consumed and processed by Goplater
 
 # imports
 +{{ import "commands" "./commands" }}
