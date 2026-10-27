@@ -103,7 +103,8 @@ This creates `README.md` in your current working directory.
 
 Goplater uses Go's [built-in templating library](https://pkg.go.dev/text/template), with actions written as `+{{ ... }}`. Files that already contain plain `{{ }}` (Helm charts, GitHub Actions, Mustache) pass through untouched.
 
-```gotmpl
+<!-- prettier-ignore -->
+```handlebars
 File Content: +{{ read "./myfile.txt" }}
 ```
 

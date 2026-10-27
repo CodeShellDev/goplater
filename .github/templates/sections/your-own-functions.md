@@ -2,7 +2,8 @@ Define a function in the template and call it:
 
 +{{ GOPLATER_IGNORE }}
 
-```
+<!-- prettier-ignore -->
+```handlebars
 +{{ define "greet(name)" }}
     +{{ returnNext (printf "Hello, %s!" .name) }}
 +{{ end }}
@@ -14,7 +15,8 @@ Define a function in the template and call it:
 
 Output:
 
-```
+<!-- prettier-ignore -->
+```handlebars
 +{{ define "greet(name)" -}}
     +{{ returnNext (printf "Hello, %s!" .name) }}
 +{{- end -}}

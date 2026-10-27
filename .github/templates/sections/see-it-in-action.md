@@ -2,7 +2,8 @@
 
 **`TEMPLATE.md`**
 
-```markdown
+<!-- prettier-ignore -->
+```handlebars
 +{{ call "composer.exampleRaw" "app-readme/template" }}
 ```
 
