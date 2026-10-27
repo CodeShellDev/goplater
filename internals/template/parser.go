@@ -7,7 +7,6 @@ import (
 	"github.com/codeshelldev/goplater/internals/parser/processors/ignore"
 	"github.com/codeshelldev/goplater/internals/template/context"
 	"github.com/codeshelldev/goplater/pkg/gplt/types"
-	"github.com/codeshelldev/goplater/utils/printer"
 )
 
 var DELIMS = types.Delims{
@@ -26,8 +25,6 @@ func parseFunc(_ *context.TemplateContext) func(s string, t *template.Template) 
 		if err != nil {
 			return err
 		}
-
-		printer.Info(parsed)
 
 		_, err = t.Parse(parsed)
 
