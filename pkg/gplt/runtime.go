@@ -180,6 +180,8 @@ func (rt *Runtime) Params(name string) ([]string, bool) {
 	return p, ok 
 }
 
+// Render runs gplt engine on a template body with optional data and context.
+// Be sure to create a new runtime for every Render(), a runtime is expected to only be a single-use object
 func (rt *Runtime) Render(name, body string, data any, ctx *Context) (string, error) {
 	t, err := rt.PrepareRender(name, body, data, ctx)
 	
