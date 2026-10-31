@@ -5,6 +5,7 @@ on:
     branches:
       - main
     paths:
+      - pkg/gplt/modules/**
       - examples/**
       - .github/templates/**
 
