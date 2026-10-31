@@ -39,6 +39,7 @@ func init() {
 	templateCmd.Flags().IntVar(&templateOptions.TrimMaxBlankLines, "trim-max-blank-lines", -1, "experimental: Max blank lines kept around non-output actions")
 
 	templateCmd.Flags().StringSliceVar(&templateOptions.AllowedOutputs, "allowed-outputs", []string{}, "Allowed output directories, including their subdirectories")
+	templateCmd.Flags().StringSliceVar(&templateOptions.AllowedInputs, "allowed-inputs", []string{}, "Allowed input directories, including their subdirectories")
 	templateCmd.Flags().StringSliceVarP(&templateOptions.Match, "match", "m", []string{".*"}, "Regular expressions used to match files for processing")
 
 	templateCmd.Flags().BoolVar(&templateOptions.DryRun, "dry-run", false, "Show what would be written, change nothing")
@@ -46,8 +47,8 @@ func init() {
 }
 
 func validate(cmd *cobra.Command, args []string) error {
-	if len(args) <= 0 && !templateOptions.Recursive {
-		return errors.New("not enough args")
+	if len(args) <= 0 {
+		return errors.New("missing context path")
 	} else if len(args) > 0 {
 		_, err := os.Stat(args[0])
 
@@ -59,14 +60,10 @@ func validate(cmd *cobra.Command, args []string) error {
 	return nil
 }
 
-func run(cmd *cobra.Command, args []string) {
-	templateContext := tmplContext.New(templateOptions)
+func makePathsAbsolute(in []string) ([]string, error) {
+	out := []string{}
 
-	allowedOutputFolders := append(templateOptions.AllowedOutputs, templateOptions.Output)
-
-	templateOptions.AllowedOutputs = []string{}
-
-	for _, path := range allowedOutputFolders {
+	for _, path := range in {
 		absPath := path
 
 		if !filepath.IsAbs(path) {
@@ -74,11 +71,34 @@ func run(cmd *cobra.Command, args []string) {
 			absPath, err = filepath.Abs(path)
 
 			if err != nil {
-				printer.Error(err.Error())
+				return nil, err
 			}
 		}
 
-		templateOptions.AllowedOutputs = append(templateOptions.AllowedOutputs, absPath)
+		out = append(out, absPath)
+	}
+
+	return out, nil
+}
+
+func run(cmd *cobra.Command, args []string) {
+	templateContext := tmplContext.New(templateOptions)
+
+	allowedOutputFolders := append(templateOptions.AllowedOutputs, templateOptions.Output)
+
+	var err error
+	templateOptions.AllowedOutputs, err = makePathsAbsolute(allowedOutputFolders)
+
+	if err != nil {
+		printer.Error(err.Error())
+	}
+
+	allowedInputFolders := append(templateOptions.AllowedInputs, templateOptions.Source)
+
+	templateOptions.AllowedInputs, err = makePathsAbsolute(allowedInputFolders)
+
+	if err != nil {
+		printer.Error(err.Error())
 	}
 
 	outputPathAbs, err := filepath.Abs(templateOptions.Output)
