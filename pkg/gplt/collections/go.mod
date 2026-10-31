@@ -4,18 +4,18 @@ go 1.27.3
 
 require (
 	github.com/codeshelldev/goplater/pkg/gplt v0.1.5
-	github.com/codeshelldev/goplater/pkg/gplt/modules/base64 v0.0.4
-	github.com/codeshelldev/goplater/pkg/gplt/modules/container v0.0.4
-	github.com/codeshelldev/goplater/pkg/gplt/modules/conversion v0.0.4
-	github.com/codeshelldev/goplater/pkg/gplt/modules/debug v0.0.4
-	github.com/codeshelldev/goplater/pkg/gplt/modules/html v0.0.5
-	github.com/codeshelldev/goplater/pkg/gplt/modules/http v0.0.4
-	github.com/codeshelldev/goplater/pkg/gplt/modules/json v0.0.4
-	github.com/codeshelldev/goplater/pkg/gplt/modules/markdown v0.0.4
-	github.com/codeshelldev/goplater/pkg/gplt/modules/math v0.0.5
-	github.com/codeshelldev/goplater/pkg/gplt/modules/regex v0.0.4
-	github.com/codeshelldev/goplater/pkg/gplt/modules/strings v0.0.5
-	github.com/codeshelldev/goplater/pkg/gplt/modules/yaml v0.0.4
+	github.com/codeshelldev/goplater/pkg/gplt/modules/base64 v0.0.5
+	github.com/codeshelldev/goplater/pkg/gplt/modules/container v0.0.5
+	github.com/codeshelldev/goplater/pkg/gplt/modules/conversion v0.0.5
+	github.com/codeshelldev/goplater/pkg/gplt/modules/debug v0.0.5
+	github.com/codeshelldev/goplater/pkg/gplt/modules/html v0.0.6
+	github.com/codeshelldev/goplater/pkg/gplt/modules/http v0.0.5
+	github.com/codeshelldev/goplater/pkg/gplt/modules/json v0.0.5
+	github.com/codeshelldev/goplater/pkg/gplt/modules/markdown v0.0.5
+	github.com/codeshelldev/goplater/pkg/gplt/modules/math v0.0.6
+	github.com/codeshelldev/goplater/pkg/gplt/modules/regex v0.0.5
+	github.com/codeshelldev/goplater/pkg/gplt/modules/strings v0.0.6
+	github.com/codeshelldev/goplater/pkg/gplt/modules/yaml v0.0.5
 )
 
 require (
