@@ -1,4 +1,4 @@
-github.com/codeshelldev/goplater/pkg/gplt v0.1.4 h1:Qn0hVkLeyK/mzKObKLJr4KisQmIDPwuwaRnxKRCSWEU=
-github.com/codeshelldev/goplater/pkg/gplt v0.1.4/go.mod h1:VN0VTo8C5I+J7SDeRujShNGcxm2PuGD8Vzm8rrKuraU=
+github.com/codeshelldev/goplater/pkg/gplt v0.1.5 h1:yiwOO4cdCgCj9wxCWa9FzQMaOh9Q8aMKbZ5iSEkRVgM=
+github.com/codeshelldev/goplater/pkg/gplt v0.1.5/go.mod h1:VN0VTo8C5I+J7SDeRujShNGcxm2PuGD8Vzm8rrKuraU=
 go.yaml.in/yaml/v3 v3.0.5 h1:N6y/pJk8buWs9NY5ERU2HSMfm+IuD/OtfdAnq6kESPw=
 go.yaml.in/yaml/v3 v3.0.5/go.mod h1:HVTZu1O7/Vkt2N+BFy8Zza+lnLsABggaTM2ZpNIGuKg=
