@@ -38,8 +38,8 @@ func init() {
 
 	templateCmd.Flags().IntVar(&templateOptions.TrimMaxBlankLines, "trim-max-blank-lines", -1, "experimental: Max blank lines kept around non-output actions")
 
-	templateCmd.Flags().StringSliceVar(&templateOptions.AllowedOutputs, "allowed-outputs", []string{}, "Allowed output directories, including their subdirectories")
-	templateCmd.Flags().StringSliceVar(&templateOptions.AllowedInputs, "allowed-inputs", []string{}, "Allowed input directories, including their subdirectories")
+	templateCmd.Flags().StringSliceVar(&templateOptions.AllowedOutputs, "allowed-outputs", []string{}, "Allowed output directories, including their subdirectories (always includes output path)")
+	templateCmd.Flags().StringSliceVar(&templateOptions.AllowedInputs, "allowed-inputs", []string{}, "Allowed input directories, including their subdirectories (always includes source path)")
 	templateCmd.Flags().StringSliceVarP(&templateOptions.Match, "match", "m", []string{".*"}, "Regular expressions used to match files for processing")
 
 	templateCmd.Flags().BoolVar(&templateOptions.DryRun, "dry-run", false, "Show what would be written, change nothing")
