@@ -1,6 +1,7 @@
 package funcs
 
 import (
+	"errors"
 	"io/fs"
 	"os"
 	"path/filepath"
@@ -35,48 +36,54 @@ func isPathAllowed(path string, allowed []string) bool {
 //
 // @param path string
 // @returns string
+// @returns error
 //
 // @example
 //   +{{ read "/path/to/file" }}
 var readFunc = modules.NewFunc("read", read)
 
-func read(rt *gplt.Runtime, ctx *gplt.Context, path string) string {
-	str, ctx := readHandler(ctx, path)
-
-	str, err := rt.GetEngine().Execute(":read:" + path, str, nil, rt.GetEngineOptions(), ctx)
+func read(rt *gplt.Runtime, ctx *gplt.Context, path string) (string, error) {
+	str, ctx, err := readHandler(ctx, path)
 
 	if err != nil {
-		panic("could not read " + path + ": " + err.Error())
+		return "", err
 	}
 
-	return str
+	str, err = rt.GetEngine().Execute(":read:" + path, str, nil, rt.GetEngineOptions(), ctx)
+
+	if err != nil {
+		return "", errors.New("could not read " + path + ": " + err.Error())
+	}
+
+	return str, nil
 }
 
 // Reads file (without templating).
 //
 // @param path string
 // @returns string
+// @returns error
 //
 // @example
 //   +{{ readRaw "/path/to/file" }}
 var readRawFunc = modules.NewFunc("readRaw", readRaw)
 
-func readRaw(_ *gplt.Runtime, ctx *gplt.Context, path string) string {
+func readRaw(_ *gplt.Runtime, ctx *gplt.Context, path string) (string, error) {
 	tmplContext := ctx.Get(context.TemplateContextKey).(*context.TemplateContext)
 
 	filePathAbs := resolvePath(*tmplContext, path)
 
 	if !isInPathAllowed(filePathAbs, tmplContext) {
-		panic("reading from " + filePathAbs + " is not allowed as it is not inside of the allowed scope")
+		return "", errors.New("reading from " + filePathAbs + " is not allowed as it is not inside of the allowed scope")
 	}
 
 	str, err := readFile(filePathAbs)
 
 	if err != nil {
-		panic("could not read " + path + ": " + err.Error())
+		return "", errors.New("could not read " + path + ": " + err.Error())
 	}
 
-	return str
+	return str, nil
 }
 
 // Reads file and passes arguments to it.
@@ -84,34 +91,39 @@ func readRaw(_ *gplt.Runtime, ctx *gplt.Context, path string) string {
 // @param path string
 // @param args any
 // @returns string
+// @returns error
 //
 // @example
 //   +{{ readArgs "/path/to/file" (sliceCreate "my" "args") }}
 var readArgsFunc = modules.NewFunc("readArgs", readArgs)
 
-func readArgs(rt *gplt.Runtime, ctx *gplt.Context, path string, args any) string {
-	str, newContext := readHandler(ctx, path)
+func readArgs(rt *gplt.Runtime, ctx *gplt.Context, path string, args any) (string, error) {
+	str, newContext, err := readHandler(ctx, path)
+
+	if err != nil {
+		return "", err
+	}
 
 	data := map[string]any{
 		"args": args,
 	}
 
-	str, err := rt.GetEngine().Execute(":read:" + path, str, data, rt.GetEngineOptions(), newContext)
+	str, err = rt.GetEngine().Execute(":read:" + path, str, data, rt.GetEngineOptions(), newContext)
 
 	if err != nil {
-		panic("could not read " + path + ": " + err.Error())
+		return "", errors.New("could not read " + path + ": " + err.Error())
 	}
 
-	return str
+	return str, nil
 }
 
-func readHandler(ctx *gplt.Context, path string) (string, *gplt.Context) {
+func readHandler(ctx *gplt.Context, path string) (string, *gplt.Context, error) {
 	tmplContext := ctx.Get(context.TemplateContextKey).(*context.TemplateContext)
 
 	filePathAbs := resolvePath(*tmplContext, path)
 
 	if !isInPathAllowed(filePathAbs, tmplContext) {
-		panic("reading from " + filePathAbs + " is not allowed as it is not inside of the allowed scope")
+		return "", nil, errors.New("reading from " + filePathAbs + " is not allowed as it is not inside of the allowed scope")
 	}
 
 	res, err := readFile(filePathAbs)
@@ -126,7 +138,7 @@ func readHandler(ctx *gplt.Context, path string) (string, *gplt.Context) {
 
 	newContext.Set(context.TemplateContextKey, tmplContext)
 
-	return res, newContext
+	return res, newContext, nil
 }
 
 // Writes to a file path.
@@ -145,7 +157,7 @@ func write(_ *gplt.Runtime, ctx *gplt.Context, path string, content string) erro
 	filePathAbs := resolvePath(*tmplContext, path)
 
 	if !isOutPathAllowed(filePathAbs, tmplContext) {
-		panic("writing to " + filePathAbs + " is not allowed as it is not inside of the allowed scope")
+		return errors.New("writing to " + filePathAbs + " is not allowed as it is not inside of the allowed scope")
 	}
 
 	err := os.WriteFile(filePathAbs, []byte(content), 0644)
@@ -165,21 +177,21 @@ func write(_ *gplt.Runtime, ctx *gplt.Context, path string, content string) erro
 //   +{{ mkdir "/path/to/somewhere/" }}
 var mkdirFunc = modules.NewFunc("mkdir", mkdir)
 
-func mkdir(_ *gplt.Runtime, ctx *gplt.Context, path string) string {
+func mkdir(_ *gplt.Runtime, ctx *gplt.Context, path string) error {
 	tmplContext := ctx.Get(context.TemplateContextKey).(*context.TemplateContext)
 
 	folderPathAbs := resolvePath(*tmplContext, path)
 
 	if !isOutPathAllowed(folderPathAbs, tmplContext) {
-		panic("creating folder " + folderPathAbs + " is not allowed as it is not inside of the allowed scope")
+		return errors.New("creating folder " + folderPathAbs + " is not allowed as it is not inside of the allowed scope")
 	}
 
 	err := os.MkdirAll(folderPathAbs, 0755)
 	if err != nil {
-		panic(err.Error())
+		return errors.New("could not create folder " + folderPathAbs + ": " + err.Error())
 	}
 
-	return ""
+	return nil
 }
 
 // Appends to an existing file.
@@ -192,27 +204,27 @@ func mkdir(_ *gplt.Runtime, ctx *gplt.Context, path string) string {
 //   +{{ appendFile "/path/to/somewhere/" "Goodbye" }}
 var appendFileFunc = modules.NewFunc("appendFile", appendFile)
 
-func appendFile(_ *gplt.Runtime, ctx *gplt.Context, path string, content string) string {
+func appendFile(_ *gplt.Runtime, ctx *gplt.Context, path string, content string) error {
 	tmplContext := ctx.Get(context.TemplateContextKey).(*context.TemplateContext)
 
 	filePathAbs := resolvePath(*tmplContext, path)
 
 	if !isOutPathAllowed(filePathAbs, tmplContext) {
-		panic("appending to " + filePathAbs + " is not allowed as it is not inside of the allowed scope")
+		return errors.New("appending to " + filePathAbs + " is not allowed as it is not inside of the allowed scope")
 	}
 
 	f, err := os.OpenFile(filePathAbs, os.O_WRONLY|os.O_CREATE|os.O_APPEND, 0644)
 	if err != nil {
-		panic(err.Error())
+		return errors.New("could not open " + filePathAbs + ": " + err.Error())
 	}
 	defer f.Close()
 
 	_, err = f.WriteString(content)
 	if err != nil {
-		panic(err.Error())
+		return errors.New("could not append to " + filePathAbs + ": " + err.Error())
 	}
 
-	return ""
+	return nil
 }
 
 // Returns if a file or folder exists at a given path.
@@ -253,9 +265,9 @@ var isFileFunc = modules.NewFunc("isFile", isFile)
 func isFile(_ *gplt.Runtime, ctx *gplt.Context, path string) bool {
 	tmplContext := ctx.Get(context.TemplateContextKey).(*context.TemplateContext)
 
-	filePathAbs := resolvePath(*tmplContext, path)
+	absPath := resolvePath(*tmplContext, path)
 
-	info, err := os.Stat(filePathAbs)
+	info, err := os.Stat(absPath)
 	if err != nil {
 		return false
 	}
@@ -277,9 +289,9 @@ var isDirFunc = modules.NewFunc("isDir", isDir)
 func isDir(_ *gplt.Runtime, ctx *gplt.Context, path string) bool {
 	tmplContext := ctx.Get(context.TemplateContextKey).(*context.TemplateContext)
 
-	filePathAbs := resolvePath(*tmplContext, path)
+	absPath := resolvePath(*tmplContext, path)
 
-	info, err := os.Stat(filePathAbs)
+	info, err := os.Stat(absPath)
 	if err != nil {
 		return false
 	}
@@ -358,21 +370,21 @@ func walkDir(_ *gplt.Runtime, ctx *gplt.Context, path string) ([]string, error) 
 //   +{{ fsRemove "/path/to/file/or/folder" }}
 var fsRemoveFunc = modules.NewFunc("fsRemove", fsRemove)
 
-func fsRemove(_ *gplt.Runtime, ctx *gplt.Context, path string) string {
+func fsRemove(_ *gplt.Runtime, ctx *gplt.Context, path string) error {
 	tmplContext := ctx.Get(context.TemplateContextKey).(*context.TemplateContext)
 
-	filePathAbs := resolvePath(*tmplContext, path)
+	absPath := resolvePath(*tmplContext, path)
 
-	if !isOutPathAllowed(filePathAbs, tmplContext) {
-		panic("removing " + filePathAbs + " is not allowed as it is not inside of the allowed scope")
+	if !isOutPathAllowed(absPath, tmplContext) {
+		return errors.New("removing " + absPath + " is not allowed as it is not inside of the allowed scope")
 	}
 
-	err := os.RemoveAll(filePathAbs)
+	err := os.RemoveAll(absPath)
 	if err != nil {
-		panic(err.Error())
+		return errors.New("could not remove " + absPath + ": " + err.Error())
 	}
 
-	return ""
+	return nil
 }
 
 // Joins paths together.
