@@ -26,22 +26,22 @@ func mustFuncContext(ctx *gplt.Context) (FuncContext, error) {
 // @returns error
 var returnFunc = modules.NewFunc("return", returnFn)
 
-func returnFn(rt *gplt.Runtime, ctx *gplt.Context, i int, value any) error {
+func returnFn(rt *gplt.Runtime, ctx *gplt.Context, i int, value any) (string, error) {
 	funcContext, err := mustFuncContext(ctx)
 
 	if err != nil {
-		return err
+		return "", err
 	}
 
 	outputs := GetOutputs(rt, funcContext.CallerID)
 
 	for len(outputs) <= i {
-		return errors.New("could not set output at " + strconv.Itoa(i) + ": index out of bounds")
+		return "", errors.New("could not set output at " + strconv.Itoa(i) + ": index out of bounds")
 	}
 	outputs[i] = value
 
 	SetOutput(rt, funcContext.CallerID, outputs)
-	return nil
+	return "", nil
 }
 
 // Appends a value to the output.
@@ -50,11 +50,11 @@ func returnFn(rt *gplt.Runtime, ctx *gplt.Context, i int, value any) error {
 // @returns error
 var returnNextFunc = modules.NewFunc("returnNext", returnNext)
 
-func returnNext(rt *gplt.Runtime, ctx *gplt.Context, value any) error {
+func returnNext(rt *gplt.Runtime, ctx *gplt.Context, value any) (string, error) {
 	funcContext, err := mustFuncContext(ctx)
 
 	if err != nil {
-		return err
+		return "", err
 	}
 
 	outputs := GetOutputs(rt, funcContext.CallerID)
@@ -62,7 +62,7 @@ func returnNext(rt *gplt.Runtime, ctx *gplt.Context, value any) error {
 	outputs = append(outputs, value)
 
 	SetOutput(rt, funcContext.CallerID, outputs)
-	return nil
+	return "", nil
 }
 
 // Sets the output object as a whole.
@@ -76,15 +76,15 @@ func returnNext(rt *gplt.Runtime, ctx *gplt.Context, value any) error {
 //	 +{{ returnAll (sliceCreate "1" "2" "3") }}
 var returnAllFunc = modules.NewFunc("returnAll", returnAll)
 
-func returnAll(rt *gplt.Runtime, ctx *gplt.Context, values ...any) error {
+func returnAll(rt *gplt.Runtime, ctx *gplt.Context, values ...any) (string, error) {
 	funcContext, err := mustFuncContext(ctx)
 
 	if err != nil {
-		return err
+		return "", err
 	}
 
 	SetOutput(rt, funcContext.CallerID, values)
-	return nil
+	return "", nil
 }
 
 // Returns current outputs.

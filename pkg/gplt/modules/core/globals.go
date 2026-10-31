@@ -62,8 +62,8 @@ const globalStoreID = "globalStore"
 // @returns error
 var globalSetFunc = modules.NewFunc("globalSet", globalSet)
 
-func globalSet(rt *gplt.Runtime, _ *gplt.Context, key string, value any) error {
-	return SetGlobal(rt, key, value)
+func globalSet(rt *gplt.Runtime, _ *gplt.Context, key string, value any) (string, error) {
+	return "", SetGlobal(rt, key, value)
 }
 
 // Tries to retrieve a global value with a key.

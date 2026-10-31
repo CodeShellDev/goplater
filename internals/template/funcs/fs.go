@@ -150,12 +150,12 @@ func write(_ *gplt.Runtime, ctx *gplt.Context, path string, content string) erro
 //   +{{ mkdir "/path/to/somewhere/" }}
 var mkdirFunc = modules.NewFunc("mkdir", mkdir)
 
-func mkdir(_ *gplt.Runtime, ctx *gplt.Context, path string) error {
+func mkdir(_ *gplt.Runtime, ctx *gplt.Context, path string) (string, error) {
 	tmplContext := ctx.Get(context.TemplateContextKey).(*context.TemplateContext)
 
 	folderPathAbs := resolvePath(*tmplContext, path)
 
-	return fsutils.WithAllowedRoot(folderPathAbs, tmplContext.Options.AllowedOutputs,
+	return "", fsutils.WithAllowedRoot(folderPathAbs, tmplContext.Options.AllowedOutputs,
 		func(root *os.Root, relative string) error {
 			return root.MkdirAll(relative, 0755)
 		},
@@ -172,12 +172,12 @@ func mkdir(_ *gplt.Runtime, ctx *gplt.Context, path string) error {
 //   +{{ appendFile "/path/to/somewhere/" "Goodbye" }}
 var appendFileFunc = modules.NewFunc("appendFile", appendFile)
 
-func appendFile(_ *gplt.Runtime, ctx *gplt.Context, path string, content string) error {
+func appendFile(_ *gplt.Runtime, ctx *gplt.Context, path string, content string) (string, error) {
 	tmplContext := ctx.Get(context.TemplateContextKey).(*context.TemplateContext)
 
 	filePathAbs := resolvePath(*tmplContext, path)
 
-	return fsutils.WithAllowedRoot(filePathAbs, tmplContext.Options.AllowedOutputs,
+	return "", fsutils.WithAllowedRoot(filePathAbs, tmplContext.Options.AllowedOutputs,
 		func(root *os.Root, relative string) error {
 			f, err := root.OpenFile(relative, os.O_WRONLY|os.O_CREATE|os.O_APPEND, 0644)
 			if err != nil {
@@ -334,12 +334,12 @@ func walkDir(_ *gplt.Runtime, ctx *gplt.Context, path string) ([]string, error) 
 //   +{{ fsRemove "/path/to/file/or/folder" }}
 var fsRemoveFunc = modules.NewFunc("fsRemove", fsRemove)
 
-func fsRemove(_ *gplt.Runtime, ctx *gplt.Context, path string) error {
+func fsRemove(_ *gplt.Runtime, ctx *gplt.Context, path string) (string, error) {
 	tmplContext := ctx.Get(context.TemplateContextKey).(*context.TemplateContext)
 
 	absPath := resolvePath(*tmplContext, path)
 
-	return fsutils.WithAllowedRoot(absPath, tmplContext.Options.AllowedOutputs,
+	return "", fsutils.WithAllowedRoot(absPath, tmplContext.Options.AllowedOutputs,
 		func(root *os.Root, relative string) error {
 			return root.RemoveAll(relative)
 		},

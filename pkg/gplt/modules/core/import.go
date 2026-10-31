@@ -26,9 +26,9 @@ import (
 //	 +{{ call "funcs.greet" "John" }}
 var importFunc = modules.NewFunc("import", importFn)
 
-func importFn(rt *gplt.Runtime, ctx *gplt.Context, args ...any) error {
+func importFn(rt *gplt.Runtime, ctx *gplt.Context, args ...any) (string, error) {
 	if len(args) <= 0 {
-		return errors.New("wrong number of args for import: want at least 1 got 0")
+		return "", errors.New("wrong number of args for import: want at least 1 got 0")
 	}
 
 	scope, _ := ctx.Get(gplt.CurrentTreeKey).(gplt.TreeScope)
@@ -45,8 +45,8 @@ func importFn(rt *gplt.Runtime, ctx *gplt.Context, args ...any) error {
 
 	err := rt.Import(scope.Name, path, override, ctx)
 	if err != nil {
-		return errors.New("error importing " + path + ": " + err.Error())
+		return "", errors.New("error importing " + path + ": " + err.Error())
 	}
 
-	return nil
+	return "", nil
 }
