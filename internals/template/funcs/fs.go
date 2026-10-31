@@ -11,16 +11,24 @@ import (
 	"github.com/codeshelldev/goplater/utils/fsutils"
 )
 
-func isPathAllowed(path string, tmplContext *context.TemplateContext) bool {
-	allowed := false
+func isOutPathAllowed(path string, tmplContext *context.TemplateContext) bool {
+	return isPathAllowed(path, tmplContext.Options.AllowedOutputs)
+}
 
-	for _, try := range tmplContext.Options.AllowedOutputs {
+func isInPathAllowed(path string, tmplContext *context.TemplateContext) bool {
+	return isPathAllowed(path, tmplContext.Options.AllowedInputs)
+}
+
+func isPathAllowed(path string, allowed []string) bool {
+	res := false
+
+	for _, try := range allowed {
 		if fsutils.IsInside(path, try) {
-			allowed = true
+			res = true
 		}
 	}
 
-	return allowed
+	return res
 }
 
 // Reads and templates file.
@@ -57,6 +65,10 @@ func readRaw(_ *gplt.Runtime, ctx *gplt.Context, path string) string {
 	tmplContext := ctx.Get(context.TemplateContextKey).(*context.TemplateContext)
 
 	filePathAbs := resolvePath(*tmplContext, path)
+
+	if !isInPathAllowed(filePathAbs, tmplContext) {
+		panic("reading from " + filePathAbs + " is not allowed as it is not inside of the allowed scope")
+	}
 
 	str, err := readFile(filePathAbs)
 
@@ -98,6 +110,10 @@ func readHandler(ctx *gplt.Context, path string) (string, *gplt.Context) {
 
 	filePathAbs := resolvePath(*tmplContext, path)
 
+	if !isInPathAllowed(filePathAbs, tmplContext) {
+		panic("reading from " + filePathAbs + " is not allowed as it is not inside of the allowed scope")
+	}
+
 	res, err := readFile(filePathAbs)
 
 	if err != nil {
@@ -128,7 +144,7 @@ func write(_ *gplt.Runtime, ctx *gplt.Context, path string, content string) erro
 
 	filePathAbs := resolvePath(*tmplContext, path)
 
-	if !isPathAllowed(filePathAbs, tmplContext) {
+	if !isOutPathAllowed(filePathAbs, tmplContext) {
 		panic("writing to " + filePathAbs + " is not allowed as it is not inside of the allowed scope")
 	}
 
@@ -154,7 +170,7 @@ func mkdir(_ *gplt.Runtime, ctx *gplt.Context, path string) string {
 
 	folderPathAbs := resolvePath(*tmplContext, path)
 
-	if !isPathAllowed(folderPathAbs, tmplContext) {
+	if !isOutPathAllowed(folderPathAbs, tmplContext) {
 		panic("creating folder " + folderPathAbs + " is not allowed as it is not inside of the allowed scope")
 	}
 
@@ -181,7 +197,7 @@ func appendFile(_ *gplt.Runtime, ctx *gplt.Context, path string, content string)
 
 	filePathAbs := resolvePath(*tmplContext, path)
 
-	if !isPathAllowed(filePathAbs, tmplContext) {
+	if !isOutPathAllowed(filePathAbs, tmplContext) {
 		panic("appending to " + filePathAbs + " is not allowed as it is not inside of the allowed scope")
 	}
 
@@ -347,7 +363,7 @@ func fsRemove(_ *gplt.Runtime, ctx *gplt.Context, path string) string {
 
 	filePathAbs := resolvePath(*tmplContext, path)
 
-	if !isPathAllowed(filePathAbs, tmplContext) {
+	if !isOutPathAllowed(filePathAbs, tmplContext) {
 		panic("removing " + filePathAbs + " is not allowed as it is not inside of the allowed scope")
 	}
 

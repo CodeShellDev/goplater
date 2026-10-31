@@ -17,7 +17,7 @@ func outputToFn(rt *gplt.Runtime, ctx *gplt.Context, path string) string {
 	tmplContext := ctx.Get(context.TemplateContextKey).(*context.TemplateContext)
 	fullPath := resolvePath(*tmplContext, path)
 
-	if !isPathAllowed(fullPath, tmplContext) {
+	if !isOutPathAllowed(fullPath, tmplContext) {
 		panic(tmplContext.Path + " may not be saved to " + fullPath + " as it is not inside of the allowed scope")
 	}
 

@@ -8,6 +8,7 @@ type TemplateOptions struct {
 	Source 				string
 
 	AllowedOutputs 		[]string
+	AllowedInputs 		[]string
 
 	Match 				[]string
 
