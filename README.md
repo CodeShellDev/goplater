@@ -266,7 +266,7 @@ Need something that is not there? Add your own with a custom module or your own 
 
 
 <table width="100%">
-<tr><th align="left"><h4><code>read(path string) string</code></h4></th>
+<tr><th align="left"><h4><code>read(path string) (string, throws error)</code></h4></th>
 </tr><tr><td>
 <p>Reads and templates file.</p>
 
@@ -286,7 +286,7 @@ Need something that is not there? Add your own with a custom module or your own 
 
 
 <table width="100%">
-<tr><th align="left"><h4><code>readRaw(path string) string</code></h4></th>
+<tr><th align="left"><h4><code>readRaw(path string) (string, throws error)</code></h4></th>
 </tr><tr><td>
 <p>Reads file (without templating).</p>
 
@@ -306,7 +306,7 @@ Need something that is not there? Add your own with a custom module or your own 
 
 
 <table width="100%">
-<tr><th align="left"><h4><code>readArgs(path string, args any) string</code></h4></th>
+<tr><th align="left"><h4><code>readArgs(path string, args any) (string, throws error)</code></h4></th>
 </tr><tr><td>
 <p>Reads file and passes arguments to it.</p>
 
@@ -1013,16 +1013,6 @@ The fs resolver is only available as an internal module and does not ship with t
 </tr><tr><td>
 <p>Fetches a resource from a given url.
 Outputs errors as string.</p>
-
-
-</td></tr></table>
-
-
-<table width="100%">
-<tr><th align="left"><h4><code>fetchThrow(url string) (string, throws error)</code></h4></th>
-</tr><tr><td>
-<p>Fetches a resource from a given url.
-Throws error instead of outputting it.</p>
 
 
 </td></tr></table>
