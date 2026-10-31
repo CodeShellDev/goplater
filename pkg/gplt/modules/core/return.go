@@ -1,18 +1,21 @@
 package core
 
 import (
+	"errors"
+	"strconv"
+
 	"github.com/codeshelldev/goplater/pkg/gplt"
 	"github.com/codeshelldev/goplater/pkg/gplt/modules"
 )
 
-func mustFuncContext(ctx *gplt.Context) FuncContext {
+func mustFuncContext(ctx *gplt.Context) (FuncContext, error) {
 	fc, ok := ctx.Get(FuncContextKey).(FuncContext)
 	
 	if !ok {
-		panic("this function can only be used inside a func body invoked via \"call\"")
+		return FuncContext{}, errors.New("this function can only be used inside a func body invoked via 'call'")
 	}
 
-	return fc
+	return fc, nil
 }
 
 
@@ -23,39 +26,49 @@ func mustFuncContext(ctx *gplt.Context) FuncContext {
 // @returns error
 var returnFunc = modules.NewFunc("return", returnFn)
 
-func returnFn(rt *gplt.Runtime, ctx *gplt.Context, i int, value any) string {
-	funcContext := mustFuncContext(ctx)
+func returnFn(rt *gplt.Runtime, ctx *gplt.Context, i int, value any) error {
+	funcContext, err := mustFuncContext(ctx)
+
+	if err != nil {
+		return err
+	}
 
 	outputs := GetOutputs(rt, funcContext.CallerID)
 
 	for len(outputs) <= i {
-		panic("index out of bounds")
+		return errors.New("could not set output at " + strconv.Itoa(i) + ": index out of bounds")
 	}
 	outputs[i] = value
 
 	SetOutput(rt, funcContext.CallerID, outputs)
-	return ""
+	return nil
 }
 
 // Appends a value to the output.
 //
 // @param value any
+// @returns error
 var returnNextFunc = modules.NewFunc("returnNext", returnNext)
 
-func returnNext(rt *gplt.Runtime, ctx *gplt.Context, value any) string {
-	funcContext := mustFuncContext(ctx)
+func returnNext(rt *gplt.Runtime, ctx *gplt.Context, value any) error {
+	funcContext, err := mustFuncContext(ctx)
+
+	if err != nil {
+		return err
+	}
 
 	outputs := GetOutputs(rt, funcContext.CallerID)
 
 	outputs = append(outputs, value)
 
 	SetOutput(rt, funcContext.CallerID, outputs)
-	return ""
+	return nil
 }
 
 // Sets the output object as a whole.
 //
 // @param value []any
+// @returns error
 //
 // @example
 //	 +{{ returnAll "1" "2" "3" }}
@@ -63,11 +76,15 @@ func returnNext(rt *gplt.Runtime, ctx *gplt.Context, value any) string {
 //	 +{{ returnAll (sliceCreate "1" "2" "3") }}
 var returnAllFunc = modules.NewFunc("returnAll", returnAll)
 
-func returnAll(rt *gplt.Runtime, ctx *gplt.Context, values ...any) string {
-	funcContext := mustFuncContext(ctx)
+func returnAll(rt *gplt.Runtime, ctx *gplt.Context, values ...any) error {
+	funcContext, err := mustFuncContext(ctx)
+
+	if err != nil {
+		return err
+	}
 
 	SetOutput(rt, funcContext.CallerID, values)
-	return ""
+	return nil
 }
 
 // Returns current outputs.
@@ -75,10 +92,14 @@ func returnAll(rt *gplt.Runtime, ctx *gplt.Context, values ...any) string {
 // @returns []any
 var getOutputsFunc = modules.NewFunc("getOutputs", getOutputs)
 
-func getOutputs(rt *gplt.Runtime, ctx *gplt.Context) []any {
-	funcContext := mustFuncContext(ctx)
+func getOutputs(rt *gplt.Runtime, ctx *gplt.Context) ([]any, error) {
+	funcContext, err := mustFuncContext(ctx)
+
+	if err != nil {
+		return nil, err
+	}
 
 	outputs := GetOutputs(rt, funcContext.CallerID)
 
-	return outputs
+	return outputs, nil
 }

@@ -55,14 +55,16 @@ func (s *FuncOutputStore) Keys() []string {
 	return keys
 }
 
-func initCallStore(rt *gplt.Runtime) {
+func initCallStore(rt *gplt.Runtime) error {
 	if !rt.HasStore(funcOutputsStoreID) {
 		err := rt.RegisterStore(funcOutputsStoreID, NewCallOutputStore())
 		
 		if err != nil {
-			panic("error registering call outputs store: " + err.Error())
+			return errors.New("error registering call outputs store: " + err.Error())
 		}
 	}
+
+	return nil
 }
 
 func SetOutput(rt *gplt.Runtime, callerID string, value []any) {
@@ -113,12 +115,16 @@ var callFunc = modules.NewFunc("call", callFn)
 // @output
 //	 Hello John!
 func callFn(rt *gplt.Runtime, ctx *gplt.Context, name string, args ...any) (any, error) {
-	initCallStore(rt)
+	err := initCallStore(rt)
+
+	if err != nil {
+		return nil, err
+	}
 
 	output, err := call(rt, ctx, name, args...)
 
 	if err != nil {
-		return nil, errors.New("could not call \"" + name + "\": " + err.Error())
+		return nil, errors.New("could not call '" + name + "': " + err.Error())
 	}
 
 	return output, nil

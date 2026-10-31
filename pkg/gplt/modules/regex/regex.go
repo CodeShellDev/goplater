@@ -91,12 +91,12 @@ func regexFindGroupsIndex(_ *gplt.Runtime, _ *gplt.Context, regex string, str st
 // @returns error
 var regexReplaceFunc = modules.NewFunc("regexReplace", regexReplace)
 
-func regexReplace(_ *gplt.Runtime, _ *gplt.Context, str string, regex string, replaceWith string) string  {
+func regexReplace(_ *gplt.Runtime, _ *gplt.Context, str string, regex string, replaceWith string) (string, error)  {
 	re, err := regexp.Compile(regex)
 
 	if err != nil {
-		panic("error parsing regex: " + err.Error())
+		return "", errors.New("error parsing regex: " + err.Error())
 	}
 
-	return re.ReplaceAllString(str, replaceWith)
+	return re.ReplaceAllString(str, replaceWith), nil
 }

@@ -80,7 +80,11 @@ func (rt *Runtime) Import(callerScope, path string, aliasOverride string, ctx *C
 		return errors.New("module " + name + ": resolver returned no alias and none was provided")
 	}
 
-	funcMap := rt.FuncMap(ctx, resolved.Trusted)
+	funcMap, err := rt.FuncMap(ctx, resolved.Trusted)
+
+	if err != nil {
+		return err
+	}
 
 	t := rt.engine.NewTemplate(":import:" + path, rt.engineOptions.Delims)
 	t.Funcs(funcMap)
@@ -154,24 +158,36 @@ func (rt *Runtime) GetEngineOptions() EngineOptions {
 	return rt.engineOptions
 }
 
-func (rt *Runtime) FuncMap(ctx any, includeHost bool) template.FuncMap {
+func (rt *Runtime) FuncMap(ctx any, includeUnsafe bool) (template.FuncMap, error) {
 	m := template.FuncMap{}
 
 	for _, mod := range rt.engine.GetSafeModules() {
 		for _, f := range mod.GetFuncMap() {
-			m[f.Name] = funcutils.BindContext(f.Handler, rt, ctx)
-		}
-	}
+			var err error
 
-	if includeHost {
-		for _, mod := range rt.engine.GetModules() {
-			for _, f := range mod.GetFuncMap() {
-				m[f.Name] = funcutils.BindContext(f.Handler, rt, ctx)
+			m[f.Name], err = funcutils.BindContext(f.Handler, rt, ctx)
+
+			if err != nil {
+				return nil, err
 			}
 		}
 	}
 
-	return m
+	if includeUnsafe {
+		for _, mod := range rt.engine.GetModules() {
+			for _, f := range mod.GetFuncMap() {
+				var err error
+
+				m[f.Name], err = funcutils.BindContext(f.Handler, rt, ctx)
+
+				if err != nil {
+					return nil, err
+				}
+			}
+		}
+	}
+
+	return m, nil
 }
 
 func (rt *Runtime) Params(name string) ([]string, bool) { 
@@ -207,7 +223,13 @@ func (rt *Runtime) PrepareRender(name, body string, data any, ctx *Context) (*te
 	ctx.Set(CurrentTreeKey, TreeScope{Name: "root", Trusted: true})
 
 	t := rt.engine.NewTemplate(name, rt.engineOptions.Delims)
-	t.Funcs(rt.FuncMap(ctx, true))
+
+	funcMap, err := rt.FuncMap(ctx, true)
+	if err != nil {
+		return nil, errors.New("could no create func map: " + err.Error())
+	}
+
+	t.Funcs(funcMap)
 
 	if rt.engineOptions.ParseFunc == nil {
 		rt.engineOptions.ParseFunc = func(s string, t *template.Template) (error) {
@@ -216,7 +238,7 @@ func (rt *Runtime) PrepareRender(name, body string, data any, ctx *Context) (*te
 		}
 	}
 
-	err := rt.engineOptions.ParseFunc(body, t)
+	err = rt.engineOptions.ParseFunc(body, t)
 
 	if err != nil {
 		return nil, err

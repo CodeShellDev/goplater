@@ -59,11 +59,11 @@ const globalStoreID = "globalStore"
 //
 // @param key string
 // @param value any
+// @returns error
 var globalSetFunc = modules.NewFunc("globalSet", globalSet)
 
-func globalSet(rt *gplt.Runtime, _ *gplt.Context, key string, value any) string {
-	SetGlobal(rt, key, value)
-	return ""
+func globalSet(rt *gplt.Runtime, _ *gplt.Context, key string, value any) error {
+	return SetGlobal(rt, key, value)
 }
 
 // Tries to retrieve a global value with a key.
@@ -87,18 +87,20 @@ func globalHas(rt *gplt.Runtime, _ *gplt.Context, key string) bool  {
 	return HasGlobal(rt, key)
 }
 
-func SetGlobal(rt *gplt.Runtime, key string, value any) {
+func SetGlobal(rt *gplt.Runtime, key string, value any) error {
 	if !rt.HasStore(globalStoreID) {
 		err := rt.RegisterStore(globalStoreID, NewGlobalStore())
 
 		if err != nil {
-			panic("error registering global store: " + err.Error())
+			return errors.New("error registering global store: " + err.Error())
 		}
 	}
 
 	s := rt.GetStore(globalStoreID)
 
 	s.Set(key, value)
+
+	return nil
 }
 
 func GetGlobal(rt *gplt.Runtime, key string) (any, error) {

@@ -1,17 +1,20 @@
 package funcutils
 
-import "reflect"
+import (
+	"errors"
+	"reflect"
+)
 
-func BindContext(fn any, ctx ...any) any {
+func BindContext(fn any, ctx ...any) (any, error) {
 	v := reflect.ValueOf(fn)
 	t := v.Type()
 
 	if t.Kind() != reflect.Func {
-		panic("bindContext: fn is not a function")
+		return nil, errors.New("bindContext: fn is not a function")
 	}
 
 	if t.NumIn() < len(ctx) {
-		panic("bindContext: function must have at least as many parameters as context values")
+		return nil, errors.New("bindContext: function must have at least as many parameters as context values")
 	}
 
 	ins := make([]reflect.Type, t.NumIn() - len(ctx))
@@ -46,5 +49,5 @@ func BindContext(fn any, ctx ...any) any {
 		allArgs = append(allArgs, args...)
 
 		return v.CallSlice(allArgs)
-	}).Interface()
+	}).Interface(), nil
 }

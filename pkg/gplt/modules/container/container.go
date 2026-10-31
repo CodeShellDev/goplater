@@ -126,6 +126,7 @@ func sliceCreate(_ *gplt.Runtime, _ *gplt.Context, values ...any) []any {
 //
 // @param entries []any
 // @returns map[string]any
+// @returns errors
 // 
 // @example
 //	 +{{ $newMap := mapCreate "key1" "value1" "key2" "value2" }}
@@ -134,13 +135,13 @@ func sliceCreate(_ *gplt.Runtime, _ *gplt.Context, values ...any) []any {
 //	 map[key1:value1 key2:value2]
 var mapCreateFunc = modules.NewFunc("mapCreate", mapCreate)
 
-func mapCreate(_ *gplt.Runtime, _ *gplt.Context, entries ...any) map[string]any {
+func mapCreate(_ *gplt.Runtime, _ *gplt.Context, entries ...any) (map[string]any, error) {
 	if len(entries) == 0 {
-		return map[string]any{}
+		return map[string]any{}, nil
 	}
 
 	if len(entries) % 2 != 0 {
-		panic("missing value for key '" + entries[len(entries) - 1].(string) + "'")
+		return nil, errors.New("missing value for key '" + entries[len(entries) - 1].(string) + "'")
 	}
 
 	out := map[string]any{}
@@ -149,13 +150,13 @@ func mapCreate(_ *gplt.Runtime, _ *gplt.Context, entries ...any) map[string]any 
 		key, ok := entries[i - 1].(string)
 
 		if !ok {
-			panic("item at index " + strconv.Itoa(i) + " is not of type string, map keys must be strings")
+			return nil, errors.New("item at index " + strconv.Itoa(i) + " is not of type string, map keys must be strings")
 		}
 
 		out[key] = entries[i]
 	}
 
-	return out
+	return out, nil
 }
 
 func ensureInterfaceIsContainer(data any) error {

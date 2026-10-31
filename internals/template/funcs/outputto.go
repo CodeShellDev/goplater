@@ -1,6 +1,8 @@
 package funcs
 
 import (
+	"errors"
+
 	"github.com/codeshelldev/goplater/internals/template/context"
 	"github.com/codeshelldev/goplater/pkg/gplt"
 	"github.com/codeshelldev/goplater/pkg/gplt/modules"
@@ -13,15 +15,15 @@ import (
 // @returns error
 var outputToFunc = modules.NewFunc("outputTo", outputToFn)
 
-func outputToFn(rt *gplt.Runtime, ctx *gplt.Context, path string) string {
+func outputToFn(rt *gplt.Runtime, ctx *gplt.Context, path string) error {
 	tmplContext := ctx.Get(context.TemplateContextKey).(*context.TemplateContext)
 	fullPath := resolvePath(*tmplContext, path)
 
 	if !isOutPathAllowed(fullPath, tmplContext) {
-		panic(tmplContext.Path + " may not be saved to " + fullPath + " as it is not inside of the allowed scope")
+		return errors.New(tmplContext.Path + " may not be saved to " + fullPath + " as it is not inside of the allowed scope")
 	}
 
 	tmplContext.OutputPath = fullPath
 
-	return ""
+	return nil
 }
