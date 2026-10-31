@@ -736,7 +736,7 @@ Container has "version"!
 
 
 <table width="100%">
-<tr><th align="left"><h4><code>mapCreate(entries []any) map[string]any</code></h4></th>
+<tr><th align="left"><h4><code>mapCreate(entries []any) (map[string]any, errors)</code></h4></th>
 </tr><tr><td>
 <p>Creates a new map, optionally with key value pairs.
 Pairs are constructed one by one, a key followed by the given value.
@@ -811,7 +811,7 @@ map[key1:value1 key2:value2]
 
 
 <table width="100%">
-<tr><th align="left"><h4><code>globalSet(key string, value any)</code></h4></th>
+<tr><th align="left"><h4><code>globalSet(key string, value any) throws error</code></h4></th>
 </tr><tr><td>
 <p>Defines a global value with a key.</p>
 
@@ -886,7 +886,7 @@ The fs resolver is only available as an internal module and does not ship with t
 
 
 <table width="100%">
-<tr><th align="left"><h4><code>returnNext(value any)</code></h4></th>
+<tr><th align="left"><h4><code>returnNext(value any) throws error</code></h4></th>
 </tr><tr><td>
 <p>Appends a value to the output.</p>
 
@@ -895,7 +895,7 @@ The fs resolver is only available as an internal module and does not ship with t
 
 
 <table width="100%">
-<tr><th align="left"><h4><code>returnAll(value []any)</code></h4></th>
+<tr><th align="left"><h4><code>returnAll(value []any) throws error</code></h4></th>
 </tr><tr><td>
 <p>Sets the output object as a whole.</p>
 
