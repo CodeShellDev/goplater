@@ -58,13 +58,13 @@ func readRaw(_ *gplt.Runtime, ctx *gplt.Context, path string) string {
 
 	filePathAbs := resolvePath(*tmplContext, path)
 
-	res, err := readFile(filePathAbs)
+	str, err := readFile(filePathAbs)
 
 	if err != nil {
-		res = err.Error()
+		panic("could not read " + path + ": " + err.Error())
 	}
 
-	return res
+	return str
 }
 
 // Reads file and passes arguments to it.
@@ -351,7 +351,7 @@ func fsRemove(_ *gplt.Runtime, ctx *gplt.Context, path string) string {
 		panic("removing " + filePathAbs + " is not allowed as it is not inside of the allowed scope")
 	}
 
-	err := os.RemoveAll(path)
+	err := os.RemoveAll(filePathAbs)
 	if err != nil {
 		panic(err.Error())
 	}
