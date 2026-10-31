@@ -23,7 +23,6 @@ var All = []modules.Module{
 	container.Module,
 	conversion.Module,
 	html.Module,
-	http.Module,
 	json.Module,
 	core.Module,
 	regex.Module,
@@ -32,4 +31,8 @@ var All = []modules.Module{
 	math.Module,
 	debug.Module,
 	markdown.Module,
+}
+
+var Unsafe = []modules.Module{
+	http.Module,
 }
