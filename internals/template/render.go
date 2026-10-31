@@ -25,7 +25,9 @@ func templateStr(str string, tmplContext *context.TemplateContext) (string, erro
 
 	e.Use(funcs.Module)
 
-	e.UseSafe(collections.All...)
+	e.Use(collections.Unsafe...)
+	e.UseSafe(collections.Safe...)
+	
 	e.SetResolver(
 		gplt.NewResolverChain(
 			funcs.NewFsResolver(tmplContext),

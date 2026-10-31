@@ -18,7 +18,7 @@ import (
 )
 
 
-var All = []modules.Module{
+var Safe = []modules.Module{
 	base64.Module,
 	container.Module,
 	conversion.Module,
