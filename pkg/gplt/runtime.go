@@ -11,27 +11,6 @@ import (
 	"github.com/codeshelldev/goplater/pkg/gplt/utils/funcutils"
 )
 
-type Runtimes struct {
-	lookup map[uint64]*Runtime
-	nextID uint64
-}
-
-func (rts *Runtimes) Lookup(id uint64) *Runtime {
-	return rts.lookup[id]
-}
-
-func (rts *Runtimes) Register(rt *Runtime) uint64 {
-   	id := rts.nextID
-    rts.nextID++
-    rts.lookup[id] = rt
-
-	return id
-}
-
-func (rts *Runtimes) Unregister(id uint64) {
-    delete(rts.lookup, id)
-}
-
 type Runtime struct {
 	engine        *Engine
 	engineOptions EngineOptions
