@@ -3,6 +3,6 @@ module github.com/codeshelldev/goplater/pkg/gplt/modules/yaml
 go 1.27.3
 
 require (
-	github.com/codeshelldev/goplater/pkg/gplt v0.1.3
+	github.com/codeshelldev/goplater/pkg/gplt v0.1.4
 	go.yaml.in/yaml/v3 v3.0.5
 )
