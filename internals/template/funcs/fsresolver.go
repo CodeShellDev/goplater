@@ -8,6 +8,7 @@ import (
 
 	"github.com/codeshelldev/goplater/internals/template/context"
 	"github.com/codeshelldev/goplater/pkg/gplt"
+	"github.com/codeshelldev/goplater/utils/fsutils"
 )
 
 type FsResolver struct {
@@ -39,7 +40,29 @@ func (r *FsResolver) Resolve(path string) (string, error) {
 		return "", errors.New("import is not a valid file")
 	}
 
-	return readFile(filePathAbs)
+	return safeRead(filePathAbs, r.ctx)
+}
+
+func safeRead(path string, tmplContext *context.TemplateContext) (string, error) {
+	var result string
+
+	err := fsutils.WithAllowedRoot(path, tmplContext.Options.AllowedInputs,
+		func(root *os.Root, relative string) error {
+			data, err := root.ReadFile(relative)
+			if err != nil {
+				return err
+			}
+
+			result = string(data)
+			return nil
+		},
+	)
+
+	if err != nil {
+		return "", err
+	}
+
+	return result, nil
 }
 
 func (r *FsResolver) DeriveName(path string) (string, error) {
@@ -68,16 +91,6 @@ func resolvePath(ctx context.TemplateContext, path string) string {
 	}
 
 	return filePathAbs
-}
-
-func readFile(path string) (string, error) {
-	data, err := os.ReadFile(path)
-	
-	if err != nil {
-		return "", errors.New("file not found: " + path)
-	}
-
-	return string(data), nil
 }
 
 func getAbsPathWithSource(path, source string) string {

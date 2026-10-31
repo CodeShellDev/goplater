@@ -70,3 +70,42 @@ func IsInside(file, dir string) bool {
 
 	return relPath == "." || (relPath != ".." && !strings.HasPrefix(relPath, ".." + string(filepath.Separator)))
 }
+
+func WithAllowedRoot(path string, allowed []string, fn func(root *os.Root, relative string) error) error {
+	path, err := filepath.Abs(path)
+	if err != nil {
+		return err
+	}
+
+	for _, dir := range allowed {
+		dir, err := filepath.Abs(dir)
+		if err != nil {
+			continue
+		}
+
+		relative, err := filepath.Rel(dir, path)
+		if err != nil {
+			continue
+		}
+
+		if relative == ".." || filepath.IsAbs(relative) || (len(relative) > 3 && relative[:3] == ".." + string(filepath.Separator)) {
+			continue
+		}
+
+		root, err := os.OpenRoot(dir)
+		if err != nil {
+			continue
+		}
+
+		err = fn(root, relative)
+		closeErr := root.Close()
+
+		if err != nil {
+			return err
+		}
+
+		return closeErr
+	}
+
+	return errors.New("path is outside the allowed directories")
+}

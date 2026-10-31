@@ -12,24 +12,11 @@ import (
 	"github.com/codeshelldev/goplater/utils/fsutils"
 )
 
-func isOutPathAllowed(path string, tmplContext *context.TemplateContext) bool {
-	return isPathAllowed(path, tmplContext.Options.AllowedOutputs)
-}
-
-func isInPathAllowed(path string, tmplContext *context.TemplateContext) bool {
-	return isPathAllowed(path, tmplContext.Options.AllowedInputs)
-}
-
 func isPathAllowed(path string, allowed []string) bool {
-	res := false
-
-	for _, try := range allowed {
-		if fsutils.IsInside(path, try) {
-			res = true
-		}
-	}
-
-	return res
+	err := fsutils.WithAllowedRoot(path, allowed, func(_ *os.Root, _ string) error {
+		return nil
+	})
+	return err == nil
 }
 
 // Reads and templates file.
@@ -73,17 +60,13 @@ func readRaw(_ *gplt.Runtime, ctx *gplt.Context, path string) (string, error) {
 
 	filePathAbs := resolvePath(*tmplContext, path)
 
-	if !isInPathAllowed(filePathAbs, tmplContext) {
-		return "", errors.New("reading from " + filePathAbs + " is not allowed as it is not inside of the allowed scope")
-	}
-
-	str, err := readFile(filePathAbs)
+	res, err := safeRead(filePathAbs, tmplContext)
 
 	if err != nil {
 		return "", errors.New("could not read " + path + ": " + err.Error())
 	}
 
-	return str, nil
+	return res, nil
 }
 
 // Reads file and passes arguments to it.
@@ -122,20 +105,15 @@ func readHandler(ctx *gplt.Context, path string) (string, *gplt.Context, error) 
 
 	filePathAbs := resolvePath(*tmplContext, path)
 
-	if !isInPathAllowed(filePathAbs, tmplContext) {
-		return "", nil, errors.New("reading from " + filePathAbs + " is not allowed as it is not inside of the allowed scope")
-	}
-
-	res, err := readFile(filePathAbs)
+	res, err := safeRead(filePathAbs, tmplContext)
 
 	if err != nil {
-		res = err.Error()
+		return "", nil, errors.New("could not read " + filePathAbs + ": " + err.Error())
 	}
 
 	tmplContext.Invoker = filePathAbs
 
 	newContext := &gplt.Context{}
-
 	newContext.Set(context.TemplateContextKey, tmplContext)
 
 	return res, newContext, nil
@@ -156,16 +134,11 @@ func write(_ *gplt.Runtime, ctx *gplt.Context, path string, content string) erro
 
 	filePathAbs := resolvePath(*tmplContext, path)
 
-	if !isOutPathAllowed(filePathAbs, tmplContext) {
-		return errors.New("writing to " + filePathAbs + " is not allowed as it is not inside of the allowed scope")
-	}
-
-	err := os.WriteFile(filePathAbs, []byte(content), 0644)
-	if err != nil {
-		return err
-	}
-
-	return nil
+	return fsutils.WithAllowedRoot(filePathAbs, tmplContext.Options.AllowedOutputs,
+		func(root *os.Root, relative string) error {
+			return root.WriteFile(relative, []byte(content), 0644)
+		},
+	)
 }
 
 // Creates directory at path.
@@ -182,16 +155,11 @@ func mkdir(_ *gplt.Runtime, ctx *gplt.Context, path string) error {
 
 	folderPathAbs := resolvePath(*tmplContext, path)
 
-	if !isOutPathAllowed(folderPathAbs, tmplContext) {
-		return errors.New("creating folder " + folderPathAbs + " is not allowed as it is not inside of the allowed scope")
-	}
-
-	err := os.MkdirAll(folderPathAbs, 0755)
-	if err != nil {
-		return errors.New("could not create folder " + folderPathAbs + ": " + err.Error())
-	}
-
-	return nil
+	return fsutils.WithAllowedRoot(folderPathAbs, tmplContext.Options.AllowedOutputs,
+		func(root *os.Root, relative string) error {
+			return root.MkdirAll(relative, 0755)
+		},
+	)
 }
 
 // Appends to an existing file.
@@ -209,22 +177,18 @@ func appendFile(_ *gplt.Runtime, ctx *gplt.Context, path string, content string)
 
 	filePathAbs := resolvePath(*tmplContext, path)
 
-	if !isOutPathAllowed(filePathAbs, tmplContext) {
-		return errors.New("appending to " + filePathAbs + " is not allowed as it is not inside of the allowed scope")
-	}
+	return fsutils.WithAllowedRoot(filePathAbs, tmplContext.Options.AllowedOutputs,
+		func(root *os.Root, relative string) error {
+			f, err := root.OpenFile(relative, os.O_WRONLY|os.O_CREATE|os.O_APPEND, 0644)
+			if err != nil {
+				return err
+			}
+			defer f.Close()
 
-	f, err := os.OpenFile(filePathAbs, os.O_WRONLY|os.O_CREATE|os.O_APPEND, 0644)
-	if err != nil {
-		return errors.New("could not open " + filePathAbs + ": " + err.Error())
-	}
-	defer f.Close()
-
-	_, err = f.WriteString(content)
-	if err != nil {
-		return errors.New("could not append to " + filePathAbs + ": " + err.Error())
-	}
-
-	return nil
+			_, err = f.WriteString(content)
+			return err
+		},
+	)
 }
 
 // Returns if a file or folder exists at a given path.
@@ -375,16 +339,11 @@ func fsRemove(_ *gplt.Runtime, ctx *gplt.Context, path string) error {
 
 	absPath := resolvePath(*tmplContext, path)
 
-	if !isOutPathAllowed(absPath, tmplContext) {
-		return errors.New("removing " + absPath + " is not allowed as it is not inside of the allowed scope")
-	}
-
-	err := os.RemoveAll(absPath)
-	if err != nil {
-		return errors.New("could not remove " + absPath + ": " + err.Error())
-	}
-
-	return nil
+	return fsutils.WithAllowedRoot(absPath, tmplContext.Options.AllowedOutputs,
+		func(root *os.Root, relative string) error {
+			return root.RemoveAll(relative)
+		},
+	)
 }
 
 // Joins paths together.

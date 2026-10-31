@@ -17,9 +17,10 @@ var outputToFunc = modules.NewFunc("outputTo", outputToFn)
 
 func outputToFn(rt *gplt.Runtime, ctx *gplt.Context, path string) error {
 	tmplContext := ctx.Get(context.TemplateContextKey).(*context.TemplateContext)
+
 	fullPath := resolvePath(*tmplContext, path)
 
-	if !isOutPathAllowed(fullPath, tmplContext) {
+	if !isPathAllowed(fullPath, tmplContext.Options.AllowedOutputs) {
 		return errors.New(tmplContext.Path + " may not be saved to " + fullPath + " as it is not inside of the allowed scope")
 	}
 
