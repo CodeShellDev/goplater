@@ -30,7 +30,7 @@ func run(ctx *context.TemplateContext) {
 	if isDir {
 		t := tree.NewTree(os.Stdout, ctx.Path)
 
-		filepath.WalkDir(ctx.Path, func(path string, d fs.DirEntry, err error) error {
+		err := filepath.WalkDir(ctx.Path, func(path string, d fs.DirEntry, err error) error {
 			if err != nil {
 				return err
 			}
@@ -80,6 +80,11 @@ func run(ctx *context.TemplateContext) {
 			file.Success()
 			return nil
 		})
+
+		// should have already errored
+		if err != nil {
+			printer.Error(err.Error())
+		}
 
 		t.Start()
 		t.Close()

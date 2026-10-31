@@ -65,6 +65,7 @@ func handleFile(ctx *context.TemplateContext) error {
 		if !ctx.Options.IgnoreErrors {
 			return err
 		}
+		return nil
 	}
 
 	return handleFileWrite(content, ctx)
