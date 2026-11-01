@@ -91,13 +91,15 @@ Run `npm install my-app`
 - [Standard Library](#standard-library)
 	- [fs](#fs)
 	- [outputto](#outputto)
-	- [base64](#base64)
 	- [container](#container)
 	- [conversion](#conversion)
 	- [globals](#globals)
 	- [import](#import)
 	- [return](#return)
 	- [debug](#debug)
+	- [base64](#base64)
+	- [hex](#hex)
+	- [hash](#hash)
 	- [html](#html)
 	- [http](#http)
 	- [json](#json)
@@ -308,7 +310,8 @@ Need something that is not there? Add your own with a custom module or your own 
 <table width="100%">
 <tr><th align="left"><h4><code>readArgs(path string, args any) (string, throws error)</code></h4></th>
 </tr><tr><td>
-<p>Reads file and passes arguments to it.</p>
+<p>Reads file and passes arguments to it.
+Arguments are available as <code>.arg</code> in the file being read.</p>
 
 
 <details>
@@ -586,25 +589,6 @@ Errors if path is not allowed.</p>
 
 
 </td></tr></table>
-<h3><a href="https://github.com/codeshelldev/goplater/blob/main/pkg/gplt/modules/base64/base64.go">base64</a></h3>
-
-
-<table width="100%">
-<tr><th align="left"><h4><code>base64Encode(encode string) string</code></h4></th>
-</tr><tr><td>
-<p>Encodes strings with base64.</p>
-
-
-</td></tr></table>
-
-
-<table width="100%">
-<tr><th align="left"><h4><code>base64Decode(decode string) (string, throws error)</code></h4></th>
-</tr><tr><td>
-<p>Decodes a base64 string.</p>
-
-
-</td></tr></table>
 <h3><a href="https://github.com/codeshelldev/goplater/blob/main/pkg/gplt/modules/container/container.go">container</a></h3>
 
 
@@ -765,9 +749,18 @@ map[key1:value1 key2:value2]
 
 
 <table width="100%">
-<tr><th align="left"><h4><code>toString(value string) string</code></h4></th>
+<tr><th align="left"><h4><code>toString(value any) string</code></h4></th>
 </tr><tr><td>
-<p>Returns a given value as string (using <a href="https://pkg.go.dev/fmt#Sprint">fmt.Sprint</a>).</p>
+<p>Returns a given value as string (using <a href="https://pkg.go.dev/fmt#Sprint">fmt.Sprint</a>, bytes are handled separately).</p>
+
+
+</td></tr></table>
+
+
+<table width="100%">
+<tr><th align="left"><h4><code>toBytes(str string) []byte</code></h4></th>
+</tr><tr><td>
+<p>Turns a string into bytes.</p>
 
 
 </td></tr></table>
@@ -932,6 +925,81 @@ The fs resolver is only available as an internal module and does not ship with t
 
 
 </td></tr></table>
+<h3><a href="https://github.com/codeshelldev/goplater/blob/main/pkg/gplt/modules/encoding/base64.go">base64</a></h3>
+
+
+<table width="100%">
+<tr><th align="left"><h4><code>base64Encode(str string) string</code></h4></th>
+</tr><tr><td>
+<p>Encodes strings with base64.</p>
+
+
+</td></tr></table>
+
+
+<table width="100%">
+<tr><th align="left"><h4><code>base64Decode(str string) (string, throws error)</code></h4></th>
+</tr><tr><td>
+<p>Decodes a base64 string.</p>
+
+
+</td></tr></table>
+<h3><a href="https://github.com/codeshelldev/goplater/blob/main/pkg/gplt/modules/encoding/hex.go">hex</a></h3>
+
+
+<table width="100%">
+<tr><th align="left"><h4><code>hexEncode(str string) string</code></h4></th>
+</tr><tr><td>
+<p>Encodes a string as hex.</p>
+
+
+</td></tr></table>
+
+
+<table width="100%">
+<tr><th align="left"><h4><code>hexDecode(str string) (string, throws error)</code></h4></th>
+</tr><tr><td>
+<p>Decodes a string as hex.</p>
+
+
+</td></tr></table>
+<h3><a href="https://github.com/codeshelldev/goplater/blob/main/pkg/gplt/modules/hash/hash.go">hash</a></h3>
+
+
+<table width="100%">
+<tr><th align="left"><h4><code>hash(str string)</code></h4></th>
+</tr><tr><td>
+<p>Hashes a given string with SHA-256.</p>
+
+
+</td></tr></table>
+
+
+<table width="100%">
+<tr><th align="left"><h4><code>sha1(str string)</code></h4></th>
+</tr><tr><td>
+<p>Hashes a given string with SHA-1.</p>
+
+
+</td></tr></table>
+
+
+<table width="100%">
+<tr><th align="left"><h4><code>sha512(str string)</code></h4></th>
+</tr><tr><td>
+<p>Hashes a given string with SHA-512.</p>
+
+
+</td></tr></table>
+
+
+<table width="100%">
+<tr><th align="left"><h4><code>md5(str string)</code></h4></th>
+</tr><tr><td>
+<p>Hashes a given string with MD-5.</p>
+
+
+</td></tr></table>
 <h3><a href="https://github.com/codeshelldev/goplater/blob/main/pkg/gplt/modules/html/html.go">html</a></h3>
 
 
@@ -1009,7 +1077,7 @@ The fs resolver is only available as an internal module and does not ship with t
 
 
 <table width="100%">
-<tr><th align="left"><h4><code>fetch(url string) string</code></h4></th>
+<tr><th align="left"><h4><code>fetch(url string) (string, throws error)</code></h4></th>
 </tr><tr><td>
 <p>Fetches a resource from a given url.
 Outputs errors as string.</p>
