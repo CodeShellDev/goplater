@@ -1,6 +1,6 @@
 {
 	"name": "my-app",
-	"version": "v1.2.3",
+	"version": "1.2.3",
 	"description": "A small demo project for Goplater",
 	"scripts": {
 		"build": "echo \"Building project...\"",
