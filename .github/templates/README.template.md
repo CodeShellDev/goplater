@@ -52,7 +52,7 @@
 
 
 +{{ define "parseVersion(version)" }}
-    +{{ $parts := split (trimPrefix "v" .version) "." }}
+    +{{ $parts := split (cutPrefix .version "v") "." }}
     +{{ $major := index $parts 0 }}
     +{{ $minor := index $parts 1 }}
     +{{ $patch := index $parts 2 }}
