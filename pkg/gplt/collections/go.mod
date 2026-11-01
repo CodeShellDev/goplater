@@ -1,6 +1,6 @@
 module github.com/codeshelldev/goplater/pkg/gplt/collections
 
-go 1.27.3
+go 1.26.0
 
 require (
 	github.com/codeshelldev/goplater/pkg/gplt v0.1.7
