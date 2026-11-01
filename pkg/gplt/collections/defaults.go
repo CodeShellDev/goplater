@@ -2,11 +2,11 @@ package collections
 
 import (
 	"github.com/codeshelldev/goplater/pkg/gplt/modules"
-	"github.com/codeshelldev/goplater/pkg/gplt/modules/base64"
 	"github.com/codeshelldev/goplater/pkg/gplt/modules/container"
 	"github.com/codeshelldev/goplater/pkg/gplt/modules/conversion"
 	"github.com/codeshelldev/goplater/pkg/gplt/modules/core"
 	"github.com/codeshelldev/goplater/pkg/gplt/modules/debug"
+	"github.com/codeshelldev/goplater/pkg/gplt/modules/encoding"
 	"github.com/codeshelldev/goplater/pkg/gplt/modules/html"
 	"github.com/codeshelldev/goplater/pkg/gplt/modules/http"
 	"github.com/codeshelldev/goplater/pkg/gplt/modules/json"
@@ -19,7 +19,7 @@ import (
 
 
 var Safe = []modules.Module{
-	base64.Module,
+	encoding.Module,
 	container.Module,
 	conversion.Module,
 	html.Module,
