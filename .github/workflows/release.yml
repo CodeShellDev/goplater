@@ -115,7 +115,7 @@ jobs:
           cp ../LICENSE .
 
           npm version "$VERSION" --no-git-tag-version
-          npm publish --access public --loglevel verbose
+          npm stage publish --access public
 
           echo "Successfully published GoPlater $VERSION ($FOUND platform packages)."
 
