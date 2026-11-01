@@ -1,33 +1,52 @@
 #!/usr/bin/env node
-const { execFileSync } = require("child_process")
-const fs = require("fs")
-const path = require("path")
 
-const platformMap = { darwin: "darwin", linux: "linux", win32: "windows" }
-const archMap = { x64: "amd64", arm64: "arm64" }
+const { execFileSync } = require("node:child_process")
 
-const plat = platformMap[process.platform]
+const platformMap = {
+	darwin: "darwin",
+	linux: "linux",
+	win32: "windows",
+}
+
+const archMap = {
+	x64: "amd64",
+	arm64: "arm64",
+}
+
+const platform = platformMap[process.platform]
 const arch = archMap[process.arch]
 
-if (!plat || !arch) {
+if (!platform || !arch) {
 	console.error(
-		`Unsupported platform/arch: ${process.platform}/${process.arch}`,
+		`Unsupported platform/architecture: ${process.platform}/${process.arch}`,
 	)
 	process.exit(1)
 }
 
-const distDir = path.resolve(__dirname)
-const files = fs.readdirSync(distDir)
+const packageName = `@codeshelldev/goplater-${platform}-${arch}`
+const binaryName = platform === "windows" ? "goplater.exe" : "goplater"
 
-let binaryFile = files.find((f) => f.includes(`${plat}-${arch}`))
-if (!binaryFile) {
-	console.error(`No binary found for ${plat}-${arch} in ${distDir}`)
+let binaryPath
+
+try {
+	binaryPath = require.resolve(`${packageName}/bin/${binaryName}`)
+} catch {
+	console.error(
+		`Could not find the GoPlater binary for ${platform}/${arch}.\n` +
+			`Expected package: ${packageName}\n` +
+			"Try reinstalling @codeshelldev/goplater.",
+	)
 	process.exit(1)
 }
 
-if (plat === "windows" && !binaryFile.endsWith(".exe")) {
-	binaryFile += ".exe"
-}
+try {
+	execFileSync(binaryPath, process.argv.slice(2), {
+		stdio: "inherit",
+	})
+} catch (error) {
+	if (error.status !== undefined) {
+		process.exit(error.status)
+	}
 
-const binaryPath = path.join(distDir, binaryFile)
-execFileSync(binaryPath, process.argv.slice(2), { stdio: "inherit" })
+	throw error
+}

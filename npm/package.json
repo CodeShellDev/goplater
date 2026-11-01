@@ -1,22 +1,24 @@
 {
 	"name": "@codeshelldev/goplater",
 	"version": "none",
-	"description": "JS Distribution of goplater binaries",
+	"description": "JavaScript distribution of Goplater binaries",
+	"license": "MIT",
+	"author": "CodeShellDev",
 	"homepage": "https://github.com/codeshelldev/goplater#readme",
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/codeshelldev/goplater.git"
+	},
 	"bugs": {
 		"url": "https://github.com/codeshelldev/goplater/issues"
 	},
-	"repository": {
-		"type": "git",
-		"url": "git+https://github.com/codeshelldev/goplater.git"
-	},
-	"license": "MIT",
-	"author": "CodeShellDev",
 	"bin": {
 		"goplater": "bin/goplater.js"
 	},
 	"files": [
 		"bin/",
-		"package.json"
-	]
+		"README.md",
+		"LICENSE"
+	],
+	"optionalDependencies": {}
 }

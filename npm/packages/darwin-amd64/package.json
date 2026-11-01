@@ -1,0 +1,21 @@
+{
+	"name": "@codeshelldev/goplater-darwin-amd64",
+	"version": "none",
+	"description": "Goplater binary for macOS Intel",
+	"license": "MIT",
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/codeshelldev/goplater.git"
+	},
+	"os": [
+		"darwin"
+	],
+	"cpu": [
+		"x64"
+	],
+	"files": [
+		"bin/",
+		"README.md",
+		"LICENSE"
+	]
+}

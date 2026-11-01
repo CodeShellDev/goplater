@@ -5,15 +5,17 @@ on:
     types: [published]
 
 jobs:
-  build:
+  release:
     runs-on: ubuntu-latest
     name: Build & Release ${{ github.event.release.tag_name }}
 
     permissions:
       contents: write
+      id-token: write
 
     steps:
       - uses: actions/checkout@v7
+
       - uses: actions/setup-node@v7
         with:
           node-version: 24
@@ -22,7 +24,7 @@ jobs:
       - name: Build binaries
         uses: codeshelldev/gh-actions/go-build@v1.0.3
         with:
-          platforms: linux/amd64,linux/arm64,darwin/arm64,windows/amd64
+          platforms: linux/amd64,linux/arm64,darwin/amd64,darwin/arm64,windows/amd64
           output-pattern: dist/goplater-${{ github.event.release.tag_name }}-{os}-{arch}
           build-args: |
             Version=${{ github.event.release.tag_name }}
@@ -36,14 +38,83 @@ jobs:
           input-pattern: dist/{name}-${{ github.event.release.tag_name }}-{os}-{arch}
           output-pattern: "{name}-${{ github.event.release.tag_name }}-{os}-{arch}"
 
-      - name: Publish npm package
-        run: |
-          cp -r dist/* npm/bin/
-          chmod +x -R npm/bin/
-          cp README.md npm/
-          cp LICENSE npm/
-          cd npm/
-          npm version ${{ github.event.release.tag_name }} --no-git-tag-version
-          npm stage publish --access public
+      - name: Publish npm packages
+        working-directory: npm
         env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPMJS_PCKG_TOKEN }}
+          RELEASE_TAG: ${{ github.event.release.tag_name }}
+        run: |
+          set -euo pipefail
+
+          VERSION="${RELEASE_TAG#v}"
+          DIST="../dist"
+
+          # Reset optional dependencies before adding available platforms.
+          node -e "
+            const fs = require('node:fs');
+            const p = require('./package.json');
+            p.optionalDependencies = {};
+            fs.writeFileSync(
+              'package.json',
+              JSON.stringify(p, null, 2) + '\n'
+            );
+          "
+
+          FOUND=0
+
+          # Discover and publish all available platform binaries.
+          for BINARY in "$DIST"/goplater-"$RELEASE_TAG"-*; do
+            [[ -f "$BINARY" ]] || continue
+
+            FILENAME="$(basename "$BINARY")"
+            PLATFORM="${FILENAME#*"$RELEASE_TAG"-}"
+            PLATFORM="${PLATFORM%.exe}"
+
+            PACKAGE="packages/$PLATFORM"
+            OUTPUT="goplater"
+
+            if [[ "$FILENAME" == *.exe ]]; then
+              OUTPUT="goplater.exe"
+            fi
+
+            if [[ ! -f "$PACKAGE/package.json" ]]; then
+              echo "Missing package.json for $PLATFORM"
+              exit 1
+            fi
+
+            echo "Publishing $PLATFORM..."
+
+            mkdir -p "$PACKAGE/bin"
+            cp "$BINARY" "$PACKAGE/bin/$OUTPUT"
+            chmod +x "$PACKAGE/bin/$OUTPUT"
+
+            cp ../README.md "$PACKAGE/"
+            cp ../LICENSE "$PACKAGE/"
+
+            (
+              cd "$PACKAGE"
+              npm version "$VERSION" --no-git-tag-version
+              npm publish --access public
+            )
+
+            # Add this published platform package as an optional dependency.
+            NAME="$(node -p "require('./$PACKAGE/package.json').name")"
+            npm pkg set "optionalDependencies.$NAME=$VERSION"
+
+            FOUND=$((FOUND + 1))
+          done
+
+          if [[ "$FOUND" -eq 0 ]]; then
+            echo "No platform binaries found in $DIST"
+            exit 1
+          fi
+
+          # Publish the main package.
+          echo "Publishing main package..."
+
+          cp ../README.md .
+          cp ../LICENSE .
+
+          npm version "$VERSION" --no-git-tag-version
+          npm publish --access public
+
+          echo "Successfully published GoPlater $VERSION ($FOUND platform packages)."

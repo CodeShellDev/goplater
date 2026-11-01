@@ -1,0 +1,21 @@
+{
+	"name": "@codeshelldev/goplater-windows-amd64",
+	"version": "none",
+	"description": "Goplater binary for Windows AMD64",
+	"license": "MIT",
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/codeshelldev/goplater.git"
+	},
+	"os": [
+		"win32"
+	],
+	"cpu": [
+		"x64"
+	],
+	"files": [
+		"bin/",
+		"README.md",
+		"LICENSE"
+	]
+}
