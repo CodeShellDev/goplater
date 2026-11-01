@@ -50,6 +50,11 @@
 
 ## See it in action
 
+
+
+
+[1 2 3]
+
 **`TEMPLATE.md`**
 
 <!-- prettier-ignore -->
