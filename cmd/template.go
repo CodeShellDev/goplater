@@ -2,13 +2,13 @@ package cmd
 
 import (
 	"errors"
+	"fmt"
 	"os"
 	"path/filepath"
 
 	"github.com/codeshelldev/goplater/internals/template"
 	tmplContext "github.com/codeshelldev/goplater/internals/template/context"
 	"github.com/codeshelldev/goplater/internals/template/core"
-	"github.com/codeshelldev/goplater/utils/printer"
 
 	"github.com/spf13/cobra"
 )
@@ -17,8 +17,11 @@ var templateCmd = &cobra.Command{
 	Use:   "template",
     Short: "Template files",
 	Args: validate,
-    Long:  `Template files by using local or remote files.`,
-	Run: run,
+	ValidArgsFunction: func(cmd *cobra.Command, args []string, toComplete string) ([]string, cobra.ShellCompDirective) {
+		return nil, cobra.ShellCompDirectiveDefault
+	},
+    Long:  "Template files by using local or remote files.",
+	RunE: run,
 }
 
 var templateOptions = &tmplContext.TemplateOptions{}
@@ -47,14 +50,15 @@ func init() {
 }
 
 func validate(cmd *cobra.Command, args []string) error {
-	if len(args) <= 0 {
-		return errors.New("missing context path")
-	} else if len(args) > 0 {
-		_, err := os.Stat(args[0])
+	err := cobra.ExactArgs(1)(cmd, args)
+    if err != nil {
+        return err
+    }
 
-		if errors.Is(err, os.ErrNotExist) {
-			printer.Error("invalid context path: " + args[0])
-		}
+	_, err = os.Stat(args[0])
+
+	if errors.Is(err, os.ErrNotExist) {
+		return fmt.Errorf("context path %q does not exist: %w", args[0], err)
 	}
 
 	return nil
@@ -71,7 +75,7 @@ func makePathsAbsolute(in []string) ([]string, error) {
 			absPath, err = filepath.Abs(path)
 
 			if err != nil {
-				return nil, err
+				return nil, fmt.Errorf("could not make %q absolute: %w", path, err)
 			}
 		}
 
@@ -81,7 +85,7 @@ func makePathsAbsolute(in []string) ([]string, error) {
 	return out, nil
 }
 
-func run(cmd *cobra.Command, args []string) {
+func run(cmd *cobra.Command, args []string) error {
 	templateContext := tmplContext.New(templateOptions)
 
 	allowedOutputFolders := append(templateOptions.AllowedOutputs, templateOptions.Output)
@@ -90,7 +94,7 @@ func run(cmd *cobra.Command, args []string) {
 	templateOptions.AllowedOutputs, err = makePathsAbsolute(allowedOutputFolders)
 
 	if err != nil {
-		printer.Error(err.Error())
+		return err
 	}
 
 	allowedInputFolders := append(templateOptions.AllowedInputs, templateOptions.Source)
@@ -98,13 +102,13 @@ func run(cmd *cobra.Command, args []string) {
 	templateOptions.AllowedInputs, err = makePathsAbsolute(allowedInputFolders)
 
 	if err != nil {
-		printer.Error(err.Error())
+		return err
 	}
 
 	outputPathAbs, err := filepath.Abs(templateOptions.Output)
 
 	if err != nil {
-		printer.Error(err.Error())
+		return fmt.Errorf("could not make output path %q absolute: %w", templateOptions.Output, err)
 	}
 
 	templateOptions.Output = outputPathAbs
@@ -113,7 +117,7 @@ func run(cmd *cobra.Command, args []string) {
 		rootPathAbs, err := filepath.Abs(templateOptions.Root)
 
 		if err != nil {
-			printer.Error(err.Error())
+			return fmt.Errorf("could not make root path %q absolute: %w", templateOptions.Root, err)
 		}
 
 		templateOptions.Root = rootPathAbs
@@ -122,7 +126,7 @@ func run(cmd *cobra.Command, args []string) {
 	sourcePathAbs, err := filepath.Abs(args[0])
 
 	if err != nil {
-		printer.Error(err.Error())
+		return fmt.Errorf("could not make source path %q absolute: %w", templateOptions.Source, err)
 	}
 
 	templateContext.Path = sourcePathAbs
@@ -131,4 +135,5 @@ func run(cmd *cobra.Command, args []string) {
 	core.Matcher = &templater
 
 	templater.Run(templateContext)
+	return nil
 }

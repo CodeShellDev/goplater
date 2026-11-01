@@ -65,8 +65,8 @@ func TestOutputPathFlatten(t *testing.T) {
 		t.Run(tc.source + " -> " + tc.output, func(t *testing.T) {
 			got := filepath.ToSlash(outputresolver.ResolveOutput(tc.source, tc.output))
 			if got != tc.expect {
-				t.Error(
-					"ResolveOutput(" + tc.source + ", " + tc.output + ")\n got: " + got + "\nwant: " + tc.expect,
+				t.Errorf(
+					"ResolveOutput(%s, %s)\n got: %s\nwant: %s", tc.source, tc.output, got, tc.expect,
 				)
 			}
 		})
@@ -111,18 +111,18 @@ func TestOutputPathPreserve(t *testing.T) {
 
 			if tc.wantErr {
 				if err == nil {
-					t.Fatal("expected error, got " + got)
+					t.Fatalf("expected error, got %s", got)
 				}
 				return
 			}
 
 			if err != nil {
-				t.Fatal("unexpected error: " + err.Error())
+				t.Fatalf("unexpected error: %v", err)
 			}
 
 			if got != tc.expect {
-				t.Error(
-					"ResolveOutputPreserved(" + tc.root + ", " + tc.source + ", " + tc.output + ")\n got: " + got + "\nwant: " + tc.expect,
+				t.Errorf(
+					"ResolveOutputPreserved(%s, %s, %s)\n got: %s\nwant: %s", tc.root, tc.source, tc.output, got, tc.expect,
 				)
 			}
 		})
@@ -161,18 +161,18 @@ func TestOutputPathInferred(t *testing.T) {
 
 			if tc.wantErr {
 				if err == nil {
-					t.Fatal("expected error, got " + got)
+					t.Fatalf("expected error, got %s", got)
 				}
 				return
 			}
 
 			if err != nil {
-				t.Fatal("unexpected error: " + err.Error())
+				t.Fatalf("unexpected error: %v", err)
 			}
 
 			if got != tc.expect {
-				t.Error(
-					"ResolveOutputInferred(" + tc.source + ", " + tc.output + ")\n got: " + got + "\nwant: " + tc.expect,
+				t.Errorf(
+					"ResolveOutputInferred(%s, %s)\n got: %s\nwant: %s", tc.source, tc.output, got, tc.expect,
 				)
 			}
 		})

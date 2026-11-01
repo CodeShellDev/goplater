@@ -2,7 +2,7 @@ package core
 
 import (
 	"errors"
-	"strconv"
+	"fmt"
 
 	"github.com/codeshelldev/goplater/pkg/gplt"
 	"github.com/codeshelldev/goplater/pkg/gplt/modules"
@@ -36,7 +36,7 @@ func returnFn(rt *gplt.Runtime, ctx *gplt.Context, i int, value any) (string, er
 	outputs := GetOutputs(rt, funcContext.CallerID)
 
 	for len(outputs) <= i {
-		return "", errors.New("could not set output at " + strconv.Itoa(i) + ": index out of bounds")
+		return "", fmt.Errorf("could not set output at %d: index out of bounds", i)
 	}
 	outputs[i] = value
 

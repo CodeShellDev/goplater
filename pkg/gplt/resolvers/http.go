@@ -2,6 +2,7 @@ package resolvers
 
 import (
 	"errors"
+	"fmt"
 	"io"
 	"net/http"
 	"net/url"
@@ -37,19 +38,19 @@ func (r *HttpResolver) Resolve(path string) (string, error) {
 func FetchURL(client *http.Client, url string) (string, error) {
 	resp, err := client.Get(url)
 	if err != nil {
-		return "", errors.New("remote request failed: " + err.Error())
+		return "", fmt.Errorf("remote request failed: %w", err)
 	}
 	defer resp.Body.Close()
 
 	if resp.StatusCode != http.StatusOK {
-		return "", errors.New("remote returned " + url + ": " + resp.Status)
+		return "", fmt.Errorf("remote returned %q: %s", url, resp.Status)
 	}
 
 	const maxResponseSize = 10 << 20 // 10 MB
 
-	body, err := io.ReadAll(io.LimitReader(resp.Body, maxResponseSize+1))
+	body, err := io.ReadAll(io.LimitReader(resp.Body, maxResponseSize + 1))
 	if err != nil {
-		return "", errors.New("could not read response body: " + err.Error())
+		return "", fmt.Errorf("could not read response body: %w", err)
 	}
 
 	if len(body) > maxResponseSize {
@@ -63,7 +64,7 @@ func (r *HttpResolver) DeriveName(path string) (string, error) {
 	URL, err := url.Parse(path)
 
 	if err != nil {
-		return "", errors.New("malformed path: " + path + ", cannot derive import name")
+		return "", fmt.Errorf("malformed path: %q cannot derive import name", path)
 	}
 
 	name := filepath.Base(strings.TrimRight(URL.Path, "/"))

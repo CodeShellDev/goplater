@@ -3,6 +3,7 @@ package gplt
 import (
 	"bytes"
 	"errors"
+	"fmt"
 	"maps"
 	"strings"
 	"text/template"
@@ -40,7 +41,7 @@ func (rt *Runtime) RegisterStore(id string, store StoreContainer) error {
 	_, exists := rt.store[id]
 
 	if exists {
-		return errors.New("store with " + id + " already registered")
+		return fmt.Errorf("store with %q already registered", id)
 	}
 
 	rt.store[id] = store
@@ -52,7 +53,7 @@ func (rt *Runtime) UnegisterStore(id string) error {
 	_, exists := rt.store[id]
 
 	if !exists {
-		return errors.New("no store with " + id + " found")
+		return fmt.Errorf("no store with %q found", id)
 	}
 
 	delete(rt.store, id)
@@ -68,7 +69,7 @@ func (rt *Runtime) Import(callerScope, path string, aliasOverride string, ctx *C
 
 	resolved, err := rt.engine.resolver.Resolve(path)
 	if err != nil {
-		return errors.New("module " + path + ": " + err.Error())
+		return fmt.Errorf("module %q: %w", path, err)
 	}
 
 	name := resolved.Name
@@ -77,7 +78,7 @@ func (rt *Runtime) Import(callerScope, path string, aliasOverride string, ctx *C
 	}
 	
 	if name == "" {
-		return errors.New("module " + name + ": resolver returned no alias and none was provided")
+		return fmt.Errorf("module %q: resolver returned no alias and none was provided", path)
 	}
 
 	funcMap, err := rt.FuncMap(ctx, resolved.Trusted)
@@ -91,17 +92,17 @@ func (rt *Runtime) Import(callerScope, path string, aliasOverride string, ctx *C
 
 	_, err = t.Parse(resolved.Template)
 	if err != nil {
-		return errors.New("module " + path + ": parse error: " + err.Error())
+		return fmt.Errorf("module %q: parse error: %w", path, err)
 	}
 
 	err = validateOnlyDefines(t)
 	if err != nil {
-		return errors.New("module " + path + ": " + err.Error())
+		return fmt.Errorf("module %q: %w", path, err)
 	}
 
 	sigs, err := ExtractSignatures(t, name)
 	if err != nil {
-		return errors.New("module " + path + ": " + err.Error())
+		return fmt.Errorf("module %q: %w", path, err)
 	}
 
 	rt.registry.Register(path, t, resolved.Trusted, name)
@@ -119,7 +120,7 @@ func validateOnlyDefines(t *template.Template) error {
 
 		err := onlyWhitespace(tmpl.Root)
 		if err != nil {
-			return errors.New("top-level content outside define blocks: " + err.Error())
+			return fmt.Errorf("top-level content outside define blocks: %w", err)
 		}
 	}
 
@@ -135,7 +136,7 @@ func onlyWhitespace(node *parse.ListNode) error {
 		tn, ok := n.(*parse.TextNode)
 
 		if !ok {
-			return errors.New("found " + n.String() + " node")
+			return fmt.Errorf("found %q node", node)
 		}
 
 		if strings.TrimSpace(string(tn.Text)) != "" {
@@ -226,7 +227,7 @@ func (rt *Runtime) PrepareRender(name, body string, data any, ctx *Context) (*te
 
 	funcMap, err := rt.FuncMap(ctx, true)
 	if err != nil {
-		return nil, errors.New("could no create func map: " + err.Error())
+		return nil, fmt.Errorf("could no create func map: %w", err)
 	}
 
 	t.Funcs(funcMap)

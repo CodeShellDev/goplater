@@ -1,7 +1,7 @@
 package funcs
 
 import (
-	"errors"
+	"fmt"
 	"io/fs"
 	"os"
 	"path/filepath"
@@ -39,7 +39,7 @@ func read(rt *gplt.Runtime, ctx *gplt.Context, path string) (string, error) {
 	str, err = rt.GetEngine().Execute(":read:" + path, str, nil, rt.GetEngineOptions(), ctx)
 
 	if err != nil {
-		return "", errors.New("could not read " + path + ": " + err.Error())
+		return "", fmt.Errorf("could not template %q: %w", path, err)
 	}
 
 	return str, nil
@@ -63,13 +63,14 @@ func readRaw(_ *gplt.Runtime, ctx *gplt.Context, path string) (string, error) {
 	res, err := safeRead(filePathAbs, tmplContext)
 
 	if err != nil {
-		return "", errors.New("could not read " + path + ": " + err.Error())
+		return "", err
 	}
 
 	return res, nil
 }
 
 // Reads file and passes arguments to it.
+// Arguments are available as `.arg` in the file being read.
 //
 // @param path string
 // @param args any
@@ -94,7 +95,7 @@ func readArgs(rt *gplt.Runtime, ctx *gplt.Context, path string, args any) (strin
 	str, err = rt.GetEngine().Execute(":read:" + path, str, data, rt.GetEngineOptions(), newContext)
 
 	if err != nil {
-		return "", errors.New("could not read " + path + ": " + err.Error())
+		return "", fmt.Errorf("could not template %q: %w", path, err)
 	}
 
 	return str, nil
@@ -108,7 +109,7 @@ func readHandler(ctx *gplt.Context, path string) (string, *gplt.Context, error) 
 	res, err := safeRead(filePathAbs, tmplContext)
 
 	if err != nil {
-		return "", nil, errors.New("could not read " + filePathAbs + ": " + err.Error())
+		return "", nil, fmt.Errorf("could not read %q: %w", path, err)
 	}
 
 	tmplContext.Invoker = filePathAbs

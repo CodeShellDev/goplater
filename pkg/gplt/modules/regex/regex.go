@@ -1,7 +1,7 @@
 package regex
 
 import (
-	"errors"
+	"fmt"
 	"regexp"
 
 	"github.com/codeshelldev/goplater/pkg/gplt"
@@ -22,7 +22,7 @@ func regexMatch(_ *gplt.Runtime, _ *gplt.Context, regex string, str string) (boo
 	re, err := regexp.Compile(regex)
 
 	if err != nil {
-		return false, errors.New("error parsing regex: " + err.Error())
+		return false, fmt.Errorf("error parsing regex: %w", err)
 	}
 
 	return re.MatchString(str), nil
@@ -40,7 +40,7 @@ func regexFind(_ *gplt.Runtime, _ *gplt.Context, regex string, str string) ([]st
 	re, err := regexp.Compile(regex)
 
 	if err != nil {
-		return nil, errors.New("error parsing regex: " + err.Error())
+		return nil, fmt.Errorf("error parsing regex: %w", err)
 	}
 
 	return re.FindAllString(str, -1), nil
@@ -58,7 +58,7 @@ func regexFindGroups(_ *gplt.Runtime, _ *gplt.Context, regex string, str string)
 	re, err := regexp.Compile(regex)
 
 	if err != nil {
-		return nil, errors.New("error parsing regex: " + err.Error())
+		return nil, fmt.Errorf("error parsing regex: %w", err)
 	}
 
 	return re.FindAllStringSubmatch(str, -1), nil
@@ -76,7 +76,7 @@ func regexFindGroupsIndex(_ *gplt.Runtime, _ *gplt.Context, regex string, str st
 	re, err := regexp.Compile(regex)
 
 	if err != nil {
-		return nil, errors.New("error parsing regex: " + err.Error())
+		return nil, fmt.Errorf("error parsing regex: %w", err)
 	}
 
 	return re.FindAllStringSubmatchIndex(str, -1), nil
@@ -95,7 +95,7 @@ func regexReplace(_ *gplt.Runtime, _ *gplt.Context, str string, regex string, re
 	re, err := regexp.Compile(regex)
 
 	if err != nil {
-		return "", errors.New("error parsing regex: " + err.Error())
+		return "", fmt.Errorf("error parsing regex: %w", err)
 	}
 
 	return re.ReplaceAllString(str, replaceWith), nil

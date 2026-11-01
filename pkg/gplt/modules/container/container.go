@@ -2,8 +2,8 @@ package container
 
 import (
 	"errors"
+	"fmt"
 	"reflect"
-	"strconv"
 
 	"github.com/codeshelldev/goplater/pkg/gplt"
 	"github.com/codeshelldev/goplater/pkg/gplt/modules"
@@ -141,7 +141,7 @@ func mapCreate(_ *gplt.Runtime, _ *gplt.Context, entries ...any) (map[string]any
 	}
 
 	if len(entries) % 2 != 0 {
-		return nil, errors.New("missing value for key '" + entries[len(entries) - 1].(string) + "'")
+		return nil, fmt.Errorf("missing value for key %q", entries[len(entries) - 1])
 	}
 
 	out := map[string]any{}
@@ -150,7 +150,7 @@ func mapCreate(_ *gplt.Runtime, _ *gplt.Context, entries ...any) (map[string]any
 		key, ok := entries[i - 1].(string)
 
 		if !ok {
-			return nil, errors.New("item at index " + strconv.Itoa(i) + " is not of type string, map keys must be strings")
+			return nil, fmt.Errorf("item at index %d is not of type string, map keys must be strings", i)
 		}
 
 		out[key] = entries[i]

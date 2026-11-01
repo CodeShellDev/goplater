@@ -12,5 +12,5 @@ type IRenderer interface {
 }
 
 type IMatcher interface {
-	Match(ctx *context.TemplateContext) bool
+	Match(ctx *context.TemplateContext) (bool, error)
 }

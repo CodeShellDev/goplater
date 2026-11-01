@@ -1,7 +1,7 @@
 package gplt
 
 import (
-	"errors"
+	"fmt"
 	"strings"
 	"text/template"
 )
@@ -25,7 +25,7 @@ func ExtractSignatures(t *template.Template, prefix string) (map[string][]string
 		if base != tmpl.Name() {
 			_, err := t.AddParseTree(base, tmpl.Tree)
 			if err != nil {
-				return nil, errors.New("define " + tmpl.Name() + ": " + err.Error())
+				return nil, fmt.Errorf("define %q: %w", tmpl.Name(), err)
 			}
 		}
 
@@ -39,7 +39,7 @@ func ExtractSignatures(t *template.Template, prefix string) (map[string][]string
 
 			_, err := t.AddParseTree(prefixed, tmpl.Tree)
 			if err != nil {
-				return nil, errors.New("define " + tmpl.Name() + ": " + err.Error())
+				return nil, fmt.Errorf("define %q: %w", tmpl.Name(), err)
 			}
 
 			if hasSig {

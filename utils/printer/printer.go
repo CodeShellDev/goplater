@@ -84,6 +84,26 @@ func (p *Printer) Debug(args ...any) {
 	))
 }
 
+func (p *Printer) Infof(format string, args ...any) {
+	p.Info(fmt.Sprintf(format, args...))
+}
+
+func (p *Printer) Successf(format string, args ...any) {
+	p.Success(fmt.Sprintf(format, args...))
+}
+
+func (p *Printer) Warnf(format string, args ...any) {
+	p.Warn(fmt.Sprintf(format, args...))
+}
+
+func (p *Printer) Errorf(format string, args ...any) {
+	p.Error(fmt.Sprintf(format, args...))
+}
+
+func (p *Printer) Debugf(format string, args ...any) {
+	p.Debug(fmt.Sprintf(format, args...))
+}
+
 func (p *Printer) SymbolsMessage(symbol string, args ...any) string {
 	message := strings.TrimSuffix(fmt.Sprintln(args...), "\n")
 	if symbol == "" {
@@ -115,6 +135,26 @@ func Error(args ...any) {
 
 func Debug(args ...any) {
 	Default.Debug(args...)
+}
+
+func Infof(format string, args ...any) {
+	Default.Infof(format, args...)
+}
+
+func Successf(format string, args ...any) {
+	Default.Successf(format, args...)
+}
+
+func Warnf(format string, args ...any) {
+	Default.Warnf(format, args...)
+}
+
+func Errorf(format string, args ...any) {
+	Default.Errorf(format, args...)
+}
+
+func Debugf(format string, args ...any) {
+	Default.Debugf(format, args...)
 }
 
 func Blank() {

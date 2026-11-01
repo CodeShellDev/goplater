@@ -1,27 +1,27 @@
 package template
 
 import (
+	"fmt"
 	"io/fs"
 	"os"
 	"path/filepath"
 
 	"github.com/codeshelldev/goplater/internals/template/context"
 	"github.com/codeshelldev/goplater/utils/fsutils"
-	"github.com/codeshelldev/goplater/utils/printer"
 	"github.com/codeshelldev/goplater/utils/tree"
 )
 
 type Templater struct{}
 
-func (Templater) Run(ctx *context.TemplateContext) {
-	run(ctx)
+func (Templater) Run(ctx *context.TemplateContext) error {
+	return run(ctx)
 }
 
 func New() *Templater {
 	return &Templater{}
 }
 
-func run(ctx *context.TemplateContext) {
+func run(ctx *context.TemplateContext) error {
 	isDir := fsutils.IsDir(ctx.Path)
 	isFile := fsutils.IsFile(ctx.Path)
 	
@@ -42,13 +42,23 @@ func run(ctx *context.TemplateContext) {
 				return nil
 			}
 
-			absPath, _ := filepath.Abs(path)
+			absPath, err := filepath.Abs(path)
+
+			if err != nil {
+				return err
+			}
 
 			newContext := *ctx
 			newContext.Path = absPath
 			newContext.Invoker = absPath
 
-			if !matchFile(&newContext) {
+			ok, err := matchFile(&newContext)
+
+			if err != nil {
+				return err
+			}
+
+			if !ok {
 				return nil
 			}
 
@@ -63,13 +73,18 @@ func run(ctx *context.TemplateContext) {
 
 			if err != nil {
 				file.Fail(err)
-				return err
+
+				if !ctx.Options.IgnoreErrors {
+					os.Exit(1)
+					return err
+				}
 			}
 
 			relOutput, err := fsutils.SafeRelative(ctx.Options.Source, newContext.OutputPath)
 
 			if err != nil {
 				file.Fail(err)
+				os.Exit(1)
 				return err
 			}
 
@@ -81,17 +96,19 @@ func run(ctx *context.TemplateContext) {
 			return nil
 		})
 
-		// should have already errored
-		if err != nil {
-			printer.Error(err.Error())
-		}
-
 		t.Start()
 		t.Close()
+
+		// should have already errored
+		if err != nil {
+			return fmt.Errorf("error recursively templating: %w", err)
+		}
 	} else if isFile {
 		err := handleFile(ctx)
 		if err != nil {
-			printer.Error(err.Error())
+			return err
 		}
 	}
+
+	return nil
 }

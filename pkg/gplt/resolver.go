@@ -1,6 +1,6 @@
 package gplt
 
-import "errors"
+import "fmt"
 
 type Resolver interface {
 	CanResolve(path string) bool
@@ -48,5 +48,5 @@ func (c *ResolverChain) Resolve(path string) (ResolvedModule, error) {
 		}
 	}
 
-	return ResolvedModule{}, errors.New("no resolver found for " + path)
+	return ResolvedModule{}, fmt.Errorf("no resolver found for %q", path)
 }

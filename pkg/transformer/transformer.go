@@ -1,7 +1,7 @@
 package transformer
 
 import (
-	"errors"
+	"fmt"
 	"text/template"
 	"text/template/parse"
 )
@@ -42,7 +42,7 @@ func (p *Transformer) Process(t *template.Template) error {
 	for _, proc := range p.processors {
 		err := proc.Process(doc)
 		if err != nil {
-			return errors.New("processor " + proc.Name() + ": " + err.Error())
+			return fmt.Errorf("processor %q: %w", proc.Name(), err)
 		}
 	}
 

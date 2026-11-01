@@ -1,7 +1,7 @@
 package core
 
 import (
-	"errors"
+	"fmt"
 
 	"github.com/codeshelldev/goplater/pkg/gplt"
 	"github.com/codeshelldev/goplater/pkg/gplt/modules"
@@ -25,7 +25,7 @@ func (s *GlobalStore) Get(key string) (any, error) {
 	value, exists := s.data[key]
 	
 	if !exists {
-		return nil, errors.New("global '" + key + "' does not exist")
+		return nil, fmt.Errorf("global %q does not exist", key)
 	}
 	
 	return value, nil
@@ -92,7 +92,7 @@ func SetGlobal(rt *gplt.Runtime, key string, value any) error {
 		err := rt.RegisterStore(globalStoreID, NewGlobalStore())
 
 		if err != nil {
-			return errors.New("error registering global store: " + err.Error())
+			return fmt.Errorf("error registering global store: %w", err)
 		}
 	}
 

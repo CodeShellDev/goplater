@@ -2,6 +2,7 @@ package parser
 
 import (
 	"errors"
+	"fmt"
 
 	"github.com/codeshelldev/goplater/pkg/gplt/types"
 )
@@ -73,7 +74,7 @@ func (p *Parser) Process(input string) (string, error) {
 		name := processor.Name()
 		result, err := processor.Process(output, ctx)
 		if err != nil {
-			return "", errors.New("processor " + name + ": " + err.Error())
+			return "", fmt.Errorf("processor %q: %w", name, err)
 		}
 
 		output = result

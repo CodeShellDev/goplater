@@ -2,7 +2,7 @@ package core
 
 import (
 	"bytes"
-	"errors"
+	"fmt"
 
 	"github.com/codeshelldev/goplater/pkg/gplt"
 	"github.com/codeshelldev/goplater/pkg/gplt/modules"
@@ -27,7 +27,7 @@ func (s *FuncOutputStore) Get(key string) (any, error) {
 	outputs, exists := s.outputs[key]
 	
 	if !exists {
-		return nil, errors.New("outputs for func '" + key + "' do not exist")
+		return nil, fmt.Errorf("outputs for func %q do not exist", key)
 	}
 	
 	return outputs, nil
@@ -60,7 +60,7 @@ func initCallStore(rt *gplt.Runtime) error {
 		err := rt.RegisterStore(funcOutputsStoreID, NewCallOutputStore())
 		
 		if err != nil {
-			return errors.New("error registering call outputs store: " + err.Error())
+			return fmt.Errorf("error registering call outputs store: %w", err)
 		}
 	}
 
@@ -124,7 +124,7 @@ func callFn(rt *gplt.Runtime, ctx *gplt.Context, name string, args ...any) (any,
 	output, err := call(rt, ctx, name, args...)
 
 	if err != nil {
-		return nil, errors.New("could not call '" + name + "': " + err.Error())
+		return nil, fmt.Errorf("could not call %q: %w", name, err)
 	}
 
 	return output, nil
@@ -136,7 +136,7 @@ func call(rt *gplt.Runtime, ctx *gplt.Context, name string, args ...any) (any, e
 	tmpl := rt.GetRegistry().Lookup(scope.Name, name)
 
 	if tmpl == nil {
-		return nil, errors.New("function " + name + " is not defined or not accessible")
+		return nil, fmt.Errorf("function %q is not defined or not accessible", name)
 	}
 
 	params, _ := rt.Params(name)

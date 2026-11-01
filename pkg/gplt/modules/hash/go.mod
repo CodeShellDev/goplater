@@ -1,4 +1,4 @@
-module github.com/codeshelldev/goplater/pkg/gplt/modules/base64
+module github.com/codeshelldev/goplater/pkg/gplt/modules/hash
 
 go 1.27.3
 

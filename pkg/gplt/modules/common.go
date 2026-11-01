@@ -1,6 +1,7 @@
 package modules
 
 import (
+	"fmt"
 	"maps"
 	"slices"
 	"sort"
@@ -40,6 +41,13 @@ func NewFunc(name string, handler any) Func {
 		Name: name,
 		Handler: handler,
 	}
+}
+
+func RequireArgs(count int, args []any) error {
+	if len(args) != count {
+		return fmt.Errorf("wrong number of args: want at least %d got %d", count, len(args))
+	}
+	return nil
 }
 
 func UnpackArgs(args ...any) []any {

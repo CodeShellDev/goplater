@@ -2,6 +2,7 @@ package template
 
 import (
 	"errors"
+	"fmt"
 	"os"
 	"path/filepath"
 
@@ -62,10 +63,7 @@ func handleFile(ctx *context.TemplateContext) error {
 	content, err := templateFile(ctx)
 
 	if err != nil {
-		if !ctx.Options.IgnoreErrors {
-			return err
-		}
-		return nil
+		return err
 	}
 
 	return handleFileWrite(content, ctx)
@@ -82,7 +80,7 @@ func handleFileWrite(content string, ctx *context.TemplateContext) error {
 	}
 
 	if !allowed {
-		return errors.New("not allowed to output to " + filePathAbs)
+		return fmt.Errorf("not allowed to output to %q", filePathAbs)
 	}
 
 	if ctx.Options.DryRun {
@@ -93,7 +91,7 @@ func handleFileWrite(content string, ctx *context.TemplateContext) error {
 	err := os.MkdirAll(dir, 0755)
 
 	if err != nil {
-		return err
+		return fmt.Errorf("could not create output %q: %w", dir, err)
 	}
 
 	return os.WriteFile(filePathAbs, []byte(content), 0644)

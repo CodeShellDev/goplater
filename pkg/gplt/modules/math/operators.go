@@ -1,9 +1,7 @@
 package math
 
 import (
-	"errors"
 	"fmt"
-	"strconv"
 
 	"github.com/codeshelldev/goplater/pkg/gplt"
 	"github.com/codeshelldev/goplater/pkg/gplt/modules"
@@ -17,8 +15,10 @@ import (
 var addFunc = modules.NewFunc("add", add)
 
 func add(_ *gplt.Runtime, _ *gplt.Context, args ...any) (any, error) {
-	if len(args) < 2 {
-		return nil, errors.New("wrong number of args for add: want at least 2 got " + strconv.Itoa(len(args)))
+	err := modules.RequireArgs(2, args)
+
+	if err != nil {
+		return nil, err
 	}
 
 	return handleOperator(args, func(a, b int) int { return a + b }, func(a, b float64) float64 { return a + b })
@@ -32,8 +32,10 @@ func add(_ *gplt.Runtime, _ *gplt.Context, args ...any) (any, error) {
 var subFunc = modules.NewFunc("sub", sub)
 
 func sub(_ *gplt.Runtime, _ *gplt.Context, args ...any) (any, error) {
-	if len(args) < 2 {
-		return nil, errors.New("wrong number of args for sub: want at least 2 got " + strconv.Itoa(len(args)))
+	err := modules.RequireArgs(2, args)
+
+	if err != nil {
+		return nil, err
 	}
 
 	return handleOperator(args, func(a, b int) int { return a - b }, func(a, b float64) float64 { return a - b })
@@ -47,8 +49,10 @@ func sub(_ *gplt.Runtime, _ *gplt.Context, args ...any) (any, error) {
 var multFunc = modules.NewFunc("mult", mult)
 
 func mult(_ *gplt.Runtime, _ *gplt.Context, args ...any) (any, error) {
-	if len(args) < 2 {
-		return nil, errors.New("wrong number of args for mult: want at least 2 got " + strconv.Itoa(len(args)))
+	err := modules.RequireArgs(2, args)
+
+	if err != nil {
+		return nil, err
 	}
 
 	return handleOperator(args, func(a, b int) int { return a * b }, func(a, b float64) float64 { return a * b })
@@ -62,8 +66,10 @@ func mult(_ *gplt.Runtime, _ *gplt.Context, args ...any) (any, error) {
 var divdFunc = modules.NewFunc("divd", divd)
 
 func divd(_ *gplt.Runtime, _ *gplt.Context, args ...any) (any, error) {
-	if len(args) < 2 {
-		return nil, errors.New("wrong number of args for divd: want at least 2 got " + strconv.Itoa(len(args)))
+	err := modules.RequireArgs(2, args)
+
+	if err != nil {
+		return nil, err
 	}
 
 	return handleOperator(args, func(a, b int) int { return a / b }, func(a, b float64) float64 { return a / b })
@@ -77,8 +83,10 @@ func divd(_ *gplt.Runtime, _ *gplt.Context, args ...any) (any, error) {
 var modFunc = modules.NewFunc("mod", mod)
 
 func mod(_ *gplt.Runtime, _  *gplt.Context, args ...any) (any, error) {
-	if len(args) < 2 {
-		return nil, errors.New("wrong number of args for mod: want at least 2 got " + strconv.Itoa(len(args)))
+	err := modules.RequireArgs(2, args)
+
+	if err != nil {
+		return nil, err
 	}
 
 	return handleOperator(args, func(a, b int) int { return a / b }, func(a, b float64) float64 { return a / b })
@@ -145,7 +153,7 @@ func toFloatSlice(values []any) ([]float64, error) {
 		case float64:
 			out[i] = v
 		default:
-			return nil, errors.New(fmt.Sprint(v) + " is not of a numeric type")
+			return nil, fmt.Errorf("%v is not of a numeric type (%T)", v, v)
 		}
     }
 
@@ -159,7 +167,7 @@ func toIntSlice(values []any) ([]int, error) {
 		num, ok := v.(int)
 
 		if !ok {
-			return nil, errors.New(fmt.Sprint(v) + " is not of type int")
+			return nil, fmt.Errorf("%v is not of type int (%T)", v, v)
 		}
 
 		out[i] = num

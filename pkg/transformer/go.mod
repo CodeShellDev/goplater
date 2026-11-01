@@ -1,3 +1,3 @@
 module github.com/codeshelldev/goplater/pkg/transformer
 
-go 1.27.3
+go 1.25.14

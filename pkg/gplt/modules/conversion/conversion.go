@@ -8,16 +8,31 @@ import (
 	"github.com/codeshelldev/goplater/pkg/gplt/modules"
 )
 
-var Module = modules.NewModule(toStringFunc, toIntFunc, toFloat64Func, toFloat32Func, toBoolFunc)
+var Module = modules.NewModule(toStringFunc, toBytesFunc, toIntFunc, toFloat64Func, toFloat32Func, toBoolFunc)
 
-// Returns a given value as string (using [fmt.Sprint](https://pkg.go.dev/fmt#Sprint)).
+// Returns a given value as string (using [fmt.Sprint](https://pkg.go.dev/fmt#Sprint), bytes are handled separately).
 //
-// @param value string
+// @param value any
 // @returns string
 var toStringFunc = modules.NewFunc("toString", toString)
 
-func toString(_ *gplt.Runtime, _ *gplt.Context, value any) string  {
-	return fmt.Sprint(value)
+func toString(_ *gplt.Runtime, _ *gplt.Context, value any) string {
+	bytes, ok := value.([]byte)
+    if ok {
+        return string(b)
+    }
+
+    return fmt.Sprint(value)
+}
+
+// Turns a string into bytes.
+//
+// @param str string
+// @returns []byte
+var toBytesFunc = modules.NewFunc("toBytes", toBytes)
+
+func toBytes(_ *gplt.Runtime, _ *gplt.Context, str string) []byte {
+	return []byte(str)
 }
 
 // Attempts to parse a string as int.

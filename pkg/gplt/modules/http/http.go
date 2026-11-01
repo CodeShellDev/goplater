@@ -1,7 +1,7 @@
 package http
 
 import (
-	"errors"
+	"fmt"
 	"net/http"
 	urlUtils "net/url"
 	"time"
@@ -18,11 +18,13 @@ var Module = modules.NewModule(fetchFunc)
 //
 // @param url string
 // @returns string
+// @returns error
 var fetchFunc = modules.NewFunc("fetch", fetch)
 
 func fetch(_ *gplt.Runtime, _ *gplt.Context, url string) (string, error) {
-	if _, err := urlUtils.Parse(url); err != nil {
-		return "", errors.New("invalid URL " + url + ": " + err.Error())
+	_, err := urlUtils.Parse(url)
+	if err != nil {
+		return "", fmt.Errorf("invalid URL %q: %w", url, err)
 	}
 
 	client := &http.Client{

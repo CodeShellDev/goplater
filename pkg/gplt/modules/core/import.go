@@ -1,7 +1,7 @@
 package core
 
 import (
-	"errors"
+	"fmt"
 
 	"github.com/codeshelldev/goplater/pkg/gplt"
 	"github.com/codeshelldev/goplater/pkg/gplt/modules"
@@ -27,8 +27,10 @@ import (
 var importFunc = modules.NewFunc("import", importFn)
 
 func importFn(rt *gplt.Runtime, ctx *gplt.Context, args ...any) (string, error) {
-	if len(args) <= 0 {
-		return "", errors.New("wrong number of args for import: want at least 1 got 0")
+	err := modules.RequireArgs(1, args)
+
+	if err != nil {
+		return "", err
 	}
 
 	scope, _ := ctx.Get(gplt.CurrentTreeKey).(gplt.TreeScope)
@@ -43,9 +45,9 @@ func importFn(rt *gplt.Runtime, ctx *gplt.Context, args ...any) (string, error) 
 		override = args[0].(string)
 	}
 
-	err := rt.Import(scope.Name, path, override, ctx)
+	err = rt.Import(scope.Name, path, override, ctx)
 	if err != nil {
-		return "", errors.New("error importing " + path + ": " + err.Error())
+		return "", fmt.Errorf("error importing %q: %w", path, err)
 	}
 
 	return "", nil
