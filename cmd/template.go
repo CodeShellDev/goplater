@@ -134,6 +134,5 @@ func run(cmd *cobra.Command, args []string) error {
 	core.Renderer = &templater
 	core.Matcher = &templater
 
-	templater.Run(templateContext)
-	return nil
+	return templater.Run(templateContext)
 }

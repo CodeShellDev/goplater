@@ -161,6 +161,30 @@ func Blank() {
 	Default.Blank()
 }
 
+func FormatError(err error) string {
+	return FormatErrorWithSymbols(err, pretty.DefaultSymbols())
+}
+
+func FormatErrorWithSymbols(err error, symbols pretty.Symbols) string {
+	lines := strings.Split(err.Error(), ": ")
+
+	var b strings.Builder
+
+	for i, line := range lines {
+		if i == 0 {
+			b.WriteString(line)
+			continue
+		}
+
+		b.WriteByte('\n')
+		b.WriteString(strings.Repeat("  ", i))
+		b.WriteString(symbols.Last)
+		b.WriteString(line)
+	}
+
+	return b.String()
+}
+
 func (p *Printer) write(w io.Writer, message string) {
 	fmt.Fprintln(w, message)
 }

@@ -14,9 +14,12 @@ var rootCmd = &cobra.Command{
 }
 
 func Execute() {
+	rootCmd.SilenceErrors = true
+	rootCmd.SilenceUsage = true
+	
 	err := rootCmd.Execute()
 	if err != nil {
-		printer.Error(err)
+		printer.Error(printer.FormatError(err))
 		os.Exit(1)
 	}
 }
