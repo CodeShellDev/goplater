@@ -50,18 +50,6 @@
 
 ## See it in action
 
-
-+{{ define "parseVersion(version)" }}
-    +{{ $parts := split (cutPrefix .version "v") "." }}
-    +{{ $major := index $parts 0 }}
-    +{{ $minor := index $parts 1 }}
-    +{{ $patch := index $parts 2 }}
-
-    +{{ returnAll $major $minor $patch }}
-+{{ end }}
-
-+{{ call "parseVersion" "v1.2.3" }}
-
 +{{ call "composer.section" "see-it-in-action" }}
 
 ## Contents
