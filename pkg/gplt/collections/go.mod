@@ -7,7 +7,7 @@ require (
 	github.com/codeshelldev/goplater/pkg/gplt/modules/container v0.0.7
 	github.com/codeshelldev/goplater/pkg/gplt/modules/conversion v0.0.6
 	github.com/codeshelldev/goplater/pkg/gplt/modules/debug v0.0.6
-	github.com/codeshelldev/goplater/pkg/gplt/modules/encoding v0.0.1
+	github.com/codeshelldev/goplater/pkg/gplt/modules/encoding v0.0.2
 	github.com/codeshelldev/goplater/pkg/gplt/modules/html v0.0.7
 	github.com/codeshelldev/goplater/pkg/gplt/modules/http v0.0.6
 	github.com/codeshelldev/goplater/pkg/gplt/modules/json v0.0.6
