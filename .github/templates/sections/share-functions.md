@@ -4,7 +4,7 @@ Keep your functions in one file and import them from the filesystem or from a UR
 
 <!-- prettier-ignore -->
 ```handlebars
-+{{ import "funcs" "https://raw.githubusercontent.com/CodeShellDev/goplater/refs/heads/main/examples/funcs.gplt" }}
++{{ import "funcs" "https://raw.githubusercontent.com/CodeShellDev/goplater/refs/heads/main/examples/funcs" }}
 +{{ call "funcs.greet" "John" }}
 ```
 
