@@ -3,9 +3,9 @@
 # because it has already been consumed and processed by Goplater
 
 # imports
-<nil>
-<nil>
-<nil>
+
+
+
 
 # library commands
 
@@ -50,7 +50,7 @@
 
 ## See it in action
 
-<nil>**`TEMPLATE.md`**
+**`TEMPLATE.md`**
 
 <!-- prettier-ignore -->
 ```handlebars
