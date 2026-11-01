@@ -19,7 +19,7 @@ var toStringFunc = modules.NewFunc("toString", toString)
 func toString(_ *gplt.Runtime, _ *gplt.Context, value any) string {
 	bytes, ok := value.([]byte)
     if ok {
-        return string(b)
+        return string(bytes)
     }
 
     return fmt.Sprint(value)
