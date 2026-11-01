@@ -866,6 +866,31 @@ The fs resolver is only available as an internal module and does not ship with t
 </details>
 
 </td></tr></table>
+
+
+<table width="100%">
+<tr><th align="left"><h4><code>importExact(alias string?, path string, hash string?) throws error</code></h4></th>
+</tr><tr><td>
+<p>Same <code>import</code>, but only imports if content matches expected SHA-256 hash.</p>
+
+
+<details>
+  <summary>Examples</summary>
+  <br/>
+
+**Example**:
+```handlebars
++{{ importExact "funcs" "https://domain.com/functions" "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855" }}
+```
+**Output**:
+```
++{{ call "funcs.greet" "John" }}
+```
+
+
+</details>
+
+</td></tr></table>
 <h3><a href="https://github.com/codeshelldev/goplater/blob/main/pkg/gplt/modules/core/return.go">return</a></h3>
 
 
