@@ -19,7 +19,7 @@ jobs:
       - uses: actions/setup-node@v7
         with:
           node-version: 24
-          package-manager-cache: false
+          registry-url: https://registry.npmjs.org
 
       - name: Build binaries
         uses: codeshelldev/gh-actions/go-build@v1.0.3
@@ -45,8 +45,8 @@ jobs:
         run: |
           set -euo pipefail
 
-          node --version
-          npm --version
+          npmrc="${NPM_CONFIG_USERCONFIG:-$HOME/.npmrc}"
+          sed -i '/_authToken/d' "$npmrc"
 
           VERSION="${RELEASE_TAG#v}"
           DIST="../dist"
