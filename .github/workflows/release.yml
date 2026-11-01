@@ -22,7 +22,7 @@ jobs:
       - name: Build binaries
         uses: codeshelldev/gh-actions/go-build@v1.0.3
         with:
-          platforms: linux/amd64,linux/arm64,darwin/amd64,windows/amd64
+          platforms: linux/amd64,linux/arm64,darwin/arm64,windows/amd64
           output-pattern: dist/goplater-${{ github.event.release.tag_name }}-{os}-{arch}
           build-args: |
             Version=${{ github.event.release.tag_name }}
