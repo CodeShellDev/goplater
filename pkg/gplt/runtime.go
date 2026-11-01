@@ -2,6 +2,8 @@ package gplt
 
 import (
 	"bytes"
+	"crypto/sha256"
+	"encoding/hex"
 	"errors"
 	"fmt"
 	"maps"
@@ -61,7 +63,7 @@ func (rt *Runtime) UnegisterStore(id string) error {
 	return nil
 }
 
-func (rt *Runtime) Import(callerScope, path string, aliasOverride string, ctx *Context) error {
+func (rt *Runtime) Import(callerScope, path, aliasOverride, expectedHash string, ctx *Context) error {
 	if rt.registry.Loaded(path) {
 		rt.registry.AllowReach(callerScope, path)
 		return nil
@@ -70,6 +72,15 @@ func (rt *Runtime) Import(callerScope, path string, aliasOverride string, ctx *C
 	resolved, err := rt.engine.resolver.Resolve(path)
 	if err != nil {
 		return fmt.Errorf("module %q: %w", path, err)
+	}
+
+	if expectedHash != "" {
+		sum := sha256.Sum256([]byte(resolved.Template))
+		hash := hex.EncodeToString(sum[:])
+
+		if hash != expectedHash {
+			return fmt.Errorf("import checksum mismatch: expected %s, got %s", expectedHash, hash)
+		}
 	}
 
 	name := resolved.Name

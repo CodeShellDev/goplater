@@ -15,7 +15,7 @@ import (
 var addFunc = modules.NewFunc("add", add)
 
 func add(_ *gplt.Runtime, _ *gplt.Context, args ...any) (any, error) {
-	err := modules.RequireArgs(2, args)
+	err := modules.RequireMinArgs(2, args)
 
 	if err != nil {
 		return nil, err
@@ -32,7 +32,7 @@ func add(_ *gplt.Runtime, _ *gplt.Context, args ...any) (any, error) {
 var subFunc = modules.NewFunc("sub", sub)
 
 func sub(_ *gplt.Runtime, _ *gplt.Context, args ...any) (any, error) {
-	err := modules.RequireArgs(2, args)
+	err := modules.RequireMinArgs(2, args)
 
 	if err != nil {
 		return nil, err
@@ -49,7 +49,7 @@ func sub(_ *gplt.Runtime, _ *gplt.Context, args ...any) (any, error) {
 var multFunc = modules.NewFunc("mult", mult)
 
 func mult(_ *gplt.Runtime, _ *gplt.Context, args ...any) (any, error) {
-	err := modules.RequireArgs(2, args)
+	err := modules.RequireMinArgs(2, args)
 
 	if err != nil {
 		return nil, err
@@ -66,7 +66,7 @@ func mult(_ *gplt.Runtime, _ *gplt.Context, args ...any) (any, error) {
 var divdFunc = modules.NewFunc("divd", divd)
 
 func divd(_ *gplt.Runtime, _ *gplt.Context, args ...any) (any, error) {
-	err := modules.RequireArgs(2, args)
+	err := modules.RequireMinArgs(2, args)
 
 	if err != nil {
 		return nil, err
@@ -83,7 +83,7 @@ func divd(_ *gplt.Runtime, _ *gplt.Context, args ...any) (any, error) {
 var modFunc = modules.NewFunc("mod", mod)
 
 func mod(_ *gplt.Runtime, _  *gplt.Context, args ...any) (any, error) {
-	err := modules.RequireArgs(2, args)
+	err := modules.RequireMinArgs(2, args)
 
 	if err != nil {
 		return nil, err

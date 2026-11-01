@@ -43,9 +43,16 @@ func NewFunc(name string, handler any) Func {
 	}
 }
 
-func RequireArgs(count int, args []any) error {
-	if len(args) != count {
+func RequireMinArgs(count int, args []any) error {
+	if len(args) < count {
 		return fmt.Errorf("wrong number of args: want at least %d got %d", count, len(args))
+	}
+	return nil
+}
+
+func RequireRangeArgs(min, max int, args []any) error {
+	if len(args) < min || len(args) > max {
+		return fmt.Errorf("wrong number of args: want %d to %d got %d", min, max, len(args))
 	}
 	return nil
 }
