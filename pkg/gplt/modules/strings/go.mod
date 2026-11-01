@@ -2,4 +2,4 @@ module github.com/codeshelldev/goplater/pkg/gplt/modules/strings
 
 go 1.25.14
 
-require github.com/codeshelldev/goplater/pkg/gplt v0.1.6
+require github.com/codeshelldev/goplater/pkg/gplt v0.1.7
