@@ -1,6 +1,6 @@
 {
 	"name": "@codeshelldev/goplater",
-	"version": "none",
+	"version": "0.0.0",
 	"description": "JavaScript distribution of Goplater binaries",
 	"license": "MIT",
 	"author": "CodeShellDev",

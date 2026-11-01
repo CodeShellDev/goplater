@@ -1,6 +1,6 @@
 {
 	"name": "@codeshelldev/goplater-windows-amd64",
-	"version": "none",
+	"version": "0.0.0",
 	"description": "Goplater binary for Windows AMD64",
 	"license": "MIT",
 	"repository": {

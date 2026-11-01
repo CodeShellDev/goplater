@@ -1,6 +1,6 @@
 {
 	"name": "@codeshelldev/goplater-darwin-arm64",
-	"version": "none",
+	"version": "0.0.0",
 	"description": "Goplater binary for macOS ARM64",
 	"license": "MIT",
 	"repository": {

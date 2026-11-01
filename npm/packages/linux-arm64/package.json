@@ -1,6 +1,6 @@
 {
 	"name": "@codeshelldev/goplater-linux-arm64",
-	"version": "none",
+	"version": "0.0.0",
 	"description": "Goplater binary for Linux ARM64",
 	"license": "MIT",
 	"repository": {

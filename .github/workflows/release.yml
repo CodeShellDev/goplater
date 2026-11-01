@@ -19,7 +19,7 @@ jobs:
       - uses: actions/setup-node@v7
         with:
           node-version: 24
-          registry-url: https://registry.npmjs.org
+          package-manager-cache: false
 
       - name: Build binaries
         uses: codeshelldev/gh-actions/go-build@v1.0.3
@@ -44,6 +44,9 @@ jobs:
           RELEASE_TAG: ${{ github.event.release.tag_name }}
         run: |
           set -euo pipefail
+
+          node --version
+          npm --version
 
           VERSION="${RELEASE_TAG#v}"
           DIST="../dist"
