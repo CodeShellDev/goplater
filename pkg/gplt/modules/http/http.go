@@ -2,12 +2,13 @@ package http
 
 import (
 	"errors"
-	"io"
 	"net/http"
 	urlUtils "net/url"
+	"time"
 
 	"github.com/codeshelldev/goplater/pkg/gplt"
 	"github.com/codeshelldev/goplater/pkg/gplt/modules"
+	"github.com/codeshelldev/goplater/pkg/gplt/resolvers"
 )
 
 var Module = modules.NewModule(fetchFunc)
@@ -20,22 +21,13 @@ var Module = modules.NewModule(fetchFunc)
 var fetchFunc = modules.NewFunc("fetch", fetch)
 
 func fetch(_ *gplt.Runtime, _ *gplt.Context, url string) (string, error) {
-	_, err := urlUtils.Parse(url)
-
-	if err != nil {
-		return "", errors.New("invalid url: " + url)
+	if _, err := urlUtils.Parse(url); err != nil {
+		return "", errors.New("invalid URL " + url + ": " + err.Error())
 	}
 
-	response, err := http.Get(url)
-	if err != nil {
-		return "", errors.New("remote failed: " + url)
-	}
-	defer response.Body.Close()
-
-	body, err := io.ReadAll(response.Body)
-	if err != nil {
-		return "", errors.New("body malformed: " + url)
+	client := &http.Client{
+		Timeout: 15 * time.Second,
 	}
 
-	return string(body), nil
+	return resolvers.FetchURL(client, url)
 }

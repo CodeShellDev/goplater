@@ -29,21 +29,31 @@ func (r *HttpResolver) CanResolve(path string) bool {
 }
 
 func (r *HttpResolver) Resolve(path string) (string, error) {
-	path = path + "." + gplt.IMPORT_FILE_EXTENSION
-	
-	resp, err := r.Client.Get(path)
+	path += "." + gplt.IMPORT_FILE_EXTENSION
+
+	return FetchURL(r.Client, path)
+}
+
+func FetchURL(client *http.Client, url string) (string, error) {
+	resp, err := client.Get(url)
 	if err != nil {
-		return "", err
+		return "", errors.New("remote request failed: " + err.Error())
 	}
 	defer resp.Body.Close()
 
 	if resp.StatusCode != http.StatusOK {
-		return "", errors.New("http resolver: " + path + " returned " + resp.Status)
+		return "", errors.New("remote returned " + url + ": " + resp.Status)
 	}
 
-	body, err := io.ReadAll(resp.Body)
+	const maxResponseSize = 10 << 20 // 10 MB
+
+	body, err := io.ReadAll(io.LimitReader(resp.Body, maxResponseSize+1))
 	if err != nil {
-		return "", err
+		return "", errors.New("could not read response body: " + err.Error())
+	}
+
+	if len(body) > maxResponseSize {
+		return "", errors.New("remote response exceeds 10 MB limit")
 	}
 
 	return string(body), nil
