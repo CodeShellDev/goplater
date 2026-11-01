@@ -6,6 +6,8 @@ github.com/codeshelldev/goplater/pkg/gplt v0.1.7 h1:/vkZ9pmZ8bUMy/RqEfmFBokjNQOl
 github.com/codeshelldev/goplater/pkg/gplt v0.1.7/go.mod h1:6txZgoPxWu3eJuJnl7qeXmwBOe+BK6X9veAaNkbvzl4=
 github.com/codeshelldev/goplater/pkg/gplt/modules/container v0.0.6 h1:8f1zZMjODWnxU4H98tuNjSrUpHvvNtZa+V3b5W8fUig=
 github.com/codeshelldev/goplater/pkg/gplt/modules/container v0.0.6/go.mod h1:6xR2km8M/UO+H12X0oyrR66dv6EvxkXmkUS8Urs79ho=
+github.com/codeshelldev/goplater/pkg/gplt/modules/container v0.0.7 h1:Q81ghpqOhOWQ/hn+0edb/imLroMG4xrWSHBjlchYGJk=
+github.com/codeshelldev/goplater/pkg/gplt/modules/container v0.0.7/go.mod h1:IaZO1mvD+1IkMmnDKeOgkuqkNdiLn4v5EZKUs21iZKU=
 github.com/codeshelldev/goplater/pkg/gplt/modules/conversion v0.0.6 h1:mlNSE9oVXuoNzwLvIbb7e+ABBxhnIK08XYqW8lmkduk=
 github.com/codeshelldev/goplater/pkg/gplt/modules/conversion v0.0.6/go.mod h1:f7izz6FSMkI6siGORLfC7kGQ8iog9MJIOKA496mpuaQ=
 github.com/codeshelldev/goplater/pkg/gplt/modules/debug v0.0.6 h1:AIl9Cdr3/O7QXqVYk4w9KVEQ+DnMsQGabSwHPFLjXOc=

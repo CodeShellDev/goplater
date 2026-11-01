@@ -4,7 +4,7 @@ go 1.26.0
 
 require (
 	github.com/codeshelldev/goplater/pkg/gplt v0.1.7
-	github.com/codeshelldev/goplater/pkg/gplt/modules/container v0.0.6
+	github.com/codeshelldev/goplater/pkg/gplt/modules/container v0.0.7
 	github.com/codeshelldev/goplater/pkg/gplt/modules/conversion v0.0.6
 	github.com/codeshelldev/goplater/pkg/gplt/modules/debug v0.0.6
 	github.com/codeshelldev/goplater/pkg/gplt/modules/encoding v0.0.1
