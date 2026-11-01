@@ -93,7 +93,7 @@ jobs:
             (
               cd "$PACKAGE"
               npm version "$VERSION" --no-git-tag-version
-              npm stage publish --access public
+              npm publish --access public
             )
 
             # Add this published platform package as an optional dependency.
@@ -115,14 +115,6 @@ jobs:
           cp ../LICENSE .
 
           npm version "$VERSION" --no-git-tag-version
-          npm stage publish --access public
+          npm publish --access public
 
           echo "Successfully published GoPlater $VERSION ($FOUND platform packages)."
-
-      - name: Show full npm log
-        if: failure()
-        run: |
-          for f in ~/.npm/_logs/*.log; do
-            echo "=== $f ==="
-            cat "$f"
-          done
