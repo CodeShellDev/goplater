@@ -118,3 +118,7 @@ jobs:
           npm publish --access public --loglevel verbose
 
           echo "Successfully published GoPlater $VERSION ($FOUND platform packages)."
+
+      - name: Show npm OIDC log
+        if: failure()
+        run: grep -i -E "oidc|id-token|exchange|trusted" ~/.npm/_logs/*.log || echo "no oidc lines"
