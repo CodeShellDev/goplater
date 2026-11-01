@@ -72,7 +72,7 @@ goplater template TEMPLATE.md -o README.md
 ```markdown
 # MY-APP
 
-Version: 1.0.0
+Version: 1.2.3
 
 ## Install
 
