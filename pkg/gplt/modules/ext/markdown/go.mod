@@ -1,4 +1,4 @@
-module github.com/codeshelldev/goplater/pkg/gplt/modules/markdown
+module github.com/codeshelldev/goplater/pkg/gplt/modules/ext/markdown
 
 go 1.25.14
 

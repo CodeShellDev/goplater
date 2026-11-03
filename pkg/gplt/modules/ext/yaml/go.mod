@@ -1,4 +1,4 @@
-module github.com/codeshelldev/goplater/pkg/gplt/modules/yaml
+module github.com/codeshelldev/goplater/pkg/gplt/modules/ext/yaml
 
 go 1.25.14
 

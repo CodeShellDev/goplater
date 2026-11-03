@@ -1,4 +1,4 @@
-module github.com/codeshelldev/goplater/pkg/gplt/modules/html
+module github.com/codeshelldev/goplater/pkg/gplt/modules/ext/html
 
 go 1.26.0
 

@@ -1,20 +1,21 @@
 package collections
 
 import (
+	"runtime/debug"
+
 	"github.com/codeshelldev/goplater/pkg/gplt/modules"
-	"github.com/codeshelldev/goplater/pkg/gplt/modules/container"
-	"github.com/codeshelldev/goplater/pkg/gplt/modules/conversion"
 	"github.com/codeshelldev/goplater/pkg/gplt/modules/core"
-	"github.com/codeshelldev/goplater/pkg/gplt/modules/debug"
-	"github.com/codeshelldev/goplater/pkg/gplt/modules/encoding"
-	"github.com/codeshelldev/goplater/pkg/gplt/modules/html"
-	"github.com/codeshelldev/goplater/pkg/gplt/modules/http"
-	"github.com/codeshelldev/goplater/pkg/gplt/modules/json"
-	"github.com/codeshelldev/goplater/pkg/gplt/modules/markdown"
-	"github.com/codeshelldev/goplater/pkg/gplt/modules/math"
-	"github.com/codeshelldev/goplater/pkg/gplt/modules/regex"
-	"github.com/codeshelldev/goplater/pkg/gplt/modules/strings"
-	"github.com/codeshelldev/goplater/pkg/gplt/modules/yaml"
+	"github.com/codeshelldev/goplater/pkg/gplt/modules/ext/html"
+	"github.com/codeshelldev/goplater/pkg/gplt/modules/ext/markdown"
+	"github.com/codeshelldev/goplater/pkg/gplt/modules/ext/yaml"
+	"github.com/codeshelldev/goplater/pkg/gplt/modules/std/container"
+	"github.com/codeshelldev/goplater/pkg/gplt/modules/std/conversion"
+	"github.com/codeshelldev/goplater/pkg/gplt/modules/std/encoding"
+	"github.com/codeshelldev/goplater/pkg/gplt/modules/std/http"
+	"github.com/codeshelldev/goplater/pkg/gplt/modules/std/json"
+	"github.com/codeshelldev/goplater/pkg/gplt/modules/std/math"
+	"github.com/codeshelldev/goplater/pkg/gplt/modules/std/regex"
+	"github.com/codeshelldev/goplater/pkg/gplt/modules/std/strings"
 )
 
 
