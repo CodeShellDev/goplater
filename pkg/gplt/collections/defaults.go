@@ -1,8 +1,6 @@
 package collections
 
 import (
-	"runtime/debug"
-
 	"github.com/codeshelldev/goplater/pkg/gplt/modules"
 	"github.com/codeshelldev/goplater/pkg/gplt/modules/core"
 	"github.com/codeshelldev/goplater/pkg/gplt/modules/ext/html"
@@ -10,6 +8,7 @@ import (
 	"github.com/codeshelldev/goplater/pkg/gplt/modules/ext/yaml"
 	"github.com/codeshelldev/goplater/pkg/gplt/modules/std/container"
 	"github.com/codeshelldev/goplater/pkg/gplt/modules/std/conversion"
+	"github.com/codeshelldev/goplater/pkg/gplt/modules/std/debug"
 	"github.com/codeshelldev/goplater/pkg/gplt/modules/std/encoding"
 	"github.com/codeshelldev/goplater/pkg/gplt/modules/std/http"
 	"github.com/codeshelldev/goplater/pkg/gplt/modules/std/json"
