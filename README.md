@@ -91,24 +91,24 @@ Run `npm install my-app`
 - [Standard Library](#standard-library)
 	- [fs](#fs)
 	- [outputto](#outputto)
-	- [container](#container)
-	- [conversion](#conversion)
 	- [globals](#globals)
 	- [import](#import)
 	- [return](#return)
+	- [html](#html)
+	- [markdown](#markdown)
+	- [yaml](#yaml)
+	- [container](#container)
+	- [conversion](#conversion)
 	- [debug](#debug)
 	- [base64](#base64)
 	- [hex](#hex)
 	- [hash](#hash)
-	- [html](#html)
 	- [http](#http)
 	- [json](#json)
-	- [markdown](#markdown)
 	- [formulas](#formulas)
 	- [operators](#operators)
 	- [regex](#regex)
 	- [strings](#strings)
-	- [yaml](#yaml)
 - [Contributing](#contributing)
 - [Support](#support)
 - [License](#license)
@@ -589,217 +589,6 @@ Errors if path is not allowed.</p>
 
 
 </td></tr></table>
-<h3><a href="https://github.com/codeshelldev/goplater/blob/main/pkg/gplt/modules/container/container.go">container</a></h3>
-
-
-<table width="100%">
-<tr><th align="left"><h4><code>delete(container map[any]any|[]any, key any) (any, throws error)</code></h4></th>
-</tr><tr><td>
-<p>Deletes a container entry with the given key.</p>
-
-
-<details>
-  <summary>Examples</summary>
-  <br/>
-
-**Example**:
-```handlebars
-+{{ $newSlice := delete (sliceCreate "Apple" "Banana") 0 }}
-+{{ echo $newSlice }}
-```
-**Output**:
-```
-[Banana]
-```
-
-
-</details>
-
-</td></tr></table>
-
-
-<table width="100%">
-<tr><th align="left"><h4><code>set(container map[any]any|[]any, key any, value any) (any, throws error)</code></h4></th>
-</tr><tr><td>
-<p>Set a container entry value with the given key.</p>
-
-
-<details>
-  <summary>Examples</summary>
-  <br/>
-
-**Example**:
-```handlebars
-+{{ $newSlice := set (sliceCreate "Apple" "Banana") 0 "Strawberry" }}
-+{{ echo $newSlice }}
-```
-**Output**:
-```
-[Strawberry Banana]
-```
-
-
-</details>
-
-</td></tr></table>
-
-
-<table width="100%">
-<tr><th align="left"><h4><code>has(container map[any]any|[]any, key any) (bool, throws error)</code></h4></th>
-</tr><tr><td>
-<p>Returns if an entry with the given key exists in container.</p>
-
-
-<details>
-  <summary>Examples</summary>
-  <br/>
-
-**Example**:
-```handlebars
-+{{ if (has (mapCreate "version" "v1") "version") }}
-Container has "version"!
-+{{ end }}
-```
-
-</details>
-
-</td></tr></table>
-
-
-<table width="100%">
-<tr><th align="left"><h4><code>slicePush(container []any, value any) []any</code></h4></th>
-</tr><tr><td>
-<p>Appends a value to a slice.</p>
-
-
-<details>
-  <summary>Examples</summary>
-  <br/>
-
-**Example**:
-```handlebars
-+{{ $newSlice := sliceCreate "Apple" "Banana" }}
-+{{ $newSlice = slicePush $newSlice "Strawberry" }}
-+{{ echo $newSlice }}
-```
-**Output**:
-```
-[Apple Banana Strawberry]
-```
-
-
-</details>
-
-</td></tr></table>
-
-
-<table width="100%">
-<tr><th align="left"><h4><code>sliceCreate(values []any) []any</code></h4></th>
-</tr><tr><td>
-<p>Creates a new slice, optionally with values.</p>
-
-
-<details>
-  <summary>Examples</summary>
-  <br/>
-
-**Example**:
-```handlebars
-+{{ $newSlice := sliceCreate "Apple" "Banana" }}
-+{{ echo $newSlice }}
-```
-**Output**:
-```
-[Apple Banana]
-```
-
-
-</details>
-
-</td></tr></table>
-
-
-<table width="100%">
-<tr><th align="left"><h4><code>mapCreate(entries []any) (map[string]any, errors)</code></h4></th>
-</tr><tr><td>
-<p>Creates a new map, optionally with key value pairs.
-Pairs are constructed one by one, a key followed by the given value.
-Currently only supports string keys!</p>
-
-
-<details>
-  <summary>Examples</summary>
-  <br/>
-
-**Example**:
-```handlebars
-+{{ $newMap := mapCreate "key1" "value1" "key2" "value2" }}
-+{{ echo $newMap }}
-```
-**Output**:
-```
-map[key1:value1 key2:value2]
-```
-
-
-</details>
-
-</td></tr></table>
-<h3><a href="https://github.com/codeshelldev/goplater/blob/main/pkg/gplt/modules/conversion/conversion.go">conversion</a></h3>
-
-
-<table width="100%">
-<tr><th align="left"><h4><code>toString(value any) string</code></h4></th>
-</tr><tr><td>
-<p>Returns a given value as string (using <a href="https://pkg.go.dev/fmt#Sprint">fmt.Sprint</a>, bytes are handled separately).</p>
-
-
-</td></tr></table>
-
-
-<table width="100%">
-<tr><th align="left"><h4><code>toBytes(str string) []byte</code></h4></th>
-</tr><tr><td>
-<p>Turns a string into bytes.</p>
-
-
-</td></tr></table>
-
-
-<table width="100%">
-<tr><th align="left"><h4><code>toInt(str string) (int, throws error)</code></h4></th>
-</tr><tr><td>
-<p>Attempts to parse a string as int.</p>
-
-
-</td></tr></table>
-
-
-<table width="100%">
-<tr><th align="left"><h4><code>toFloat64(str string) (float64, throws error)</code></h4></th>
-</tr><tr><td>
-<p>Attempts to parse a string as float64.</p>
-
-
-</td></tr></table>
-
-
-<table width="100%">
-<tr><th align="left"><h4><code>toFloat32(str string) (float32, throws error)</code></h4></th>
-</tr><tr><td>
-<p>Attempts to parse a string as float32.</p>
-
-
-</td></tr></table>
-
-
-<table width="100%">
-<tr><th align="left"><h4><code>toBool(str string) (bool, throws error)</code></h4></th>
-</tr><tr><td>
-<p>Attempts to parse a string as a bool (using <a href="https://pkg.go.dev/strconv#ParseBool">strconv.ParseBool</a>).</p>
-
-
-</td></tr></table>
 <h3><a href="https://github.com/codeshelldev/goplater/blob/main/pkg/gplt/modules/core/globals.go">globals</a></h3>
 
 
@@ -940,92 +729,7 @@ The fs resolver is only available as an internal module and does not ship with t
 
 
 </td></tr></table>
-<h3><a href="https://github.com/codeshelldev/goplater/blob/main/pkg/gplt/modules/debug/debug.go">debug</a></h3>
-
-
-<table width="100%">
-<tr><th align="left"><h4><code>echo(data []any)</code></h4></th>
-</tr><tr><td>
-<p>Outputs data to stdout.</p>
-
-
-</td></tr></table>
-<h3><a href="https://github.com/codeshelldev/goplater/blob/main/pkg/gplt/modules/encoding/base64.go">base64</a></h3>
-
-
-<table width="100%">
-<tr><th align="left"><h4><code>base64Encode(str string) string</code></h4></th>
-</tr><tr><td>
-<p>Encodes strings with base64.</p>
-
-
-</td></tr></table>
-
-
-<table width="100%">
-<tr><th align="left"><h4><code>base64Decode(str string) (string, throws error)</code></h4></th>
-</tr><tr><td>
-<p>Decodes a base64 string.</p>
-
-
-</td></tr></table>
-<h3><a href="https://github.com/codeshelldev/goplater/blob/main/pkg/gplt/modules/encoding/hex.go">hex</a></h3>
-
-
-<table width="100%">
-<tr><th align="left"><h4><code>hexEncode(str string) string</code></h4></th>
-</tr><tr><td>
-<p>Encodes a string as hex.</p>
-
-
-</td></tr></table>
-
-
-<table width="100%">
-<tr><th align="left"><h4><code>hexDecode(str string) (string, throws error)</code></h4></th>
-</tr><tr><td>
-<p>Decodes a string as hex.</p>
-
-
-</td></tr></table>
-<h3><a href="https://github.com/codeshelldev/goplater/blob/main/pkg/gplt/modules/hash/hash.go">hash</a></h3>
-
-
-<table width="100%">
-<tr><th align="left"><h4><code>hash(str string)</code></h4></th>
-</tr><tr><td>
-<p>Hashes a given string with SHA-256.</p>
-
-
-</td></tr></table>
-
-
-<table width="100%">
-<tr><th align="left"><h4><code>sha1(str string)</code></h4></th>
-</tr><tr><td>
-<p>Hashes a given string with SHA-1.</p>
-
-
-</td></tr></table>
-
-
-<table width="100%">
-<tr><th align="left"><h4><code>sha512(str string)</code></h4></th>
-</tr><tr><td>
-<p>Hashes a given string with SHA-512.</p>
-
-
-</td></tr></table>
-
-
-<table width="100%">
-<tr><th align="left"><h4><code>md5(str string)</code></h4></th>
-</tr><tr><td>
-<p>Hashes a given string with MD-5.</p>
-
-
-</td></tr></table>
-<h3><a href="https://github.com/codeshelldev/goplater/blob/main/pkg/gplt/modules/html/html.go">html</a></h3>
+<h3><a href="https://github.com/codeshelldev/goplater/blob/main/pkg/gplt/modules/ext/html/html.go">html</a></h3>
 
 
 <table width="100%">
@@ -1098,37 +802,7 @@ The fs resolver is only available as an internal module and does not ship with t
 
 
 </td></tr></table>
-<h3><a href="https://github.com/codeshelldev/goplater/blob/main/pkg/gplt/modules/http/http.go">http</a></h3>
-
-
-<table width="100%">
-<tr><th align="left"><h4><code>fetch(url string) (string, throws error)</code></h4></th>
-</tr><tr><td>
-<p>Fetches a resource from a given url.
-Outputs errors as string.</p>
-
-
-</td></tr></table>
-<h3><a href="https://github.com/codeshelldev/goplater/blob/main/pkg/gplt/modules/json/json.go">json</a></h3>
-
-
-<table width="100%">
-<tr><th align="left"><h4><code>jsonEncode(obj any) (string, throws error)</code></h4></th>
-</tr><tr><td>
-<p>Encodes an object into a json string.</p>
-
-
-</td></tr></table>
-
-
-<table width="100%">
-<tr><th align="left"><h4><code>jsonDecode(json string) (any, throws error)</code></h4></th>
-</tr><tr><td>
-<p>Decodes a json string into an object.</p>
-
-
-</td></tr></table>
-<h3><a href="https://github.com/codeshelldev/goplater/blob/main/pkg/gplt/modules/markdown/markdown.go">markdown</a></h3>
+<h3><a href="https://github.com/codeshelldev/goplater/blob/main/pkg/gplt/modules/ext/markdown/markdown.go">markdown</a></h3>
 
 
 <table width="100%">
@@ -1336,7 +1010,352 @@ Outputs errors as string.</p>
 
 
 </td></tr></table>
-<h3><a href="https://github.com/codeshelldev/goplater/blob/main/pkg/gplt/modules/math/formulas.go">formulas</a></h3>
+<h3><a href="https://github.com/codeshelldev/goplater/blob/main/pkg/gplt/modules/ext/yaml/yaml.go">yaml</a></h3>
+
+
+<table width="100%">
+<tr><th align="left"><h4><code>yamlEncode(obj any) (string, throws error)</code></h4></th>
+</tr><tr><td>
+<p>Encodes an object into a yaml string.</p>
+
+
+</td></tr></table>
+
+
+<table width="100%">
+<tr><th align="left"><h4><code>yamlDecode(yaml string) (any, throws error)</code></h4></th>
+</tr><tr><td>
+<p>Decodes a yaml string into an object.</p>
+
+
+</td></tr></table>
+<h3><a href="https://github.com/codeshelldev/goplater/blob/main/pkg/gplt/modules/std/container/container.go">container</a></h3>
+
+
+<table width="100%">
+<tr><th align="left"><h4><code>delete(container map[any]any|[]any, key any) (any, throws error)</code></h4></th>
+</tr><tr><td>
+<p>Deletes a container entry with the given key.</p>
+
+
+<details>
+  <summary>Examples</summary>
+  <br/>
+
+**Example**:
+```handlebars
++{{ $newSlice := delete (sliceCreate "Apple" "Banana") 0 }}
++{{ echo $newSlice }}
+```
+**Output**:
+```
+[Banana]
+```
+
+
+</details>
+
+</td></tr></table>
+
+
+<table width="100%">
+<tr><th align="left"><h4><code>set(container map[any]any|[]any, key any, value any) (any, throws error)</code></h4></th>
+</tr><tr><td>
+<p>Set a container entry value with the given key.</p>
+
+
+<details>
+  <summary>Examples</summary>
+  <br/>
+
+**Example**:
+```handlebars
++{{ $newSlice := set (sliceCreate "Apple" "Banana") 0 "Strawberry" }}
++{{ echo $newSlice }}
+```
+**Output**:
+```
+[Strawberry Banana]
+```
+
+
+</details>
+
+</td></tr></table>
+
+
+<table width="100%">
+<tr><th align="left"><h4><code>has(container map[any]any|[]any, key any) (bool, throws error)</code></h4></th>
+</tr><tr><td>
+<p>Returns if an entry with the given key exists in container.</p>
+
+
+<details>
+  <summary>Examples</summary>
+  <br/>
+
+**Example**:
+```handlebars
++{{ if (has (mapCreate "version" "v1") "version") }}
+Container has "version"!
++{{ end }}
+```
+
+</details>
+
+</td></tr></table>
+
+
+<table width="100%">
+<tr><th align="left"><h4><code>slicePush(container []any, value any) []any</code></h4></th>
+</tr><tr><td>
+<p>Appends a value to a slice.</p>
+
+
+<details>
+  <summary>Examples</summary>
+  <br/>
+
+**Example**:
+```handlebars
++{{ $newSlice := sliceCreate "Apple" "Banana" }}
++{{ $newSlice = slicePush $newSlice "Strawberry" }}
++{{ echo $newSlice }}
+```
+**Output**:
+```
+[Apple Banana Strawberry]
+```
+
+
+</details>
+
+</td></tr></table>
+
+
+<table width="100%">
+<tr><th align="left"><h4><code>sliceCreate(values []any) []any</code></h4></th>
+</tr><tr><td>
+<p>Creates a new slice, optionally with values.</p>
+
+
+<details>
+  <summary>Examples</summary>
+  <br/>
+
+**Example**:
+```handlebars
++{{ $newSlice := sliceCreate "Apple" "Banana" }}
++{{ echo $newSlice }}
+```
+**Output**:
+```
+[Apple Banana]
+```
+
+
+</details>
+
+</td></tr></table>
+
+
+<table width="100%">
+<tr><th align="left"><h4><code>mapCreate(entries []any) (map[string]any, errors)</code></h4></th>
+</tr><tr><td>
+<p>Creates a new map, optionally with key value pairs.
+Pairs are constructed one by one, a key followed by the given value.
+Currently only supports string keys!</p>
+
+
+<details>
+  <summary>Examples</summary>
+  <br/>
+
+**Example**:
+```handlebars
++{{ $newMap := mapCreate "key1" "value1" "key2" "value2" }}
++{{ echo $newMap }}
+```
+**Output**:
+```
+map[key1:value1 key2:value2]
+```
+
+
+</details>
+
+</td></tr></table>
+<h3><a href="https://github.com/codeshelldev/goplater/blob/main/pkg/gplt/modules/std/conversion/conversion.go">conversion</a></h3>
+
+
+<table width="100%">
+<tr><th align="left"><h4><code>toString(value any) string</code></h4></th>
+</tr><tr><td>
+<p>Returns a given value as string (using <a href="https://pkg.go.dev/fmt#Sprint">fmt.Sprint</a>, bytes are handled separately).</p>
+
+
+</td></tr></table>
+
+
+<table width="100%">
+<tr><th align="left"><h4><code>toBytes(str string) []byte</code></h4></th>
+</tr><tr><td>
+<p>Turns a string into bytes.</p>
+
+
+</td></tr></table>
+
+
+<table width="100%">
+<tr><th align="left"><h4><code>toInt(str string) (int, throws error)</code></h4></th>
+</tr><tr><td>
+<p>Attempts to parse a string as int.</p>
+
+
+</td></tr></table>
+
+
+<table width="100%">
+<tr><th align="left"><h4><code>toFloat64(str string) (float64, throws error)</code></h4></th>
+</tr><tr><td>
+<p>Attempts to parse a string as float64.</p>
+
+
+</td></tr></table>
+
+
+<table width="100%">
+<tr><th align="left"><h4><code>toFloat32(str string) (float32, throws error)</code></h4></th>
+</tr><tr><td>
+<p>Attempts to parse a string as float32.</p>
+
+
+</td></tr></table>
+
+
+<table width="100%">
+<tr><th align="left"><h4><code>toBool(str string) (bool, throws error)</code></h4></th>
+</tr><tr><td>
+<p>Attempts to parse a string as a bool (using <a href="https://pkg.go.dev/strconv#ParseBool">strconv.ParseBool</a>).</p>
+
+
+</td></tr></table>
+<h3><a href="https://github.com/codeshelldev/goplater/blob/main/pkg/gplt/modules/std/debug/debug.go">debug</a></h3>
+
+
+<table width="100%">
+<tr><th align="left"><h4><code>echo(data []any)</code></h4></th>
+</tr><tr><td>
+<p>Outputs data to stdout.</p>
+
+
+</td></tr></table>
+<h3><a href="https://github.com/codeshelldev/goplater/blob/main/pkg/gplt/modules/std/encoding/base64.go">base64</a></h3>
+
+
+<table width="100%">
+<tr><th align="left"><h4><code>base64Encode(str string) string</code></h4></th>
+</tr><tr><td>
+<p>Encodes strings with base64.</p>
+
+
+</td></tr></table>
+
+
+<table width="100%">
+<tr><th align="left"><h4><code>base64Decode(str string) (string, throws error)</code></h4></th>
+</tr><tr><td>
+<p>Decodes a base64 string.</p>
+
+
+</td></tr></table>
+<h3><a href="https://github.com/codeshelldev/goplater/blob/main/pkg/gplt/modules/std/encoding/hex.go">hex</a></h3>
+
+
+<table width="100%">
+<tr><th align="left"><h4><code>hexEncode(str string) string</code></h4></th>
+</tr><tr><td>
+<p>Encodes a string as hex.</p>
+
+
+</td></tr></table>
+
+
+<table width="100%">
+<tr><th align="left"><h4><code>hexDecode(str string) (string, throws error)</code></h4></th>
+</tr><tr><td>
+<p>Decodes a string as hex.</p>
+
+
+</td></tr></table>
+<h3><a href="https://github.com/codeshelldev/goplater/blob/main/pkg/gplt/modules/std/hash/hash.go">hash</a></h3>
+
+
+<table width="100%">
+<tr><th align="left"><h4><code>hash(str string)</code></h4></th>
+</tr><tr><td>
+<p>Hashes a given string with SHA-256.</p>
+
+
+</td></tr></table>
+
+
+<table width="100%">
+<tr><th align="left"><h4><code>sha1(str string)</code></h4></th>
+</tr><tr><td>
+<p>Hashes a given string with SHA-1.</p>
+
+
+</td></tr></table>
+
+
+<table width="100%">
+<tr><th align="left"><h4><code>sha512(str string)</code></h4></th>
+</tr><tr><td>
+<p>Hashes a given string with SHA-512.</p>
+
+
+</td></tr></table>
+
+
+<table width="100%">
+<tr><th align="left"><h4><code>md5(str string)</code></h4></th>
+</tr><tr><td>
+<p>Hashes a given string with MD-5.</p>
+
+
+</td></tr></table>
+<h3><a href="https://github.com/codeshelldev/goplater/blob/main/pkg/gplt/modules/std/http/http.go">http</a></h3>
+
+
+<table width="100%">
+<tr><th align="left"><h4><code>fetch(url string) (string, throws error)</code></h4></th>
+</tr><tr><td>
+<p>Fetches a resource from a given url.
+Outputs errors as string.</p>
+
+
+</td></tr></table>
+<h3><a href="https://github.com/codeshelldev/goplater/blob/main/pkg/gplt/modules/std/json/json.go">json</a></h3>
+
+
+<table width="100%">
+<tr><th align="left"><h4><code>jsonEncode(obj any) (string, throws error)</code></h4></th>
+</tr><tr><td>
+<p>Encodes an object into a json string.</p>
+
+
+</td></tr></table>
+
+
+<table width="100%">
+<tr><th align="left"><h4><code>jsonDecode(json string) (any, throws error)</code></h4></th>
+</tr><tr><td>
+<p>Decodes a json string into an object.</p>
+
+
+</td></tr></table>
+<h3><a href="https://github.com/codeshelldev/goplater/blob/main/pkg/gplt/modules/std/math/formulas.go">formulas</a></h3>
 
 
 <table width="100%">
@@ -1418,7 +1437,7 @@ Outputs errors as string.</p>
 
 
 </td></tr></table>
-<h3><a href="https://github.com/codeshelldev/goplater/blob/main/pkg/gplt/modules/math/operators.go">operators</a></h3>
+<h3><a href="https://github.com/codeshelldev/goplater/blob/main/pkg/gplt/modules/std/math/operators.go">operators</a></h3>
 
 
 <table width="100%">
@@ -1464,7 +1483,7 @@ Outputs errors as string.</p>
 
 
 </td></tr></table>
-<h3><a href="https://github.com/codeshelldev/goplater/blob/main/pkg/gplt/modules/regex/regex.go">regex</a></h3>
+<h3><a href="https://github.com/codeshelldev/goplater/blob/main/pkg/gplt/modules/std/regex/regex.go">regex</a></h3>
 
 
 <table width="100%">
@@ -1510,7 +1529,7 @@ Outputs errors as string.</p>
 
 
 </td></tr></table>
-<h3><a href="https://github.com/codeshelldev/goplater/blob/main/pkg/gplt/modules/strings/strings.go">strings</a></h3>
+<h3><a href="https://github.com/codeshelldev/goplater/blob/main/pkg/gplt/modules/std/strings/strings.go">strings</a></h3>
 
 
 <table width="100%">
@@ -1697,25 +1716,6 @@ Outputs errors as string.</p>
 <tr><th align="left"><h4><code>repeat(str string, count int) string</code></h4></th>
 </tr><tr><td>
 <p>Repeat a string n times.</p>
-
-
-</td></tr></table>
-<h3><a href="https://github.com/codeshelldev/goplater/blob/main/pkg/gplt/modules/yaml/yaml.go">yaml</a></h3>
-
-
-<table width="100%">
-<tr><th align="left"><h4><code>yamlEncode(obj any) (string, throws error)</code></h4></th>
-</tr><tr><td>
-<p>Encodes an object into a yaml string.</p>
-
-
-</td></tr></table>
-
-
-<table width="100%">
-<tr><th align="left"><h4><code>yamlDecode(yaml string) (any, throws error)</code></h4></th>
-</tr><tr><td>
-<p>Decodes a yaml string into an object.</p>
 
 
 </td></tr></table>
