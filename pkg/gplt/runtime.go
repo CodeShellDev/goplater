@@ -11,7 +11,7 @@ import (
 	"text/template"
 	"text/template/parse"
 
-	"github.com/codeshelldev/goplater/pkg/gplt/utils/funcutils"
+	"github.com/codeshelldev/goplater/pkg/gplt/modules"
 )
 
 type Runtime struct {
@@ -170,33 +170,28 @@ func (rt *Runtime) GetEngineOptions() EngineOptions {
 	return rt.engineOptions
 }
 
-func (rt *Runtime) FuncMap(ctx any, includeUnsafe bool) (template.FuncMap, error) {
-	m := template.FuncMap{}
-
-	for _, mod := range rt.engine.GetSafeModules() {
+func addToFuncMap(m template.FuncMap, rt *Runtime, ctx any, modules []modules.Module) error {
+	for _, mod := range modules {
 		for _, f := range mod.GetFuncMap() {
 			var err error
 
-			m[f.Name], err = funcutils.BindContext(f.Handler, rt, ctx)
+			m[f.Name], err = f.GetHandler(rt, ctx)
 
 			if err != nil {
-				return nil, err
+				return err
 			}
 		}
 	}
+	return nil
+}
+
+func (rt *Runtime) FuncMap(ctx any, includeUnsafe bool) (template.FuncMap, error) {
+	m := template.FuncMap{}
+
+	addToFuncMap(m, rt, ctx, rt.engine.GetSafeModules())
 
 	if includeUnsafe {
-		for _, mod := range rt.engine.GetModules() {
-			for _, f := range mod.GetFuncMap() {
-				var err error
-
-				m[f.Name], err = funcutils.BindContext(f.Handler, rt, ctx)
-
-				if err != nil {
-					return nil, err
-				}
-			}
-		}
+		addToFuncMap(m, rt, ctx, rt.engine.GetModules())
 	}
 
 	return m, nil

@@ -10,11 +10,11 @@ func BindContext(fn any, ctx ...any) (any, error) {
 	t := v.Type()
 
 	if t.Kind() != reflect.Func {
-		return nil, errors.New("bindContext: fn is not a function")
+		return nil, errors.New("bindContext: fn is not func")
 	}
 
 	if t.NumIn() < len(ctx) {
-		return nil, errors.New("bindContext: function must have at least as many parameters as context values")
+		return nil, errors.New("bindContext: func must have at least as many parameters as context values")
 	}
 
 	ins := make([]reflect.Type, t.NumIn() - len(ctx))
