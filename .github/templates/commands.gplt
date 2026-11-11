@@ -15,7 +15,7 @@
 +{{ end }}
 
 +{{ define "renderCommandSection(path, declarations, level)" }}
-+{{- $pathNoExt := cutSuffix .path ".go" -}}
++{{- $pathNoExt := trimSuffix .path ".go" -}}
 +{{- $filename := basePath $pathNoExt -}}
 +{{- $decls := .declarations -}}
 +{{- $level := .level -}}
