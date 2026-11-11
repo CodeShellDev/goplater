@@ -1,7 +1,6 @@
 package container
 
 import (
-	"errors"
 	"fmt"
 	"reflect"
 
@@ -13,7 +12,7 @@ var Module = modules.NewModule(containerDeleteFunc, containerSetFunc, containerH
 
 // Deletes a container entry with the given key.
 //
-// @param container map[any]any|[]any
+// @param container map|slice
 // @param key any
 // @returns any
 // @returns error
@@ -25,14 +24,43 @@ var Module = modules.NewModule(containerDeleteFunc, containerSetFunc, containerH
 //	 [Banana]
 var containerDeleteFunc = modules.NewFunc("delete", delete)
 
-func delete(_ *gplt.Runtime, _ *gplt.Context, container any, key any) (any, error) {
-	err := ensureInterfaceIsContainer(container)
-	return deleteKey(container, key), err
+func delete(_ *gplt.Runtime, _ *gplt.Context, container, key any) (any, error) {
+	value, err := ensureContainer(container)
+	if err != nil {
+		return nil, err
+	}
+
+	// case 1: map
+	if value.Kind() == reflect.Map {
+		k, ok := convertTo(key, value.Type().Key())
+		
+		if !ok {
+			return nil, fmt.Errorf("key type %T does not fit map", key)
+		}
+
+		out := copyContainer(value, 0)
+		out.SetMapIndex(k, reflect.Value{})
+
+		return out.Interface(), nil
+	}
+
+	// case 2: slice
+	i, ok := key.(int)
+	if !ok || i < 0 || i >= value.Len() {
+		return nil, fmt.Errorf("bad slice index %v", key)
+	}
+
+	// rebuild slice
+	out := reflect.MakeSlice(value.Type(), 0, value.Len() - 1)
+	out = reflect.AppendSlice(out, value.Slice(0, i))
+	out = reflect.AppendSlice(out, value.Slice(i + 1, value.Len()))
+
+	return out.Interface(), nil
 }
 
 // Set a container entry value with the given key.
 //
-// @param container map[any]any|[]any
+// @param container map|slice
 // @param key any
 // @param value any
 // @returns any
@@ -45,14 +73,50 @@ func delete(_ *gplt.Runtime, _ *gplt.Context, container any, key any) (any, erro
 //	 [Strawberry Banana]
 var containerSetFunc = modules.NewFunc("set", set)
 
-func set(_ *gplt.Runtime, _ *gplt.Context, container any, key any, value any) (any, error) {
-	err := ensureInterfaceIsContainer(container)
-	return setKey(container, key, value), err
+func set(_ *gplt.Runtime, _ *gplt.Context, container, key, value any) (any, error) {
+	v, err := ensureContainer(container)
+	if err != nil {
+		return nil, err
+	}
+
+	val, ok := convertTo(value, v.Type().Elem())
+	if !ok {
+		return nil, fmt.Errorf("value type %T does not fit container", value)
+	}
+
+	// case 1: map
+	if v.Kind() == reflect.Map {
+		k, ok := convertTo(key, v.Type().Key())
+		if !ok {
+			return nil, fmt.Errorf("key type %T does not fit map", key)
+		}
+
+		out := copyContainer(v, 0)
+		out.SetMapIndex(k, val)
+
+		return out.Interface(), nil
+	}
+
+	// case 2: slice
+	i, ok := key.(int)
+	if !ok || i < 0 {
+		return nil, fmt.Errorf("bad slice index %v", key)
+	}
+
+	// increase size
+	n := max(v.Len(), i + 1)
+	out := reflect.MakeSlice(v.Type(), n, n)
+
+	// ... and insert new value
+	reflect.Copy(out, v)
+	out.Index(i).Set(val)
+
+	return out.Interface(), nil
 }
 
 // Returns if an entry with the given key exists in container.
 //
-// @param container map[any]any|[]any
+// @param container map|slice
 // @param key any
 // @returns bool
 // @returns error
@@ -63,16 +127,26 @@ func set(_ *gplt.Runtime, _ *gplt.Context, container any, key any, value any) (a
 //	 +{{ end }}
 var containerHasFunc = modules.NewFunc("has", has)
 
-func has(_ *gplt.Runtime, _ *gplt.Context, container any, key any) (bool, error) {
-	err := ensureInterfaceIsContainer(container)
-	return hasKey(container, key), err
-}
+func has(_ *gplt.Runtime, _ *gplt.Context, container, key any) (bool, error) {
+	value, err := ensureContainer(container)
+	if err != nil {
+		return false, err
+	}
 
-var containerIncludesFunc = modules.NewFunc("includes", includes)
+	if value.Kind() == reflect.Map {
+		k, ok := convertTo(key, value.Type().Key())
+
+		return ok && value.MapIndex(k).IsValid(), nil
+	}
+
+	i, ok := key.(int)
+
+	return ok && i >= 0 && i < value.Len(), nil
+}
 
 // Returns if an entry with the given value exists in container.
 //
-// @param container map[any]any|[]any
+// @param container map|slice
 // @param value any
 // @returns bool
 // @returns error
@@ -81,9 +155,31 @@ var containerIncludesFunc = modules.NewFunc("includes", includes)
 //	 +{{ if (includes (mapCreate "version" "v1") "v1") }}
 //		Container includes "v1"!
 //	 +{{ end }}
-func includes(_ *gplt.Runtime, _ *gplt.Context, container any, value any) (bool, error) {
-	err := ensureInterfaceIsContainer(container)
-	return hasValue(container, value), err
+var containerIncludesFunc = modules.NewFunc("includes", includes)
+
+func includes(_ *gplt.Runtime, _ *gplt.Context, container, value any) (bool, error) {
+	v, err := ensureContainer(container)
+	if err != nil {
+		return false, err
+	}
+
+	// case 1: map
+	if v.Kind() == reflect.Map {
+		for it := v.MapRange(); it.Next(); {
+			if equal(it.Value().Interface(), value) {
+				return true, nil
+			}
+		}
+		return false, nil
+	}
+
+	// case 2: slice
+	for i := 0; i < v.Len(); i++ {
+		if equal(v.Index(i).Interface(), value) {
+			return true, nil
+		}
+	}
+	return false, nil
 }
 
 // Appends a value to a slice.
@@ -100,8 +196,22 @@ func includes(_ *gplt.Runtime, _ *gplt.Context, container any, value any) (bool,
 //	 [Apple Banana Strawberry]
 var slicePushFunc = modules.NewFunc("slicePush", slicePush)
 
-func slicePush(_ *gplt.Runtime, _ *gplt.Context, container []any, value any) []any {
-	return append(container, value)
+func slicePush(_ *gplt.Runtime, _ *gplt.Context, container any, value any) (any, error) {
+	// get element type
+	v := deref(container)
+
+	if v.Kind() != reflect.Slice {
+		return nil, fmt.Errorf("not a slice, got %T", container)
+	}
+
+	val, ok := convertTo(value, v.Type().Elem())
+	if !ok {
+		return nil, fmt.Errorf("value type %T does not fit slice", value)
+	}
+
+	// copy and increase size
+	out := copyContainer(v, 1)
+	return reflect.Append(out, val).Interface(), nil
 }
 
 // Creates a new slice, optionally with values.
@@ -157,140 +267,4 @@ func mapCreate(_ *gplt.Runtime, _ *gplt.Context, entries ...any) (map[string]any
 	}
 
 	return out, nil
-}
-
-func ensureInterfaceIsContainer(data any) error {
-	val := reflect.ValueOf(data)
-	
-	if val.Kind() == reflect.Pointer {
-		val = val.Elem()
-	}
-
-	switch val.Kind() {
-	case reflect.Map:
-		return nil
-
-	case reflect.Slice, reflect.Array:
-		return nil
-	default:
-		return errors.New("object is not of container type")
-	}
-}
-
-func hasKey(data any, key any) bool {
-	val := reflect.ValueOf(data)
-
-	if val.Kind() == reflect.Pointer {
-		val = val.Elem()
-	}
-
-	switch val.Kind() {
-	case reflect.Map:
-		for _, k := range val.MapKeys() {
-			if reflect.DeepEqual(k.Interface(), key) {
-				return true
-			}
-		}
-
-		return false
-
-	case reflect.Slice, reflect.Array:
-		for i := 0; i < val.Len(); i++ {
-			if reflect.DeepEqual(val.Index(i).Interface(), key) {
-				return true
-			}
-		}
-
-		return false
-
-	default:
-		return false
-	}
-}
-
-func hasValue(data any, value any) bool {
-	val := reflect.ValueOf(data)
-
-	if val.Kind() == reflect.Pointer {
-		val = val.Elem()
-	}
-
-	switch val.Kind() {
-	case reflect.Map:
-		iter := val.MapRange()
-
-		for iter.Next() {
-			if reflect.DeepEqual(iter.Value().Interface(), value) {
-				return true
-			}
-		}
-		return false
-
-	case reflect.Slice, reflect.Array:
-		for i := 0; i < val.Len(); i++ {
-			if reflect.DeepEqual(val.Index(i).Interface(), value) {
-				return true
-			}
-		}
-
-		return false
-
-	default:
-		return false
-	}
-}
-
-func deleteKey(data any, key any) any {
-	val := reflect.ValueOf(data)
-	if val.Kind() == reflect.Pointer {
-		val = val.Elem()
-	}
-
-	switch val.Kind() {
-	case reflect.Map:
-		for _, k := range val.MapKeys() {
-			if reflect.DeepEqual(k.Interface(), key) {
-				val.SetMapIndex(k, reflect.Value{})
-			}
-		}
-	case reflect.Slice:
-		newLen := 0
-
-		for i := 0; i < val.Len(); i++ {
-			if !reflect.DeepEqual(val.Index(i).Interface(), key) {
-				val.Index(newLen).Set(val.Index(i))
-
-				newLen++
-			}
-		}
-
-		val.Set(val.Slice(0, newLen))
-	}
-
-	return data
-}
-
-func setKey(data any, key any, value any) any {
-	val := reflect.ValueOf(data)
-	
-	if val.Kind() == reflect.Pointer {
-		val = val.Elem()
-	}
-
-	switch val.Kind() {
-	case reflect.Map:
-		val.SetMapIndex(reflect.ValueOf(key), reflect.ValueOf(value))
-	case reflect.Slice:
-		i, ok := key.(int)
-		
-		if ok && i >= 0 {
-			for val.Len() <= i {
-				val.Set(reflect.Append(val, reflect.Zero(val.Type().Elem())))
-			}
-
-			val.Index(i).Set(reflect.ValueOf(value))
-		}
-	}
-
-	return data
 }

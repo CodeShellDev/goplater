@@ -8,35 +8,35 @@ import (
 )
 
 type number struct {
-	i       int
-	f       float64
+	Int       int
+	Float       float64
 	isFloat bool
 }
 
-func toFloat(v any) (float64, error) {
-	n, err := toNumber(v)
+func ToFloat(v any) (float64, error) {
+	n, err := ToNumber(v)
 	if err != nil {
 		return 0, err
 	}
-	return n.f, nil
+	return n.Float, nil
 }
 
-func toNumber(v any) (number, error) {
-	rv := reflect.ValueOf(v)
-	switch rv.Kind() {
+func ToNumber(v any) (number, error) {
+	value := reflect.ValueOf(v)
+	switch value.Kind() {
 	
 	case reflect.Int, reflect.Int8, reflect.Int16, reflect.Int32, reflect.Int64:
-		return number{i: int(rv.Int()), f: float64(rv.Int())}, nil
+		return number{Int: int(value.Int()), Float: float64(value.Int())}, nil
 
 	case reflect.Uint, reflect.Uint8, reflect.Uint16, reflect.Uint32, reflect.Uint64:
-		u := rv.Uint()
+		u := value.Uint()
 		if u > math.MaxInt64 {
-			return number{f: float64(u), isFloat: true}, nil // promote to float (prevent overflow)
+			return number{Float: float64(u), isFloat: true}, nil // promote to float (prevent overflow)
 		}
-		return number{i: int(u), f: float64(u)}, nil
+		return number{Int: int(u), Float: float64(u)}, nil
 
 	case reflect.Float32, reflect.Float64:
-		return number{f: rv.Float(), isFloat: true}, nil
+		return number{Float: value.Float(), isFloat: true}, nil
 
 	}
 	return number{}, fmt.Errorf("%v is not numeric (%T)", v, v)
@@ -51,7 +51,7 @@ func reduce(args []any, intOp func(a, b int) (int, error), floatOp func(a, b flo
 	anyFloat := false
 
 	for i, a := range args {
-		n, err := toNumber(a)
+		n, err := ToNumber(a)
 
 		if err != nil {
 			return nil, err
@@ -63,9 +63,9 @@ func reduce(args []any, intOp func(a, b int) (int, error), floatOp func(a, b flo
 
 	var err error
 	if anyFloat {
-		res := nums[0].f
+		res := nums[0].Float
 		for _, n := range nums[1:] {
-			res, err = floatOp(res, n.f)
+			res, err = floatOp(res, n.Float)
 
 			if err != nil {
 				return nil, err
@@ -74,9 +74,9 @@ func reduce(args []any, intOp func(a, b int) (int, error), floatOp func(a, b flo
 		return res, nil
 	}
 
-	res := nums[0].i
+	res := nums[0].Int
 	for _, n := range nums[1:] {
-		res, err = intOp(res, n.i)
+		res, err = intOp(res, n.Int)
 
 		if err != nil {
 			return nil, err

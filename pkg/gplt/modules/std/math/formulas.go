@@ -16,20 +16,20 @@ import (
 var absFunc = modules.NewFunc("abs", abs)
 
 func abs(_ *gplt.Runtime, _ *gplt.Context, number any) (any, error) {
-	n, err := toNumber(number)
+	n, err := ToNumber(number)
 	if err != nil {
 		return nil, err
 	}
 	
 	if n.isFloat {
-		return math.Abs(n.f), nil
+		return math.Abs(n.Float), nil
 	}
 
-	if n.i < 0 {
-		return -n.i, nil
+	if n.Int < 0 {
+		return -n.Int, nil
 	}
 
-	return n.i, nil
+	return n.Int, nil
 }
 
 // Returns the smaller value of two numbers.
@@ -72,17 +72,17 @@ func maxFn(_ *gplt.Runtime, _ *gplt.Context, a, b any, rest ...any) (any, error)
 var clampFunc = modules.NewFunc("clamp", clamp)
 
 func clamp(rt *gplt.Runtime, ctx *gplt.Context, value, min, max any) (any, error) {
-	l, err := toNumber(min)
+	l, err := ToNumber(min)
 	if err != nil {
 		return nil, err
 	}
 
-	h, err := toNumber(max)
+	h, err := ToNumber(max)
 	if err != nil {
 		return nil, err
 	}
 
-	if h.f < l.f {
+	if h.Float < l.Float {
 		return nil, errors.New("clamp minimum cannot be greater than maximum")
 	}
 
@@ -103,12 +103,12 @@ func clamp(rt *gplt.Runtime, ctx *gplt.Context, value, min, max any) (any, error
 var powFunc = modules.NewFunc("pow", pow)
 
 func pow(_ *gplt.Runtime, _ *gplt.Context, base, exp any) (float64, error) {
-	b, err := toFloat(base)
+	b, err := ToFloat(base)
 	if err != nil {
 		return 0, err
 	}
 
-	e, err := toFloat(exp)
+	e, err := ToFloat(exp)
 	if err != nil {
 		return 0, err
 	}
@@ -124,7 +124,7 @@ func pow(_ *gplt.Runtime, _ *gplt.Context, base, exp any) (float64, error) {
 var sqrtFunc = modules.NewFunc("sqrt", sqrt)
 
 func sqrt(_ *gplt.Runtime, _ *gplt.Context, number any) (float64, error) {
-	n, err := toFloat(number)
+	n, err := ToFloat(number)
 	if err != nil {
 		return 0, err
 	}
@@ -149,7 +149,7 @@ func round(_ *gplt.Runtime, _ *gplt.Context, number any) (int, error) {
 }
 
 func roundDigits(_ *gplt.Runtime, _ *gplt.Context, number any, digits int) (float64, error) {
-	n, err := toFloat(number)
+	n, err := ToFloat(number)
 	if err != nil {
 		return 0, err
 	}
@@ -163,16 +163,16 @@ func roundDigits(_ *gplt.Runtime, _ *gplt.Context, number any, digits int) (floa
 }
 
 func rounder(v any, op func(float64) float64) (int, error) {
-	n, err := toNumber(v)
+	n, err := ToNumber(v)
 	if err != nil {
 		return 0, err
 	}
 
 	if !n.isFloat {
-		return n.i, nil
+		return n.Int, nil
 	}
 
-	return int(op(n.f)), nil
+	return int(op(n.Float)), nil
 }
 
 // Returns the greatest integer value less than or equal to number.
