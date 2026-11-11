@@ -18,8 +18,8 @@ var Module = modules.NewModule(
 	containsFunc, 
 	countFunc, 
 
-	startsWithFunc, 
-	endsWithFunc, 
+	hasPrefixFunc, 
+	hasSuffixFunc, 
 
 	isEmptyFunc, 
 
@@ -33,8 +33,8 @@ var Module = modules.NewModule(
 	beforeLastFunc,
 	betweenFunc,
 
-	cutPrefixFunc,
-	cutSuffixFunc,
+	trimPrefixFunc,
+	trimSuffixFunc,
 
 	sliceFunc, 
 
@@ -115,9 +115,9 @@ func count(_ *gplt.Runtime, _ *gplt.Context, str string, sub string) int  {
 // @param str string
 // @param prefix string
 // @returns bool
-var startsWithFunc = modules.NewFunc("startsWith", startsWith)
+var hasPrefixFunc = modules.NewFunc("hasPrefix", hasPrefix)
 
-func startsWith(_ *gplt.Runtime, _ *gplt.Context, str string, prefix string) bool  {
+func hasPrefix(_ *gplt.Runtime, _ *gplt.Context, str string, prefix string) bool  {
 	return strings.HasPrefix(str, prefix)
 }
 
@@ -126,9 +126,9 @@ func startsWith(_ *gplt.Runtime, _ *gplt.Context, str string, prefix string) boo
 // @param str string
 // @param suffix string
 // @returns bool
-var endsWithFunc = modules.NewFunc("endsWith", endsWith)
+var hasSuffixFunc = modules.NewFunc("hasSuffix", hasSuffix)
 
-func endsWith(_ *gplt.Runtime, _ *gplt.Context, str string, suffix string) bool  {
+func hasSuffix(_ *gplt.Runtime, _ *gplt.Context, str string, suffix string) bool  {
 	return strings.HasSuffix(str, suffix)
 }
 
@@ -142,16 +142,16 @@ func isEmpty(_ *gplt.Runtime, _ *gplt.Context, str string) bool  {
 	return str == ""
 }
 
-// Replaces all occurences of a substring in the given string with the replaceWith param.
+// Replaces all occurences of old with new.
 //
+// @param old string
+// @param new string
 // @param str string
-// @param sub string
-// @param replaceWith string
 // @returns string
 var replaceFunc = modules.NewFunc("replace", replace)
 
-func replace(_ *gplt.Runtime, _ *gplt.Context, str string, sub string, replaceWith string) string  {
-	return strings.ReplaceAll(str, sub, replaceWith)
+func replace(_ *gplt.Runtime, _ *gplt.Context, str string, old string, new string) string  {
+	return strings.ReplaceAll(str, old, new)
 }
 // Split a string by the given seperator.
 //
@@ -253,9 +253,9 @@ func between(_ *gplt.Runtime, _ *gplt.Context, str string, startSub, endSub stri
 // @param str string
 // @param sub string
 // @returns string
-var cutPrefixFunc = modules.NewFunc("cutPrefix", cutPrefix)
+var trimPrefixFunc = modules.NewFunc("trimPrefix", trimPrefix)
 
-func cutPrefix(_ *gplt.Runtime, _ *gplt.Context, str string, sub string) string  {
+func trimPrefix(_ *gplt.Runtime, _ *gplt.Context, str string, sub string) string  {
 	after, _ := strings.CutPrefix(str, sub)
 
 	return after
@@ -266,9 +266,9 @@ func cutPrefix(_ *gplt.Runtime, _ *gplt.Context, str string, sub string) string 
 // @param str string
 // @param sub string
 // @returns string
-var cutSuffixFunc = modules.NewFunc("cutSuffix", cutSuffix)
+var trimSuffixFunc = modules.NewFunc("trimSuffix", trimSuffix)
 
-func cutSuffix(_ *gplt.Runtime, _ *gplt.Context, str string, sub string) string  {
+func trimSuffix(_ *gplt.Runtime, _ *gplt.Context, str string, sub string) string  {
 	before, _ := strings.CutSuffix(str, sub)
 
 	return before
@@ -281,9 +281,9 @@ func cutSuffix(_ *gplt.Runtime, _ *gplt.Context, str string, sub string) string 
 // @param start int
 // @param end int
 // @returns string
-var sliceFunc = modules.NewFunc("slice", slice)
+var sliceFunc = modules.NewFunc("substr", substr)
 
-func slice(_ *gplt.Runtime, _ *gplt.Context, str string, start int, end int) string  {
+func substr(_ *gplt.Runtime, _ *gplt.Context, str string, start int, end int) string  {
 	return str[start:end]
 }
 
@@ -292,13 +292,17 @@ func slice(_ *gplt.Runtime, _ *gplt.Context, str string, start int, end int) str
 // @param sep string
 // @param strings []string
 // @returns string
-var joinFunc = modules.NewFunc("join", join)
+var joinFunc = modules.NewFunc("join", joinStrings, joinAny, joinVariadic)
 
-func join(_ *gplt.Runtime, _ *gplt.Context, sep string, args ...any) string  {
-	if len(args) <= 1 {
-		args = modules.UnpackArgs(args...)
-	}
+func joinStrings(_ *gplt.Runtime, _ *gplt.Context, sep string, list []string) string {
+	return strings.Join(list, sep)
+}
 
+func joinAny(_ *gplt.Runtime, _ *gplt.Context, sep string, list []any) string {
+	return strings.Join(toStringSlice(list), sep)
+}
+
+func joinVariadic(_ *gplt.Runtime, _ *gplt.Context, sep string, args ...any) string {
 	return strings.Join(toStringSlice(args), sep)
 }
 
@@ -323,10 +327,22 @@ func toStringSlice(values []any) []string {
     return out
 }
 
-var concatFunc = modules.NewFunc("concat", concat)
+// Concat strings together (join without sep).
+//
+// @param strs string
+// @returns string
+var concatFunc = modules.NewFunc("concat", concatStrings, concatAny, concatVariadic)
 
-func concat(_ *gplt.Runtime, _ *gplt.Context, strs ...string) string  {
-	return strings.Join(strs, "")
+func concatStrings(_ *gplt.Runtime, _ *gplt.Context, list []string) string {
+	return strings.Join(list, "")
+}
+
+func concatAny(_ *gplt.Runtime, _ *gplt.Context, list []any) string {
+	return strings.Join(toStringSlice(list), "")
+}
+
+func concatVariadic(_ *gplt.Runtime, _ *gplt.Context, args ...any) string {
+	return strings.Join(toStringSlice(args), "")
 }
 
 var indexOfFunc = modules.NewFunc("indexOf", indexOf)
