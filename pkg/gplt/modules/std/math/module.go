@@ -5,8 +5,8 @@ import "github.com/codeshelldev/goplater/pkg/gplt/modules"
 var Module = modules.NewModule(
 	addFunc, 
 	subFunc, 
-	multFunc, 
-	divdFunc, 
+	mulFunc, 
+	divFunc, 
 	modFunc,
 
 	absFunc,
