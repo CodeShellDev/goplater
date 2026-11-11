@@ -16,7 +16,6 @@ var Module = modules.NewModule(
 	getTemplateDataFunc, 
 
 	returnFunc, 
-	returnNextFunc, 
 	returnAllFunc, 
 	getOutputsFunc,
 )

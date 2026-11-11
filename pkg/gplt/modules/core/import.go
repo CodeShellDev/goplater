@@ -7,57 +7,6 @@ import (
 	"github.com/codeshelldev/goplater/pkg/gplt/modules"
 )
 
-func parseImportArgs(args []any, requireHash bool) (string, string, string, error) {
-	minArgs := 1
-	if requireHash {
-		minArgs = 2
-	}
-
-	err := modules.RequireRangeArgs(minArgs, minArgs + 1, args)
-	if err != nil {
-		return "", "", "", err
-	}
-
-	getString := func(index int) (string, error) {
-		value, ok := args[index].(string)
-		if !ok {
-			return "", fmt.Errorf("argument %d must be a string", index+1)
-		}
-		return value, nil
-	}
-
-	var alias string
-	var path string
-	var hash string
-	if requireHash {
-		if len(args) == 3 {
-			alias, err = getString(0)
-			if err != nil {
-				return "", "", "", err
-			}
-		}
-
-		pathIndex := len(args) - 2
-		path, err = getString(pathIndex)
-		if err != nil {
-			return "", "", "", err
-		}
-
-		hash, err = getString(pathIndex + 1)
-	} else {
-		if len(args) == 2 {
-			alias, err = getString(0)
-			if err != nil {
-				return "", "", "", err
-			}
-		}
-
-		path, err = getString(len(args) - 1)
-	}
-
-	return alias, path, hash, nil
-}
-
 // Tries to import a template file with func definitions.
 // Optionally supply an alias for easier access.
 // The fs resolver is only available as an internal module and does not ship with the `pkg/gplt/modules` directory.
@@ -75,22 +24,14 @@ func parseImportArgs(args []any, requireHash bool) (string, string, string, erro
 //	 +{{ import "funcs" "https://domain.com/functions" }}
 // @output
 //	 +{{ call "funcs.greet" "John" }}
-var importFunc = modules.NewFunc("import", importFn)
+var importFunc = modules.NewFunc("import", importPath, importAlias)
 
-func importFn(rt *gplt.Runtime, ctx *gplt.Context, args ...any) (string, error) {
-	alias, path, _, err := parseImportArgs(args, false)
-	if err != nil {
-		return "", err
-	}
+func importPath(rt *gplt.Runtime, ctx *gplt.Context, path string) (string, error) {
+	return doImport(rt, ctx, "", path, "")
+}
 
-	scope, _ := ctx.Get(gplt.CurrentTreeKey).(gplt.TreeScope)
-
-	err = rt.Import(scope.Name, path, alias, "", ctx)
-	if err != nil {
-		return "", fmt.Errorf("error importing %q: %w", path, err)
-	}
-
-	return "", nil
+func importAlias(rt *gplt.Runtime, ctx *gplt.Context, alias, path string) (string, error) {
+	return doImport(rt, ctx, alias, path, "")
 }
 
 // Same `import`, but only imports if content matches expected SHA-256 hash.
@@ -104,20 +45,22 @@ func importFn(rt *gplt.Runtime, ctx *gplt.Context, args ...any) (string, error) 
 //	 +{{ importExact "funcs" "https://domain.com/functions" "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855" }}
 // @output
 //	 +{{ call "funcs.greet" "John" }}
-var importExactFunc = modules.NewFunc("importExact", importExactFn)
+var importExactFunc = modules.NewFunc("importExact", importExactPath, importExactAlias)
 
-func importExactFn(rt *gplt.Runtime, ctx *gplt.Context, args ...any) (string, error) {
-	alias, path, hash, err := parseImportArgs(args, true)
-	if err != nil {
-		return "", err
-	}
+func importExactPath(rt *gplt.Runtime, ctx *gplt.Context, path, hash string) (string, error) {
+	return doImport(rt, ctx, "", path, hash)
+}
 
-	scope, _ := ctx.Get(gplt.CurrentTreeKey).(gplt.TreeScope)
+func importExactAlias(rt *gplt.Runtime, ctx *gplt.Context, alias, path, hash string) (string, error) {
+	return doImport(rt, ctx, alias, path, hash)
+}
 
-	err = rt.Import(scope.Name, path, alias, hash, ctx)
+func doImport(rt *gplt.Runtime, ctx *gplt.Context, alias, path, hash string) (string, error) {
+	scope := ctx.Get(gplt.CurrentTreeKey).(gplt.TreeScope)
+
+	err := rt.Import(scope.Name, path, alias, hash, ctx)
 	if err != nil {
 		return "", fmt.Errorf("error importing %q: %w", path, err)
 	}
-
 	return "", nil
 }

@@ -3,6 +3,7 @@ package core
 import (
 	"errors"
 	"fmt"
+	"slices"
 
 	"github.com/codeshelldev/goplater/pkg/gplt"
 	"github.com/codeshelldev/goplater/pkg/gplt/modules"
@@ -19,49 +20,40 @@ func mustFuncContext(ctx *gplt.Context) (FuncContext, error) {
 }
 
 
-// Sets an output value at the given index.
+// Sets an output value at the given index (default: -1 – append).
 //
-// @param i int
+// @param i int?
 // @param value any
 // @returns error
-var returnFunc = modules.NewFunc("return", returnFn)
+var returnFunc = modules.NewFunc("return", returnNext, returnAll)
 
-func returnFn(rt *gplt.Runtime, ctx *gplt.Context, i int, value any) (string, error) {
-	funcContext, err := mustFuncContext(ctx)
-
+func returnNext(rt *gplt.Runtime, ctx *gplt.Context, value any) (string, error) {
+	fc, err := mustFuncContext(ctx)
 	if err != nil {
 		return "", err
 	}
 
-	outputs := GetOutputs(rt, funcContext.CallerID)
+	outputs := slices.Clone(GetOutputs(rt, fc.CallerID))
+	outputs = append(outputs, value)
 
-	for len(outputs) <= i {
-		return "", fmt.Errorf("could not set output at %d: index out of bounds", i)
-	}
-	outputs[i] = value
-
-	SetOutput(rt, funcContext.CallerID, outputs)
+	SetOutput(rt, fc.CallerID, outputs)
 	return "", nil
 }
 
-// Appends a value to the output.
-//
-// @param value any
-// @returns error
-var returnNextFunc = modules.NewFunc("returnNext", returnNext)
-
-func returnNext(rt *gplt.Runtime, ctx *gplt.Context, value any) (string, error) {
-	funcContext, err := mustFuncContext(ctx)
-
+func returnAt(rt *gplt.Runtime, ctx *gplt.Context, i int, value any) (string, error) {
+	fc, err := mustFuncContext(ctx)
 	if err != nil {
 		return "", err
 	}
 
-	outputs := GetOutputs(rt, funcContext.CallerID)
+	outputs := slices.Clone(GetOutputs(rt, fc.CallerID))
+	if i < 0 || i >= len(outputs) {
+		return "", fmt.Errorf("could not set output at %d: index out of bounds", i)
+	}
+	
+	outputs[i] = value
 
-	outputs = append(outputs, value)
-
-	SetOutput(rt, funcContext.CallerID, outputs)
+	SetOutput(rt, fc.CallerID, outputs)
 	return "", nil
 }
 
@@ -74,7 +66,7 @@ func returnNext(rt *gplt.Runtime, ctx *gplt.Context, value any) (string, error) 
 //	 +{{ returnAll "1" "2" "3" }}
 // @example
 //	 +{{ returnAll (sliceCreate "1" "2" "3") }}
-var returnAllFunc = modules.NewFunc("returnAll", returnAll)
+var returnAllFunc = modules.NewFunc("returnAll", returnAll, returnAllSlice)
 
 func returnAll(rt *gplt.Runtime, ctx *gplt.Context, values ...any) (string, error) {
 	funcContext, err := mustFuncContext(ctx)
@@ -85,6 +77,10 @@ func returnAll(rt *gplt.Runtime, ctx *gplt.Context, values ...any) (string, erro
 
 	SetOutput(rt, funcContext.CallerID, values)
 	return "", nil
+}
+
+func returnAllSlice(rt *gplt.Runtime, ctx *gplt.Context, values []any) (string, error) {
+	return returnAll(rt, ctx, values...)
 }
 
 // Returns current outputs.
