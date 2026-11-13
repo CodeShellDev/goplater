@@ -10,7 +10,7 @@ import (
 
 var Module = modules.NewModule(deleteFunc, setFunc, hasKeyFunc, includesFunc, appendFunc, pushFunc, listFunc, dictFunc)
 
-// Deletes a container entry with the given key.
+// Deletes a container entry with the given key (mutates maps, but must return modified slice).
 //
 // @param container map|slice
 // @param key any
@@ -19,10 +19,16 @@ var Module = modules.NewModule(deleteFunc, setFunc, hasKeyFunc, includesFunc, ap
 // 
 // @example
 //	 +{{ $slice := list "Apple" "Banana" }}
-//	 +{{ delete $slice 0 }}
-//	 +{{ echo $slice }}
+//	 +{{ $newSlice := delete $slice 0 }}
+//	 +{{ echo $newSlice }}
 // @output
 //	 [Banana]
+// @example
+//	 +{{ $map := dict "key1" "value1" "key2" "value2" }}
+//	 +{{ delete $map "key1" }}
+//	 +{{ echo $map }}
+// @output
+//	 map[key2:value2]
 var deleteFunc = modules.NewFunc("delete", delete)
 
 func delete(_ *gplt.Runtime, _ *gplt.Context, container, key any) (any, error) {
@@ -76,57 +82,43 @@ func delete(_ *gplt.Runtime, _ *gplt.Context, container, key any) (any, error) {
 //	 [Strawberry Banana]
 var setFunc = modules.NewFunc("set", set)
 
-func set(_ *gplt.Runtime, _ *gplt.Context, container, key, value any) (any, error) {
+func set(_ *gplt.Runtime, _ *gplt.Context, container, key, value any) (string, error) {
 	v, err := ensureContainer(container)
 	if err != nil {
-		return nil, err
+		return "", err
 	}
 
 	// case 1: map
 	if v.Kind() == reflect.Map {
 		k, ok := convertTo(key, v.Type().Key())
 		if !ok {
-			return nil, fmt.Errorf("key type %T does not fit map", key)
+			return "", fmt.Errorf("key type %T does not fit map", key)
 		}
 
 		val, ok := convertTo(value, v.Type().Elem())
 		if !ok {
-			return nil, fmt.Errorf("value type %T does not fit container", value)
+			return "", fmt.Errorf("value type %T does not fit container", value)
 		}
 
 		v.SetMapIndex(k, val)
-		return v.Interface(), nil
+		return "", nil
 	}
 
 	// case 2: slice
 	i, ok := key.(int)
-	if !ok || i < 0 {
-		return nil, fmt.Errorf("bad slice index %v", key)
+	if !ok || i < 0 || i >= v.Len() {
+		return "", fmt.Errorf("bad slice index %v", key)
 	}
 
 	val, ok := convertTo(value, v.Type().Elem())
 	if !ok {
-		return nil, fmt.Errorf("value type %T does not fit container", value)
-	}
-
-	if i < v.Len() {
-		v.Index(i).Set(val)
-		return v.Interface(), nil
-	}
-
-	// extend slice if needed
-	n := i + 1
-	if n <= v.Cap() {
-		v = v.Slice(0, n)
-	} else {
-		out := reflect.MakeSlice(v.Type(), n, n)
-		reflect.Copy(out, v)
-		v = out
+		return "", fmt.Errorf("value type %T does not fit container", value)
 	}
 
 	v.Index(i).Set(val)
-	return v.Interface(), nil
+	return "", nil
 }
+
 
 // Returns if an entry with the given key exists in container.
 //
