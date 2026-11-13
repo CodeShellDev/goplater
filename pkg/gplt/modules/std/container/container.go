@@ -227,7 +227,7 @@ func append(_ *gplt.Runtime, _ *gplt.Context, container any, value any) (any, er
 	return reflect.Append(out, val).Interface(), nil
 }
 
-// Pushes a value to a slice (mutates slice directly and also returns a copy).
+// Pushes a value to a slice (mutates slice directly).
 //
 // @param container []any
 // @param value any
@@ -241,19 +241,26 @@ func append(_ *gplt.Runtime, _ *gplt.Context, container any, value any) (any, er
 //	 [Apple Banana Strawberry]
 var pushFunc = modules.NewFunc("push", push)
 
-func push(_ *gplt.Runtime, _ *gplt.Context, container any, value any) (any, error) {
+func push(_ *gplt.Runtime, _ *gplt.Context, container any, value any) (string, error) {
 	v := deref(container)
 
 	if v.Kind() != reflect.Slice {
-		return nil, fmt.Errorf("not a slice, got %T", container)
+		return "", fmt.Errorf("not a slice, got %T", container)
+	}
+
+	if v.Len() >= v.Cap() {
+		return "", fmt.Errorf("slice has insufficient capacity")
 	}
 
 	val, ok := convertTo(value, v.Type().Elem())
 	if !ok {
-		return nil, fmt.Errorf("value type %T does not fit slice", value)
+		return "", fmt.Errorf("value type %T does not fit slice", value)
 	}
 
-	return reflect.Append(v, val).Interface(), nil
+	v = v.Slice(0, v.Len() + 1)
+	v.Index(v.Len() - 1).Set(val)
+
+	return "", nil
 }
 
 // Creates a new slice, optionally with values.
