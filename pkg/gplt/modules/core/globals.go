@@ -7,6 +7,8 @@ import (
 	"github.com/codeshelldev/goplater/pkg/gplt/modules"
 )
 
+const globalStoreID = "globalStore"
+
 type GlobalStore struct {
 	data map[string]any
 }
@@ -18,7 +20,7 @@ func NewGlobalStore() *GlobalStore {
 }
 
 func (s *GlobalStore) Set(key string, value any) {
-	s.data[key] = value.(string)
+	s.data[key] = value
 }
 
 func (s *GlobalStore) Get(key string) (any, error) {
@@ -52,8 +54,6 @@ func (s *GlobalStore) Has(key string) bool {
 	
 	return exists
 }
-
-const globalStoreID = "globalStore"
 
 // Defines a global value with a key.
 //
