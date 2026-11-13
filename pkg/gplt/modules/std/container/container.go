@@ -8,7 +8,7 @@ import (
 	"github.com/codeshelldev/goplater/pkg/gplt/modules"
 )
 
-var Module = modules.NewModule(deleteFunc, setFunc, hasKeyFunc, includesFunc, appendFunc, listFunc, dictFunc)
+var Module = modules.NewModule(deleteFunc, setFunc, hasKeyFunc, includesFunc, appendFunc, pushFunc, listFunc, dictFunc)
 
 // Deletes a container entry with the given key.
 //
@@ -196,7 +196,7 @@ func includes(_ *gplt.Runtime, _ *gplt.Context, container, value any) (bool, err
 	return false, nil
 }
 
-// Appends a value to a slice.
+// Appends a value to a slice (returns a new copy).
 //
 // @param container []any
 // @param value any
@@ -211,7 +211,6 @@ func includes(_ *gplt.Runtime, _ *gplt.Context, container, value any) (bool, err
 var appendFunc = modules.NewFunc("append", append)
 
 func append(_ *gplt.Runtime, _ *gplt.Context, container any, value any) (any, error) {
-	// get element type
 	v := deref(container)
 
 	if v.Kind() != reflect.Slice {
@@ -226,6 +225,35 @@ func append(_ *gplt.Runtime, _ *gplt.Context, container any, value any) (any, er
 	// copy and increase size
 	out := copyContainer(v, 1)
 	return reflect.Append(out, val).Interface(), nil
+}
+
+// Pushes a value to a slice (mutates slice directly and also returns a copy).
+//
+// @param container []any
+// @param value any
+// @returns []any
+// 
+// @example
+//	 +{{ $slice := list "Apple" "Banana" }}
+//	 +{{ push $slice "Strawberry" }}
+//	 +{{ echo $slice }}
+// @output
+//	 [Apple Banana Strawberry]
+var pushFunc = modules.NewFunc("push", push)
+
+func push(_ *gplt.Runtime, _ *gplt.Context, container any, value any) (any, error) {
+	v := deref(container)
+
+	if v.Kind() != reflect.Slice {
+		return nil, fmt.Errorf("not a slice, got %T", container)
+	}
+
+	val, ok := convertTo(value, v.Type().Elem())
+	if !ok {
+		return nil, fmt.Errorf("value type %T does not fit slice", value)
+	}
+
+	return reflect.Append(v, val).Interface(), nil
 }
 
 // Creates a new slice, optionally with values.
