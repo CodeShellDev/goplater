@@ -5,7 +5,7 @@ Define a function in the template and call it:
 <!-- prettier-ignore -->
 ```handlebars
 +{{ define "greet(name)" }}
-    +{{ returnNext (printf "Hello, %s!" .name) }}
+    +{{ return (printf "Hello, %s!" .name) }}
 +{{ end }}
 
 +{{ call "greet" "Gopher" }}
@@ -18,7 +18,7 @@ Output:
 <!-- prettier-ignore -->
 ```handlebars
 +{{ define "greet(name)" -}}
-    +{{ returnNext (printf "Hello, %s!" .name) }}
+    +{{ return (printf "Hello, %s!" .name) }}
 +{{- end -}}
 
 +{{ call "greet" "Gopher" }}

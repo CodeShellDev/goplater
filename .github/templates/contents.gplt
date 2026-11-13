@@ -16,20 +16,20 @@
 
 +{{ define "indentTabs(text, indent)" }}
     +{{ $prefix := repeat "\t" .indent }}
-    +{{ returnNext (regexReplace .text `(?m)^` $prefix) }}
+    +{{ return (regexReplaceAll .text `(?m)^` $prefix) }}
 +{{ end }}
 
 +{{ define "generateHeadingAnchor(text)" }}
     +{{ $text := .text }}
 
     +{{ $text = lower $text }}
-    +{{ $text = regexReplace $text "`" "" }}
-    +{{ $text = regexReplace $text `[^a-z0-9\s-]` "" }}
-    +{{ $text = regexReplace $text `\s+` "-" }}
-    +{{ $text = regexReplace $text `-+` "-" }}
+    +{{ $text = regexReplaceAll $text "`" "" }}
+    +{{ $text = regexReplaceAll $text `[^a-z0-9\s-]` "" }}
+    +{{ $text = regexReplaceAll $text `\s+` "-" }}
+    +{{ $text = regexReplaceAll $text `-+` "-" }}
     +{{ $text = trim $text "-" }}
 
-    +{{ returnNext $text }}
+    +{{ return $text }}
 +{{ end }}
 
 +{{ define "collectHeadingChildren(document, level)" }}
@@ -40,5 +40,5 @@
         +{{ $result = slicePush $result $element }}
     +{{ end }}
 
-    +{{ returnNext $result }}
+    +{{ return $result }}
 +{{ end }}

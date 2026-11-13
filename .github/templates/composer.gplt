@@ -1,15 +1,15 @@
 +{{ define "templates(path)" }}
-    +{{ returnNext (read (concat "~/.github/templates/" .path)) }}
+    +{{ return (read (concat "~/.github/templates/" .path)) }}
 +{{ end }}
 
 +{{ define "section(path)" }}
-    +{{ returnNext (call "templates" (concat "sections/" .path ".md")) }}
+    +{{ return (call "templates" (concat "sections/" .path ".md")) }}
 +{{ end }}
 
 +{{ define "example(path)" }}
-    +{{ returnNext (read (concat "~/examples/" .path ".md")) }}
+    +{{ return (read (concat "~/examples/" .path ".md")) }}
 +{{ end }}
 
 +{{ define "exampleRaw(path)" }}
-    +{{ returnNext (readRaw (concat "~/examples/" .path ".md")) }}
+    +{{ return (readRaw (concat "~/examples/" .path ".md")) }}
 +{{ end }}

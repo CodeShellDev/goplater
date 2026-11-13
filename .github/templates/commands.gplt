@@ -88,7 +88,7 @@
         +{{ $entries = slicePush $entries $entry }}
     +{{ end }}
 
-    +{{ returnNext $entries }}
+    +{{ return $entries }}
 +{{ end }}
 
 +{{ define "parseFuncDeclaration(name, comment)"}}
@@ -98,7 +98,7 @@
     +{{ $examples := call "parseFuncExamples" .comment }}
     +{{ $outputs := call "parseFuncOutputs" .comment }}
 
-    +{{ returnNext (mapCreate "name" .name "summary" $summary "params" $params "returns" $returns "examples" $examples "outputs" $outputs) }}
+    +{{ return (mapCreate "name" .name "summary" $summary "params" $params "returns" $returns "examples" $examples "outputs" $outputs) }}
 +{{ end }}
 
 +{{ define "parseFuncSummary(content)" }}
@@ -119,7 +119,7 @@
         +{{ $summary = slicePush $summary $line }}
     +{{ end }}
 
-    +{{ returnNext (join "\n" $summary) }}
+    +{{ return (join "\n" $summary) }}
 +{{ end }}
 
 +{{ define "parseFuncParams(content)"}}
@@ -141,7 +141,7 @@
         +{{ end }}
     +{{ end }}
 
-    +{{ returnNext $params }}
+    +{{ return $params }}
 +{{ end }}
 
 +{{ define "parseFuncReturns(content)"}}
@@ -166,7 +166,7 @@
         +{{ end }}
     +{{ end }}
 
-    +{{ returnNext $returns }}
+    +{{ return $returns }}
 +{{ end }}
 
 +{{ define "parseFuncExamples(content)" }}
@@ -211,7 +211,7 @@
         +{{ end }}
     +{{ end }}
 
-    +{{ returnNext $examples }}
+    +{{ return $examples }}
 +{{ end }}
 
 +{{ define "parseFuncOutputs(content)" }}
@@ -256,5 +256,5 @@
         +{{ end }}
     +{{ end }}
 
-    +{{ returnNext $outputs }}
+    +{{ return $outputs }}
 +{{ end }}
