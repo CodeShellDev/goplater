@@ -2,6 +2,7 @@ package core
 
 import (
 	"bytes"
+	"errors"
 	"fmt"
 
 	"github.com/codeshelldev/goplater/pkg/gplt"
@@ -85,11 +86,12 @@ type FuncContext struct {
 
 const FuncContextKey gplt.ContextKey = "funcContext"
 
-var callFunc = modules.NewFunc("call", callFn)
-
-// Tries to call a func by name with args, optionally with a namespace handle.
+// Calls a func by name with args, optionally with a namespace handle.
 // Fails if func is not accessible or undefined.
-// Captures template output and returns it if no return statements were made.
+// Result:
+//   - `return` not called (or called with no values): captured template output
+//   - `return` with one value: that value
+//   - `return` with multiple values: a slice of all values
 //
 // @param name string
 // @param args []any
@@ -114,6 +116,18 @@ var callFunc = modules.NewFunc("call", callFn)
 //	 +{{ echo $output }}
 // @output
 //	 Hello John!
+//
+// @example
+//	 +{{ define "greet(name)" }}
+// 		 +{{ return (printf "Hello %s!" .name) }}
+//	 +{{ end }}
+// 	 
+//	 +{{ output := call "greet" "John" }}
+//	 +{{ echo $output }}
+// @output
+//	 Hello John!
+var callFunc = modules.NewFunc("call", callFn)
+
 func callFn(rt *gplt.Runtime, ctx *gplt.Context, name string, args ...any) (any, error) {
 	err := initCallStore(rt)
 
@@ -165,10 +179,12 @@ func call(rt *gplt.Runtime, ctx *gplt.Context, name string, args ...any) (any, e
 	var buf bytes.Buffer
 
 	err := tmpl.Execute(&buf, data)
-	if err != nil {
+
+	// the errReturn error exists to make the func stop early
+	if err != nil && !errors.Is(err, errReturn) {
 		return nil, err
 	}
-
+	
 	outputs := GetOutputs(rt, callerID)
 
 	switch len(outputs) {

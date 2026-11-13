@@ -17,19 +17,19 @@ func mustFuncContext(ctx *gplt.Context) (FuncContext, error) {
 	return fc, nil
 }
 
+var errReturn = errors.New("return")
 
 // Sets output value(s).
 //
 // @param values []any
-// @returns error
 //
 // @example
 //	 +{{ return "a" "b" 1 2 }}
 // @example
 //	 +{{ return (sliceCreate "3" "4" "5") }}
-var returnFunc = modules.NewFunc("return", returnAll)
+var returnFunc = modules.NewFunc("return", returnFn)
 
-func returnAll(rt *gplt.Runtime, ctx *gplt.Context, values ...any) (string, error) {
+func returnFn(rt *gplt.Runtime, ctx *gplt.Context, values ...any) (string, error) {
 	funcContext, err := mustFuncContext(ctx)
 
 	if err != nil {
@@ -37,7 +37,7 @@ func returnAll(rt *gplt.Runtime, ctx *gplt.Context, values ...any) (string, erro
 	}
 
 	SetOutput(rt, funcContext.CallerID, values)
-	return "", nil
+	return "", errReturn
 }
 
 // Returns current outputs.
