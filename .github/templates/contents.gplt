@@ -3,12 +3,12 @@
 
 +{{- $items := call "collectHeadingChildren" $document .level -}}
 
-+{{- $lines := sliceCreate }}
++{{- $lines := list }}
 
 +{{- range $item := $items -}}
 +{{- $text := htmlText $item -}}
 +{{- $line := (concat "- [" $text "](#" (call "generateHeadingAnchor" $text) ")") -}}
-+{{- $lines = slicePush $lines $line -}}
++{{- $lines = append $lines $line -}}
 +{{- end -}}
 
 +{{- join "\n" $lines -}}
@@ -33,11 +33,11 @@
 +{{ end }}
 
 +{{ define "collectHeadingChildren(document, level)" }}
-    +{{ $result := sliceCreate }}
+    +{{ $result := list }}
     +{{ $level := .level }}
 
     +{{ range $element := htmlDocFindAll .document (concat "h" (toString $level)) }}
-        +{{ $result = slicePush $result $element }}
+        +{{ $result = append $result $element }}
     +{{ end }}
 
     +{{ return $result }}

@@ -36,10 +36,10 @@
 
 +{{- $paramsStr := "" -}}
 +{{- if gt (len (index $decl "params")) 0 -}}
-    +{{- $params := sliceCreate -}}
+    +{{- $params := list -}}
     +{{- range $param := index $decl "params" -}}
         +{{- $param = join " " (index $param "name") (index $param "type") }}
-        +{{- $params = slicePush $params $param -}}
+        +{{- $params = append $params $param -}}
     +{{- end -}}
     +{{- $paramsStr = join ", " $params -}}
 +{{- end -}}
@@ -82,10 +82,10 @@
 +{{ define "parseFuncDeclarations(content)" }}
     +{{ $pattern := `(?ms)((?:^[ \t]*//[^\r\n]*(?:\r?\n|$))+)[ \t]*var[ \t]+[a-zA-Z_][a-zA-Z0-9_]*[ \t]*=[ \t]*modules\.NewFunc\([ \t]*"([a-zA-Z_][a-zA-Z0-9_]*)"[ \t]*,[^)]*\)` }}
     +{{ $matches := regexFindGroups $pattern .content }}
-    +{{ $entries := sliceCreate }}
+    +{{ $entries := list }}
     +{{ range $match := $matches }}
         +{{ $entry := call "parseFuncDeclaration" (index $match 2) (index $match 1) }}
-        +{{ $entries = slicePush $entries $entry }}
+        +{{ $entries = append $entries $entry }}
     +{{ end }}
 
     +{{ return $entries }}
@@ -98,12 +98,12 @@
     +{{ $examples := call "parseFuncExamples" .comment }}
     +{{ $outputs := call "parseFuncOutputs" .comment }}
 
-    +{{ return (mapCreate "name" .name "summary" $summary "params" $params "returns" $returns "examples" $examples "outputs" $outputs) }}
+    +{{ return (dict "name" .name "summary" $summary "params" $params "returns" $returns "examples" $examples "outputs" $outputs) }}
 +{{ end }}
 
 +{{ define "parseFuncSummary(content)" }}
     +{{ $lines := split .content "\n" }}
-    +{{ $summary := sliceCreate }}
+    +{{ $summary := list }}
     +{{ range $line := $lines }}
         +{{ $line = after $line "//"}}
         +{{ $line = trimSpace $line }}
@@ -116,7 +116,7 @@
             +{{ break }}
         +{{ end }}
 
-        +{{ $summary = slicePush $summary $line }}
+        +{{ $summary = append $summary $line }}
     +{{ end }}
 
     +{{ return (join "\n" $summary) }}
@@ -124,7 +124,7 @@
 
 +{{ define "parseFuncParams(content)"}}
     +{{ $lines := split .content "\n" }}
-    +{{ $params := sliceCreate }}
+    +{{ $params := list }}
     +{{ $pattern := `^@param\s+(\S+)\s+(.*)$` }}
     +{{ range $line := $lines }}
         +{{ $line = after $line "//"}}
@@ -136,8 +136,8 @@
 
         +{{ if regexMatch $pattern $line }}
             +{{ $match := index (regexFindGroups $pattern $line) 0 }}
-            +{{ $entry := mapCreate "name" (index $match 1) "type" (index $match 2) }}
-            +{{ $params = slicePush $params $entry }}
+            +{{ $entry := dict "name" (index $match 1) "type" (index $match 2) }}
+            +{{ $params = append $params $entry }}
         +{{ end }}
     +{{ end }}
 
@@ -146,7 +146,7 @@
 
 +{{ define "parseFuncReturns(content)"}}
     +{{ $lines := split .content "\n" }}
-    +{{ $returns := sliceCreate }}
+    +{{ $returns := list }}
     +{{ $pattern := `^@returns\s+(.*)$` }}
     +{{ range $line := $lines }}
         +{{ $line = after $line "//"}}
@@ -162,7 +162,7 @@
             +{{ if eq $type "error" }}
                 +{{ $type = "throws error" }}
             +{{ end }}
-            +{{ $returns = slicePush $returns $type }}
+            +{{ $returns = append $returns $type }}
         +{{ end }}
     +{{ end }}
 
@@ -171,7 +171,7 @@
 
 +{{ define "parseFuncExamples(content)" }}
     +{{ $lines := split .content "\n" }}
-    +{{ $examples := sliceCreate }}
+    +{{ $examples := list }}
     +{{ $i := 0 }}
     +{{ $inExample := false }}
     +{{ range $line := $lines }}
@@ -205,9 +205,9 @@
 
         +{{ if lt $i (len $examples) }}
             +{{ $collected := index $examples $i }}
-            +{{ $examples = set $examples $i (join "\n" $collected $line) }}
+            +{{ set $examples $i (join "\n" $collected $line) }}
         +{{ else }}
-            +{{ $examples = slicePush $examples $line }}
+            +{{ $examples = append $examples $line }}
         +{{ end }}
     +{{ end }}
 
@@ -216,7 +216,7 @@
 
 +{{ define "parseFuncOutputs(content)" }}
     +{{ $lines := split .content "\n" }}
-    +{{ $outputs := sliceCreate }}
+    +{{ $outputs := list }}
     +{{ $i := 0 }}
     +{{ $inOutput := false }}
     +{{ range $line := $lines }}
@@ -250,9 +250,9 @@
 
         +{{ if lt $i (len $outputs) }}
             +{{ $collected := index $outputs $i }}
-            +{{ $outputs = set $outputs $i (join "\n" $collected $line) }}
+            +{{ set $outputs $i (join "\n" $collected $line) }}
         +{{ else }}
-            +{{ $outputs = slicePush $outputs $line }}
+            +{{ $outputs = append $outputs $line }}
         +{{ end }}
     +{{ end }}
 
