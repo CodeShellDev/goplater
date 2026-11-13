@@ -57,18 +57,20 @@ func mul(_ *gplt.Runtime, _ *gplt.Context, a, b any, rest ...any) (any, error) {
 // @returns error
 var divFunc = modules.NewFunc("div", div)
 
+var DivisionByZeroErr = errors.New("division by zero")
+
 func div(_ *gplt.Runtime, _ *gplt.Context, a, b any, rest ...any) (any, error) {
 	return reduce(
 		append([]any{a, b}, rest...),
 		func(x, y int) (int, error) {
 			if y == 0 {
-				return 0, errors.New("division by zero")
+				return 0, DivisionByZeroErr
 			}
 			return x / y, nil
 		},
 		func(x, y float64) (float64, error) {
 			if y == 0 {
-				return 0, errors.New("division by zero")
+				return 0, DivisionByZeroErr
 			}
 			return x / y, nil
 		})
@@ -80,12 +82,14 @@ func div(_ *gplt.Runtime, _ *gplt.Context, a, b any, rest ...any) (any, error) {
 // @returns error
 var modFunc = modules.NewFunc("mod", mod)
 
+var ModuloByZeroErr = errors.New("modulo by zero")
+
 func mod(_ *gplt.Runtime, _ *gplt.Context, a, b any, rest ...any) (any, error) {
 	return reduce(
 		append([]any{a, b}, rest...),
 		func(x, y int) (int, error) {
 			if y == 0 {
-				return 0, errors.New("modulo by zero")
+				return 0, ModuloByZeroErr
 			}
 			return x % y, nil
 		},

@@ -71,6 +71,8 @@ func maxFn(_ *gplt.Runtime, _ *gplt.Context, a, b any, rest ...any) (any, error)
 // @returns error
 var clampFunc = modules.NewFunc("clamp", clamp)
 
+var ClampOutOfRangeErr = errors.New("clamp minimum cannot be greater than maximum")
+
 func clamp(rt *gplt.Runtime, ctx *gplt.Context, value, min, max any) (any, error) {
 	l, err := ToNumber(min)
 	if err != nil {
@@ -83,7 +85,7 @@ func clamp(rt *gplt.Runtime, ctx *gplt.Context, value, min, max any) (any, error
 	}
 
 	if h.Float < l.Float {
-		return nil, errors.New("clamp minimum cannot be greater than maximum")
+		return nil, ClampOutOfRangeErr
 	}
 
 	m, err := maxFn(rt, ctx, value, min)
@@ -123,6 +125,8 @@ func pow(_ *gplt.Runtime, _ *gplt.Context, base, exp any) (float64, error) {
 // @returns error
 var sqrtFunc = modules.NewFunc("sqrt", sqrt)
 
+var SqrtNegativeNumberErr = errors.New("sqrt requires a non-negative number")
+
 func sqrt(_ *gplt.Runtime, _ *gplt.Context, number any) (float64, error) {
 	n, err := ToFloat(number)
 	if err != nil {
@@ -130,7 +134,7 @@ func sqrt(_ *gplt.Runtime, _ *gplt.Context, number any) (float64, error) {
 	}
 
 	if n < 0 {
-		return 0, errors.New("sqrt requires a non-negative number")
+		return 0, SqrtNegativeNumberErr
 	}
 
 	return math.Sqrt(n), nil
