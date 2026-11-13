@@ -8,7 +8,7 @@ import (
 	"github.com/codeshelldev/goplater/pkg/gplt/modules"
 )
 
-var Module = modules.NewModule(containerDeleteFunc, containerSetFunc, containerHasFunc, containerIncludesFunc, slicePushFunc, sliceCreateFunc, mapCreateFunc)
+var Module = modules.NewModule(deleteFunc, setFunc, hasKeyFunc, includesFunc, appendFunc, listFunc, dictFunc)
 
 // Deletes a container entry with the given key.
 //
@@ -18,11 +18,12 @@ var Module = modules.NewModule(containerDeleteFunc, containerSetFunc, containerH
 // @returns error
 // 
 // @example
-//	 +{{ $newSlice := delete (sliceCreate "Apple" "Banana") 0 }}
-//	 +{{ echo $newSlice }}
+//	 +{{ $slice := list "Apple" "Banana" }}
+//	 +{{ delete $slice 0 }}
+//	 +{{ echo $slice }}
 // @output
 //	 [Banana]
-var containerDeleteFunc = modules.NewFunc("delete", delete)
+var deleteFunc = modules.NewFunc("delete", delete)
 
 func delete(_ *gplt.Runtime, _ *gplt.Context, container, key any) (any, error) {
 	value, err := ensureContainer(container)
@@ -33,15 +34,12 @@ func delete(_ *gplt.Runtime, _ *gplt.Context, container, key any) (any, error) {
 	// case 1: map
 	if value.Kind() == reflect.Map {
 		k, ok := convertTo(key, value.Type().Key())
-		
 		if !ok {
 			return nil, fmt.Errorf("key type %T does not fit map", key)
 		}
 
-		out := copyContainer(value, 0)
-		out.SetMapIndex(k, reflect.Value{})
-
-		return out.Interface(), nil
+		value.SetMapIndex(k, reflect.Value{})
+		return value.Interface(), nil
 	}
 
 	// case 2: slice
@@ -50,12 +48,16 @@ func delete(_ *gplt.Runtime, _ *gplt.Context, container, key any) (any, error) {
 		return nil, fmt.Errorf("bad slice index %v", key)
 	}
 
-	// rebuild slice
-	out := reflect.MakeSlice(value.Type(), 0, value.Len() - 1)
-	out = reflect.AppendSlice(out, value.Slice(0, i))
-	out = reflect.AppendSlice(out, value.Slice(i + 1, value.Len()))
+	last := value.Len() - 1
 
-	return out.Interface(), nil
+	// shift elements left
+	reflect.Copy(value.Slice(i, last), value.Slice(i + 1, value.Len()))
+
+	// clear the last element to release references
+	value.Index(last).Set(reflect.Zero(value.Type().Elem()))
+
+	// return shortened slice
+	return value.Slice(0, last).Interface(), nil
 }
 
 // Set a container entry value with the given key.
@@ -67,21 +69,17 @@ func delete(_ *gplt.Runtime, _ *gplt.Context, container, key any) (any, error) {
 // @returns error
 // 
 // @example
-//	 +{{ $newSlice := set (sliceCreate "Apple" "Banana") 0 "Strawberry" }}
-//	 +{{ echo $newSlice }}
+//	 +{{ $slice := list "Apple" "Banana" }}
+//	 +{{ set $slice 0 "Strawberry" }}
+//	 +{{ echo $slice }}
 // @output
 //	 [Strawberry Banana]
-var containerSetFunc = modules.NewFunc("set", set)
+var setFunc = modules.NewFunc("set", set)
 
 func set(_ *gplt.Runtime, _ *gplt.Context, container, key, value any) (any, error) {
 	v, err := ensureContainer(container)
 	if err != nil {
 		return nil, err
-	}
-
-	val, ok := convertTo(value, v.Type().Elem())
-	if !ok {
-		return nil, fmt.Errorf("value type %T does not fit container", value)
 	}
 
 	// case 1: map
@@ -91,10 +89,13 @@ func set(_ *gplt.Runtime, _ *gplt.Context, container, key, value any) (any, erro
 			return nil, fmt.Errorf("key type %T does not fit map", key)
 		}
 
-		out := copyContainer(v, 0)
-		out.SetMapIndex(k, val)
+		val, ok := convertTo(value, v.Type().Elem())
+		if !ok {
+			return nil, fmt.Errorf("value type %T does not fit container", value)
+		}
 
-		return out.Interface(), nil
+		v.SetMapIndex(k, val)
+		return v.Interface(), nil
 	}
 
 	// case 2: slice
@@ -103,15 +104,28 @@ func set(_ *gplt.Runtime, _ *gplt.Context, container, key, value any) (any, erro
 		return nil, fmt.Errorf("bad slice index %v", key)
 	}
 
-	// increase size
-	n := max(v.Len(), i + 1)
-	out := reflect.MakeSlice(v.Type(), n, n)
+	val, ok := convertTo(value, v.Type().Elem())
+	if !ok {
+		return nil, fmt.Errorf("value type %T does not fit container", value)
+	}
 
-	// ... and insert new value
-	reflect.Copy(out, v)
-	out.Index(i).Set(val)
+	if i < v.Len() {
+		v.Index(i).Set(val)
+		return v.Interface(), nil
+	}
 
-	return out.Interface(), nil
+	// extend slice if needed
+	n := i + 1
+	if n <= v.Cap() {
+		v = v.Slice(0, n)
+	} else {
+		out := reflect.MakeSlice(v.Type(), n, n)
+		reflect.Copy(out, v)
+		v = out
+	}
+
+	v.Index(i).Set(val)
+	return v.Interface(), nil
 }
 
 // Returns if an entry with the given key exists in container.
@@ -122,10 +136,10 @@ func set(_ *gplt.Runtime, _ *gplt.Context, container, key, value any) (any, erro
 // @returns error
 // 
 // @example
-//	 +{{ if (has (mapCreate "version" "v1") "version") }}
+//	 +{{ if (hasKey (list "version" "v1") "version") }}
 //		Container has "version"!
 //	 +{{ end }}
-var containerHasFunc = modules.NewFunc("has", has)
+var hasKeyFunc = modules.NewFunc("hasKey", has)
 
 func has(_ *gplt.Runtime, _ *gplt.Context, container, key any) (bool, error) {
 	value, err := ensureContainer(container)
@@ -152,10 +166,10 @@ func has(_ *gplt.Runtime, _ *gplt.Context, container, key any) (bool, error) {
 // @returns error
 // 
 // @example
-//	 +{{ if (includes (mapCreate "version" "v1") "v1") }}
+//	 +{{ if (includes (list "version" "v1") "v1") }}
 //		Container includes "v1"!
 //	 +{{ end }}
-var containerIncludesFunc = modules.NewFunc("includes", includes)
+var includesFunc = modules.NewFunc("includes", includes)
 
 func includes(_ *gplt.Runtime, _ *gplt.Context, container, value any) (bool, error) {
 	v, err := ensureContainer(container)
@@ -189,15 +203,14 @@ func includes(_ *gplt.Runtime, _ *gplt.Context, container, value any) (bool, err
 // @returns []any
 // 
 // @example
-//	 +{{ $newSlice := sliceCreate "Apple" "Banana" }}
-//	 +{{ $newSlice = slicePush $newSlice "Strawberry" }}
+//	 +{{ $newSlice := list "Apple" "Banana" }}
+//	 +{{ $newSlice = append $newSlice "Strawberry" }}
 //	 +{{ echo $newSlice }}
 // @output
 //	 [Apple Banana Strawberry]
-var slicePushFunc = modules.NewFunc("slicePush", slicePush)
+var appendFunc = modules.NewFunc("append", append)
 
-func slicePush(_ *gplt.Runtime, _ *gplt.Context, container any, value any) (any, error) {
-	// get element type
+func append(_ *gplt.Runtime, _ *gplt.Context, container any, value any) (any, error) {
 	v := deref(container)
 
 	if v.Kind() != reflect.Slice {
@@ -209,9 +222,7 @@ func slicePush(_ *gplt.Runtime, _ *gplt.Context, container any, value any) (any,
 		return nil, fmt.Errorf("value type %T does not fit slice", value)
 	}
 
-	// copy and increase size
-	out := copyContainer(v, 1)
-	return reflect.Append(out, val).Interface(), nil
+	return reflect.Append(v, val).Interface(), nil
 }
 
 // Creates a new slice, optionally with values.
@@ -220,13 +231,13 @@ func slicePush(_ *gplt.Runtime, _ *gplt.Context, container any, value any) (any,
 // @returns []any
 // 
 // @example
-//	 +{{ $newSlice := sliceCreate "Apple" "Banana" }}
+//	 +{{ $newSlice := list "Apple" "Banana" }}
 //	 +{{ echo $newSlice }}
 // @output
 //	 [Apple Banana]
-var sliceCreateFunc = modules.NewFunc("sliceCreate", sliceCreate)
+var listFunc = modules.NewFunc("list", list)
 
-func sliceCreate(_ *gplt.Runtime, _ *gplt.Context, values ...any) []any {
+func list(_ *gplt.Runtime, _ *gplt.Context, values ...any) []any {
 	return values
 }
 
@@ -239,13 +250,13 @@ func sliceCreate(_ *gplt.Runtime, _ *gplt.Context, values ...any) []any {
 // @returns errors
 // 
 // @example
-//	 +{{ $newMap := mapCreate "key1" "value1" "key2" "value2" }}
+//	 +{{ $newMap := dict "key1" "value1" "key2" "value2" }}
 //	 +{{ echo $newMap }}
 // @output
 //	 map[key1:value1 key2:value2]
-var mapCreateFunc = modules.NewFunc("mapCreate", mapCreate)
+var dictFunc = modules.NewFunc("dict", dict)
 
-func mapCreate(_ *gplt.Runtime, _ *gplt.Context, entries ...any) (map[string]any, error) {
+func dict(_ *gplt.Runtime, _ *gplt.Context, entries ...any) (map[string]any, error) {
 	if len(entries) == 0 {
 		return map[string]any{}, nil
 	}
