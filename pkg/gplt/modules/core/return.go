@@ -25,7 +25,7 @@ func mustFuncContext(ctx *gplt.Context) (FuncContext, error) {
 // @param i int?
 // @param value any
 // @returns error
-var returnFunc = modules.NewFunc("return", returnNext, returnAll)
+var returnFunc = modules.NewFunc("return", returnNext, returnAt)
 
 func returnNext(rt *gplt.Runtime, ctx *gplt.Context, value any) (string, error) {
 	fc, err := mustFuncContext(ctx)
