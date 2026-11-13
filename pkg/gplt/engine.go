@@ -52,8 +52,10 @@ func (e *Engine) NewTemplate(name string, delims types.Delims) *template.Templat
 	return t
 }
 
+func (e *Engine) NewRuntime(options EngineOptions) *Runtime {
+	return &Runtime{engine: e, engineOptions: options, store: map[string]StoreContainer{}}
+}
+
 func (e *Engine) Execute(name, body string, data any, options EngineOptions, ctx *Context) (string, error) {
-	rt := &Runtime{engine: e, engineOptions: options, store: map[string]StoreContainer{}}
-	
-	return rt.Render(name, body, data, ctx)
+	return e.NewRuntime(options).Render(name, body, data, ctx)
 }
