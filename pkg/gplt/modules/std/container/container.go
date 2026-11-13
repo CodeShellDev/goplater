@@ -203,14 +203,15 @@ func includes(_ *gplt.Runtime, _ *gplt.Context, container, value any) (bool, err
 // @returns []any
 // 
 // @example
-//	 +{{ $newSlice := list "Apple" "Banana" }}
-//	 +{{ $newSlice = append $newSlice "Strawberry" }}
+//	 +{{ $slice := list "Apple" "Banana" }}
+//	 +{{ $newSlice = append $slice "Strawberry" }}
 //	 +{{ echo $newSlice }}
 // @output
 //	 [Apple Banana Strawberry]
 var appendFunc = modules.NewFunc("append", append)
 
 func append(_ *gplt.Runtime, _ *gplt.Context, container any, value any) (any, error) {
+	// get element type
 	v := deref(container)
 
 	if v.Kind() != reflect.Slice {
@@ -222,7 +223,9 @@ func append(_ *gplt.Runtime, _ *gplt.Context, container any, value any) (any, er
 		return nil, fmt.Errorf("value type %T does not fit slice", value)
 	}
 
-	return reflect.Append(v, val).Interface(), nil
+	// copy and increase size
+	out := copyContainer(v, 1)
+	return reflect.Append(out, val).Interface(), nil
 }
 
 // Creates a new slice, optionally with values.
@@ -231,8 +234,8 @@ func append(_ *gplt.Runtime, _ *gplt.Context, container any, value any) (any, er
 // @returns []any
 // 
 // @example
-//	 +{{ $newSlice := list "Apple" "Banana" }}
-//	 +{{ echo $newSlice }}
+//	 +{{ $slice := list "Apple" "Banana" }}
+//	 +{{ echo $slice }}
 // @output
 //	 [Apple Banana]
 var listFunc = modules.NewFunc("list", list)
@@ -250,8 +253,8 @@ func list(_ *gplt.Runtime, _ *gplt.Context, values ...any) []any {
 // @returns errors
 // 
 // @example
-//	 +{{ $newMap := dict "key1" "value1" "key2" "value2" }}
-//	 +{{ echo $newMap }}
+//	 +{{ $map := dict "key1" "value1" "key2" "value2" }}
+//	 +{{ echo $map }}
 // @output
 //	 map[key1:value1 key2:value2]
 var dictFunc = modules.NewFunc("dict", dict)
