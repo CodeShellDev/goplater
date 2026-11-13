@@ -17,7 +17,7 @@ func mustFuncContext(ctx *gplt.Context) (FuncContext, error) {
 	return fc, nil
 }
 
-var errReturn = errors.New("return")
+var errReturn = errors.New("return exit (you should not see this message)")
 
 // Sets output value(s).
 //
