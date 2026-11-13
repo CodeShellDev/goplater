@@ -8,7 +8,7 @@ import (
 	"github.com/codeshelldev/goplater/pkg/gplt/modules"
 )
 
-var Module = modules.NewModule(deleteFunc, setFunc, hasKeyFunc, includesFunc, appendFunc, pushFunc, listFunc, dictFunc)
+var Module = modules.NewModule(deleteFunc, setFunc, hasKeyFunc, includesFunc, appendFunc, listFunc, dictFunc)
 
 // Deletes a container entry with the given key (mutates maps, but must return modified slice).
 //
@@ -217,42 +217,6 @@ func append(_ *gplt.Runtime, _ *gplt.Context, container any, value any) (any, er
 	// copy and increase size
 	out := copyContainer(v, 1)
 	return reflect.Append(out, val).Interface(), nil
-}
-
-// Pushes a value to a slice (mutates slice directly).
-//
-// @param container []any
-// @param value any
-// @returns []any
-// 
-// @example
-//	 +{{ $slice := list "Apple" "Banana" }}
-//	 +{{ push $slice "Strawberry" }}
-//	 +{{ echo $slice }}
-// @output
-//	 [Apple Banana Strawberry]
-var pushFunc = modules.NewFunc("push", push)
-
-func push(_ *gplt.Runtime, _ *gplt.Context, container any, value any) (string, error) {
-	v := deref(container)
-
-	if v.Kind() != reflect.Slice {
-		return "", fmt.Errorf("not a slice, got %T", container)
-	}
-
-	if v.Len() >= v.Cap() {
-		return "", fmt.Errorf("slice has insufficient capacity")
-	}
-
-	val, ok := convertTo(value, v.Type().Elem())
-	if !ok {
-		return "", fmt.Errorf("value type %T does not fit slice", value)
-	}
-
-	v = v.Slice(0, v.Len() + 1)
-	v.Index(v.Len() - 1).Set(val)
-
-	return "", nil
 }
 
 // Creates a new slice, optionally with values.
