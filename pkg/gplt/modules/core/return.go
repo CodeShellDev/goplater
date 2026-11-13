@@ -7,17 +7,19 @@ import (
 	"github.com/codeshelldev/goplater/pkg/gplt/modules"
 )
 
+var OutsideFuncErr = errors.New(`only callable within a "call"-invoked function body`)
+
 func mustFuncContext(ctx *gplt.Context) (FuncContext, error) {
 	fc, ok := ctx.Get(FuncContextKey).(FuncContext)
 	
 	if !ok {
-		return FuncContext{}, errors.New("this function can only be used inside a func body invoked via 'call'")
+		return FuncContext{}, OutsideFuncErr
 	}
 
 	return fc, nil
 }
 
-var errReturn = errors.New("return exit (you should not see this message)")
+var ReturnExitErr = errors.New("return exit (you should not see this message)")
 
 // Sets output value(s).
 //
@@ -26,7 +28,7 @@ var errReturn = errors.New("return exit (you should not see this message)")
 // @example
 //	 +{{ return "a" "b" 1 2 }}
 // @example
-//	 +{{ return (sliceCreate "3" "4" "5") }}
+//	 +{{ return (list "3" "4" "5") }}
 var returnFunc = modules.NewFunc("return", returnFn)
 
 func returnFn(rt *gplt.Runtime, ctx *gplt.Context, values ...any) (string, error) {
@@ -37,7 +39,7 @@ func returnFn(rt *gplt.Runtime, ctx *gplt.Context, values ...any) (string, error
 	}
 
 	SetOutput(rt, funcContext.CallerID, values)
-	return "", errReturn
+	return "", ReturnExitErr
 }
 
 // Returns current outputs.

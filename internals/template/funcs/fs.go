@@ -78,7 +78,7 @@ func readRaw(_ *gplt.Runtime, ctx *gplt.Context, path string) (string, error) {
 // @returns error
 //
 // @example
-//   +{{ readArgs "/path/to/file" (sliceCreate "my" "args") }}
+//   +{{ readArgs "/path/to/file" (list "my" "args") }}
 var readArgsFunc = modules.NewFunc("readArgs", readArgs)
 
 func readArgs(rt *gplt.Runtime, ctx *gplt.Context, path string, args any) (string, error) {

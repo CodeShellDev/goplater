@@ -180,8 +180,8 @@ func call(rt *gplt.Runtime, ctx *gplt.Context, name string, args ...any) (any, e
 
 	err := tmpl.Execute(&buf, data)
 
-	// the errReturn error exists to make the func stop early
-	if err != nil && !errors.Is(err, errReturn) {
+	// the ReturnExitErr exists to make the func stop early
+	if err != nil && !errors.Is(err, ReturnExitErr) {
 		return nil, err
 	}
 	
