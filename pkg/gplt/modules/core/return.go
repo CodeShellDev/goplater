@@ -2,8 +2,6 @@ package core
 
 import (
 	"errors"
-	"fmt"
-	"slices"
 
 	"github.com/codeshelldev/goplater/pkg/gplt"
 	"github.com/codeshelldev/goplater/pkg/gplt/modules"
@@ -20,53 +18,16 @@ func mustFuncContext(ctx *gplt.Context) (FuncContext, error) {
 }
 
 
-// Sets an output value at the given index (default: -1 – append).
+// Sets output value(s).
 //
-// @param i int?
-// @param value any
-// @returns error
-var returnFunc = modules.NewFunc("return", returnNext, returnAt)
-
-func returnNext(rt *gplt.Runtime, ctx *gplt.Context, value any) (string, error) {
-	fc, err := mustFuncContext(ctx)
-	if err != nil {
-		return "", err
-	}
-
-	outputs := slices.Clone(GetOutputs(rt, fc.CallerID))
-	outputs = append(outputs, value)
-
-	SetOutput(rt, fc.CallerID, outputs)
-	return "", nil
-}
-
-func returnAt(rt *gplt.Runtime, ctx *gplt.Context, i int, value any) (string, error) {
-	fc, err := mustFuncContext(ctx)
-	if err != nil {
-		return "", err
-	}
-
-	outputs := slices.Clone(GetOutputs(rt, fc.CallerID))
-	if i < 0 || i >= len(outputs) {
-		return "", fmt.Errorf("could not set output at %d: index out of bounds", i)
-	}
-	
-	outputs[i] = value
-
-	SetOutput(rt, fc.CallerID, outputs)
-	return "", nil
-}
-
-// Sets the output object as a whole.
-//
-// @param value []any
+// @param values []any
 // @returns error
 //
 // @example
-//	 +{{ returnAll "1" "2" "3" }}
+//	 +{{ return "a" "b" 1 2 }}
 // @example
-//	 +{{ returnAll (sliceCreate "1" "2" "3") }}
-var returnAllFunc = modules.NewFunc("returnAll", returnAll, returnAllSlice)
+//	 +{{ return (sliceCreate "3" "4" "5") }}
+var returnFunc = modules.NewFunc("return", returnAll)
 
 func returnAll(rt *gplt.Runtime, ctx *gplt.Context, values ...any) (string, error) {
 	funcContext, err := mustFuncContext(ctx)
@@ -77,10 +38,6 @@ func returnAll(rt *gplt.Runtime, ctx *gplt.Context, values ...any) (string, erro
 
 	SetOutput(rt, funcContext.CallerID, values)
 	return "", nil
-}
-
-func returnAllSlice(rt *gplt.Runtime, ctx *gplt.Context, values []any) (string, error) {
-	return returnAll(rt, ctx, values...)
 }
 
 // Returns current outputs.
