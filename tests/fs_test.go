@@ -106,7 +106,7 @@ func TestReadRawOutsideAllowedInputs(t *testing.T) {
 	path := filepath.Join(output, "secret.txt")
 	writeTestFile(t, path, "secret")
 
-	expectErrFS(t, `{{ readRaw `+strconv.Quote(path)+` }}`, ctx, nil)
+	expectErrFS(t, `{{ readRaw ` + strconv.Quote(path) + ` }}`, ctx, nil)
 }
 
 
@@ -182,7 +182,7 @@ func TestMkdirOutsideAllowedOutputs(t *testing.T) {
 	ctx, source, _ := newFSTestContext(t)
 	path := filepath.Join(source, "forbidden")
 
-	expectErrFS(t, `{{ mkdir `+strconv.Quote(path)+` }}`, ctx, nil)
+	expectErrFS(t, `{{ mkdir ` + strconv.Quote(path) + ` }}`, ctx, nil)
 }
 
 
@@ -207,7 +207,7 @@ func TestAppendFileCreatesFile(t *testing.T) {
 	ctx, _, output := newFSTestContext(t)
 	path := filepath.Join(output, "new.txt")
 
-	collectFS(t, `{{ appendFile `+strconv.Quote(path)+` "Hello" }}`, ctx)
+	collectFS(t, `{{ appendFile ` + strconv.Quote(path) + ` "Hello" }}`, ctx)
 
 	got, err := os.ReadFile(path)
 	if err != nil {
