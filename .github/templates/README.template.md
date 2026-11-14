@@ -12,8 +12,6 @@
 +{{ $cmdContents := call "contents.indentTabs" (call "contents.renderContentSection" $cmds 3) 1 }}
 -->
 
-test
-
 <p align="center">
     <img width="256" height="256" alt="Goplater Logo" src="https://github.com/CodeShellDev/goplater/raw/refs/heads/main/logo/goplater.png">
 </p>
