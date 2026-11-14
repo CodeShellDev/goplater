@@ -19,6 +19,7 @@ jobs:
     uses: codeshelldev/goplater-action/.github/workflows/goplater-bot.yml@main
     name: Update
     with:
+      version: "latest-prerelease"
       path: .github/templates/README.template.md
       output: README.md
       commit-and-push: false
