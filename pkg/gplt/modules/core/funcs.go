@@ -21,39 +21,50 @@ func NewCallOutputStore() *FuncOutputStore {
 }
 
 func (s *FuncOutputStore) Set(key string, value any) {
-	s.outputs[key] = value.([]any)
+    outputs, ok := value.([]any)
+    if !ok {
+        panic("'value' is expected to be []any")
+    }
+
+    if s.outputs == nil {
+        s.outputs = make(map[string][]any)
+    }
+
+    s.outputs[key] = outputs
 }
 
 func (s *FuncOutputStore) Get(key string) (any, error) {
-	outputs, exists := s.outputs[key]
-	
-	if !exists {
-		return nil, fmt.Errorf("outputs for func %q do not exist", key)
-	}
-	
-	return outputs, nil
+    outputs, ok := s.outputs[key]
+    if !ok {
+        return nil, fmt.Errorf("outputs for func %q do not exist", key)
+    }
+
+    return outputs, nil
 }
 
 func (s *FuncOutputStore) Delete(key string) bool {
-	delete(s.outputs, key)
+	_, ok := s.outputs[key]
+    if !ok {
+        return false
+    }
 
-	return true
+    delete(s.outputs, key)
+    return true
 }
 
 func (s *FuncOutputStore) Has(key string) bool {
-	_, exists := s.outputs[key]
-	
-	return exists
+    _, ok := s.outputs[key]
+    return ok
 }
 
 func (s *FuncOutputStore) Keys() []string {
-	keys := make([]string, 0, len(s.outputs))
+    keys := make([]string, 0, len(s.outputs))
 
-	for k := range s.outputs {
-		keys = append(keys, k)
-	}
+    for key := range s.outputs {
+        keys = append(keys, key)
+    }
 
-	return keys
+    return keys
 }
 
 func initCallStore(rt *gplt.Runtime) error {
