@@ -318,13 +318,13 @@ func repeat(_ *gplt.Runtime, _ *gplt.Context, str string, count int) string  {
 }
 
 func toStringSlice(values []any) []string {
-    out := make([]string, len(values))
+	out := make([]string, len(values))
 
-    for i, v := range values {
-        out[i] = fmt.Sprint(v)
-    }
+	for i, v := range values {
+		out[i] = fmt.Sprint(v)
+	}
 
-    return out
+	return out
 }
 
 // Concat strings together (join without sep).

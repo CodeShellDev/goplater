@@ -28,7 +28,7 @@ func (r *FsResolver) CanResolve(path string) bool {
 }
 
 func (r *FsResolver) Resolve(path string) (string, error) {
-	filePathAbs := resolvePath(*r.ctx, path + "." + gplt.IMPORT_FILE_EXTENSION)
+	filePathAbs := ResolvePath(*r.ctx, path + "." + gplt.IMPORT_FILE_EXTENSION)
 
 	info, err := os.Stat(filePathAbs)
 
@@ -40,10 +40,10 @@ func (r *FsResolver) Resolve(path string) (string, error) {
 		return "", errors.New("import is not a valid file")
 	}
 
-	return safeRead(filePathAbs, r.ctx)
+	return SafeRead(filePathAbs, r.ctx)
 }
 
-func safeRead(path string, tmplContext *context.TemplateContext) (string, error) {
+func SafeRead(path string, tmplContext *context.TemplateContext) (string, error) {
 	var result string
 
 	err := fsutils.WithAllowedRoot(path, tmplContext.Options.AllowedInputs,
@@ -71,7 +71,7 @@ func (r *FsResolver) DeriveName(path string) (string, error) {
 	return name, nil
 }
 
-func resolvePath(ctx context.TemplateContext, path string) string {
+func ResolvePath(ctx context.TemplateContext, path string) string {
 	isRel := strings.HasPrefix(path, "./") || strings.HasPrefix(path, "../")
 	isRelToSource := strings.HasPrefix(path, "~/")
 	
@@ -80,12 +80,12 @@ func resolvePath(ctx context.TemplateContext, path string) string {
 	if isRel {
 		absPath, _ := filepath.Abs(ctx.Invoker)
 
-		filePathAbs = getAbsPathWithSource(path, filepath.Dir(absPath))
+		filePathAbs = GetAbsPathWithSource(path, filepath.Dir(absPath))
 	} else if isRelToSource {
 		path, _ = strings.CutPrefix(path, "~/")
 		path = "./" + path
 
-		filePathAbs = getAbsPathWithSource(path, ctx.Options.Source)
+		filePathAbs = GetAbsPathWithSource(path, ctx.Options.Source)
 	} else {
 		filePathAbs, _ = filepath.Abs(path)
 	}
@@ -93,7 +93,7 @@ func resolvePath(ctx context.TemplateContext, path string) string {
 	return filePathAbs
 }
 
-func getAbsPathWithSource(path, source string) string {
+func GetAbsPathWithSource(path, source string) string {
 	if !filepath.IsAbs(source) {
 		var err error
 

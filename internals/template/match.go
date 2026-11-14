@@ -8,7 +8,7 @@ import (
 )
 
 func (t *Templater) Match(ctx *context.TemplateContext) (bool, error) {
-    return matchFile(ctx)
+	return matchFile(ctx)
 }
 
 func matchFile(ctx *context.TemplateContext) (bool, error) {

@@ -9,7 +9,7 @@ import (
 )
 
 func (t *Templater) Render(content string, ctx *context.TemplateContext) (string, error) {
-    return templateContent(content, ctx)
+	return templateContent(content, ctx)
 }
 
 func templateContent(content string, ctx *context.TemplateContext) (string, error) {

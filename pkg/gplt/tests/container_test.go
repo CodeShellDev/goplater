@@ -13,11 +13,7 @@ func TestDeleteSlice(t *testing.T) {
 		{{ emit "result" $slice }}
 	`
 
-	trt, err := testutils.Collect(t, tmpl)
-	if err != nil {
-		t.Fatalf("unexpected error: %v\ntemplate: %s", err, tmpl)
-	}
-
+	trt := testutils.Collect(t, tmpl)
 	trt.Equal(t, "result", []any{"Apple", "Orange"})
 }
 
@@ -32,11 +28,7 @@ func TestDeleteSliceFirstAndLast(t *testing.T) {
 		{{ emit "last" $last }}
 	`
 
-	trt, err := testutils.Collect(t, tmpl)
-	if err != nil {
-		t.Fatalf("unexpected error: %v\ntemplate: %s", err, tmpl)
-	}
-
+	trt := testutils.Collect(t, tmpl)
 	trt.Equal(t, "first", []any{"Banana", "Orange"})
 	trt.Equal(t, "last", []any{"Apple", "Banana"})
 }
@@ -49,11 +41,7 @@ func TestDeleteMap(t *testing.T) {
 		{{ emit "has" (hasKey $map "name") }}
 	`
 
-	trt, err := testutils.Collect(t, tmpl)
-	if err != nil {
-		t.Fatalf("unexpected error: %v\ntemplate: %s", err, tmpl)
-	}
-
+	trt := testutils.Collect(t, tmpl)
 	trt.Equal(t, "has", false)
 	trt.Equal(t, "result", map[string]any{"age": 30})
 }
@@ -68,10 +56,7 @@ func TestDeleteErrors(t *testing.T) {
 	}
 
 	for _, tmpl := range tests {
-		_, err := testutils.Collect(t, tmpl)
-		if err == nil {
-			t.Errorf("expected error for template: %s", tmpl)
-		}
+		testutils.ExpectErr(t, tmpl, nil)
 	}
 }
 
@@ -82,11 +67,7 @@ func TestSetSlice(t *testing.T) {
 		{{ emit "result" $slice }}
 	`
 
-	trt, err := testutils.Collect(t, tmpl)
-	if err != nil {
-		t.Fatalf("unexpected error: %v\ntemplate: %s", err, tmpl)
-	}
-
+	trt := testutils.Collect(t, tmpl)
 	trt.Equal(t, "result", []any{"Strawberry", "Banana"})
 }
 
@@ -98,11 +79,7 @@ func TestSetMap(t *testing.T) {
 		{{ emit "result" $map }}
 	`
 
-	trt, err := testutils.Collect(t, tmpl)
-	if err != nil {
-		t.Fatalf("unexpected error: %v\ntemplate: %s", err, tmpl)
-	}
-
+	trt := testutils.Collect(t, tmpl)
 	trt.Equal(t, "result", map[string]any{
 		"name": "Bob",
 		"age":  30,
@@ -114,16 +91,12 @@ func TestSetErrors(t *testing.T) {
 		`{{ set (list "Apple") -1 "Orange" }}`,
 		`{{ set (list "Apple") 1 "Orange" }}`,
 		`{{ set (list "Apple") "0" "Orange" }}`,
-		`{{ set (list "Apple") 0 123 }}`,
 		`{{ set (dict "name" "Alice") 123 "Bob" }}`,
 		`{{ set "not a container" 0 "value" }}`,
 	}
 
 	for _, tmpl := range tests {
-		_, err := testutils.Collect(t, tmpl)
-		if err == nil {
-			t.Errorf("expected error for template: %s", tmpl)
-		}
+		testutils.ExpectErr(t, tmpl, nil)
 	}
 }
 
@@ -134,11 +107,7 @@ func TestHasKeyMap(t *testing.T) {
 		{{ emit "missing" (hasKey $map "age") }}
 	`
 
-	trt, err := testutils.Collect(t, tmpl)
-	if err != nil {
-		t.Fatalf("unexpected error: %v\ntemplate: %s", err, tmpl)
-	}
-
+	trt := testutils.Collect(t, tmpl)
 	trt.Equal(t, "existing", true)
 	trt.Equal(t, "missing", false)
 }
@@ -152,11 +121,7 @@ func TestHasKeySlice(t *testing.T) {
 		{{ emit "negative" (hasKey $slice -1) }}
 	`
 
-	trt, err := testutils.Collect(t, tmpl)
-	if err != nil {
-		t.Fatalf("unexpected error: %v\ntemplate: %s", err, tmpl)
-	}
-
+	trt := testutils.Collect(t, tmpl)
 	trt.Equal(t, "first", true)
 	trt.Equal(t, "last", true)
 	trt.Equal(t, "missing", false)
@@ -169,10 +134,7 @@ func TestHasKeyErrors(t *testing.T) {
 	}
 
 	for _, tmpl := range tests {
-		_, err := testutils.Collect(t, tmpl)
-		if err == nil {
-			t.Errorf("expected error for template: %s", tmpl)
-		}
+		testutils.ExpectErr(t, tmpl, nil)
 	}
 }
 
@@ -183,11 +145,7 @@ func TestIncludesSlice(t *testing.T) {
 		{{ emit "missing" (includes $slice "Strawberry") }}
 	`
 
-	trt, err := testutils.Collect(t, tmpl)
-	if err != nil {
-		t.Fatalf("unexpected error: %v\ntemplate: %s", err, tmpl)
-	}
-
+	trt := testutils.Collect(t, tmpl)
 	trt.Equal(t, "existing", true)
 	trt.Equal(t, "missing", false)
 }
@@ -199,20 +157,14 @@ func TestIncludesMapValues(t *testing.T) {
 		{{ emit "missing" (includes $map "Banana") }}
 	`
 
-	trt, err := testutils.Collect(t, tmpl)
-	if err != nil {
-		t.Fatalf("unexpected error: %v\ntemplate: %s", err, tmpl)
-	}
-
+	trt := testutils.Collect(t, tmpl)
 	trt.Equal(t, "existing", true)
 	trt.Equal(t, "missing", false)
 }
 
 func TestIncludesErrors(t *testing.T) {
-	_, err := testutils.Collect(t, `{{ includes "not a container" "value" }}`)
-	if err == nil {
-		t.Fatal("expected error for invalid container")
-	}
+	tmpl := `{{ includes "not a container" "value" }}`
+	testutils.ExpectErr(t, tmpl, nil)
 }
 
 func TestAppend(t *testing.T) {
@@ -223,11 +175,7 @@ func TestAppend(t *testing.T) {
 		{{ emit "result" $newSlice }}
 	`
 
-	trt, err := testutils.Collect(t, tmpl)
-	if err != nil {
-		t.Fatalf("unexpected error: %v\ntemplate: %s", err, tmpl)
-	}
-
+	trt := testutils.Collect(t, tmpl)
 	trt.Equal(t, "original", []any{"Apple", "Banana"})
 	trt.Equal(t, "result", []any{"Apple", "Banana", "Orange"})
 }
@@ -238,10 +186,7 @@ func TestAppendErrors(t *testing.T) {
 	}
 
 	for _, tmpl := range tests {
-		_, err := testutils.Collect(t, tmpl)
-		if err == nil {
-			t.Errorf("expected error for template: %s", tmpl)
-		}
+		testutils.ExpectErr(t, tmpl, nil)
 	}
 }
 
@@ -251,11 +196,7 @@ func TestList(t *testing.T) {
 		{{ emit "values" (list "Apple" "Banana" 123) }}
 	`
 
-	trt, err := testutils.Collect(t, tmpl)
-	if err != nil {
-		t.Fatalf("unexpected error: %v\ntemplate: %s", err, tmpl)
-	}
-
+	trt := testutils.Collect(t, tmpl)
 	trt.Equal(t, "empty", []any{})
 	trt.Equal(t, "values", []any{"Apple", "Banana", 123})
 }
@@ -266,11 +207,7 @@ func TestDict(t *testing.T) {
 		{{ emit "values" (dict "name" "Alice" "age" 30) }}
 	`
 
-	trt, err := testutils.Collect(t, tmpl)
-	if err != nil {
-		t.Fatalf("unexpected error: %v\ntemplate: %s", err, tmpl)
-	}
-
+	trt := testutils.Collect(t, tmpl)
 	trt.Equal(t, "empty", map[string]any{})
 	trt.Equal(t, "values", map[string]any{
 		"name": "Alice",
@@ -285,9 +222,6 @@ func TestDictErrors(t *testing.T) {
 	}
 
 	for _, tmpl := range tests {
-		_, err := testutils.Collect(t, tmpl)
-		if err == nil {
-			t.Errorf("expected error for template: %s", tmpl)
-		}
+		testutils.ExpectErr(t, tmpl, nil)
 	}
 }

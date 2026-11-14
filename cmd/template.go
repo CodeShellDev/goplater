@@ -15,12 +15,12 @@ import (
 
 var templateCmd = &cobra.Command{
 	Use:   "template",
-    Short: "Template files",
+	Short: "Template files",
 	Args: validate,
 	ValidArgsFunction: func(cmd *cobra.Command, args []string, toComplete string) ([]string, cobra.ShellCompDirective) {
 		return nil, cobra.ShellCompDirectiveDefault
 	},
-    Long:  "Template files by using local or remote files.",
+	Long:  "Template files by using local or remote files.",
 	RunE: run,
 }
 
@@ -51,9 +51,9 @@ func init() {
 
 func validate(cmd *cobra.Command, args []string) error {
 	err := cobra.ExactArgs(1)(cmd, args)
-    if err != nil {
-        return err
-    }
+	if err != nil {
+		return err
+	}
 
 	_, err = os.Stat(args[0])
 

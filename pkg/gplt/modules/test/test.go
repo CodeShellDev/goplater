@@ -25,49 +25,49 @@ func NewStore() *Store {
 
 
 func (s *Store) Set(label string, value any) {
-    s.entries = append(s.entries, Entry{label, value})
+	s.entries = append(s.entries, Entry{label, value})
 
-    if label != "" {
-        s.byLabel[label] = value
-    }
+	if label != "" {
+		s.byLabel[label] = value
+	}
 }
 
 func (s *Store) Get(label string) (any, error) {
-    v, ok := s.byLabel[label]
-    if !ok {
-        return nil, fmt.Errorf("no emit with label %q", label)
-    }
+	v, ok := s.byLabel[label]
+	if !ok {
+		return nil, fmt.Errorf("no emit with label %q", label)
+	}
 
-    return v, nil
+	return v, nil
 }
 
 func (s *Store) Has(label string) bool {
-    _, ok := s.byLabel[label]
-    return ok
+	_, ok := s.byLabel[label]
+	return ok
 }
 
 func (s *Store) Delete(label string) bool {
 	_, ok := s.byLabel[label]
-    if !ok {
-        return false
-    }
+	if !ok {
+		return false
+	}
 
-    delete(s.byLabel, label)
-    return true
+	delete(s.byLabel, label)
+	return true
 }
 
 func (s *Store) Keys() []string {
-    keys := make([]string, 0, len(s.byLabel))
+	keys := make([]string, 0, len(s.byLabel))
 
-    for k := range s.byLabel {
-        keys = append(keys, k)
-    }
+	for k := range s.byLabel {
+		keys = append(keys, k)
+	}
 
-    return keys
+	return keys
 }
 
 func (s *Store) Entries() []Entry {
-    return append([]Entry(nil), s.entries...)
+	return append([]Entry(nil), s.entries...)
 }
 
 func getStore(rt *gplt.Runtime) (*Store, error) {

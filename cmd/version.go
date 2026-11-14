@@ -7,8 +7,8 @@ import (
 
 var versionCmd = &cobra.Command{
 	Use:   "version",
-    Short: "Output build information",
-    Long:  "Output information about binary build.",
+	Short: "Output build information",
+	Long:  "Output information about binary build.",
 	Run: func(cmd *cobra.Command, args []string) {
 		cmd.Println("Version: " + buildinfo.Version)
 		cmd.Println("Commit: " + buildinfo.Commit)

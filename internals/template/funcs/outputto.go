@@ -1,6 +1,7 @@
 package funcs
 
 import (
+	"errors"
 	"fmt"
 
 	"github.com/codeshelldev/goplater/internals/template/context"
@@ -15,13 +16,15 @@ import (
 // @returns error
 var outputToFunc = modules.NewFunc("outputTo", outputToFn)
 
+var OutsideOfScopeErr = errors.New("outside of allowed scope")
+
 func outputToFn(rt *gplt.Runtime, ctx *gplt.Context, path string) error {
 	tmplContext := ctx.Get(context.TemplateContextKey).(*context.TemplateContext)
 
-	absPath := resolvePath(*tmplContext, path)
+	absPath := ResolvePath(*tmplContext, path)
 
 	if !isPathAllowed(absPath, tmplContext.Options.AllowedOutputs) {
-		return fmt.Errorf("%q may not be ouputted to %q as it is not inside of the allowed scope", tmplContext.Path, absPath)
+		return fmt.Errorf("%q cannot be ouputted to %q: %w", tmplContext.Path, absPath, OutsideOfScopeErr)
 	}
 
 	tmplContext.OutputPath = absPath

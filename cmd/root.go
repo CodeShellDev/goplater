@@ -9,8 +9,8 @@ import (
 
 var rootCmd = &cobra.Command{
 	Use:   "goplater",
-    Short: "Go Template CLI",
-    Long:  "Go CLI programm for templating files.",
+	Short: "Go Template CLI",
+	Long:  "Go CLI programm for templating files.",
 }
 
 func Execute() {

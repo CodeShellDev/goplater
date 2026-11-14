@@ -15,13 +15,13 @@ func (c *Context) tryInit() {
 func (c *Context) Set(name ContextKey, v any) {
 	c.tryInit()
 
-    c.values[name] = v
+	c.values[name] = v
 }
 
 func (c *Context) Get(name ContextKey) any {
 	c.tryInit()
 
-    return c.values[name]
+	return c.values[name]
 }
 
 func (c *Context) Has(name ContextKey) bool {
@@ -58,22 +58,22 @@ func DeepCopyContextMap(src map[ContextKey]any, dst map[ContextKey]any) map[Cont
 }
 
 func deepCopyAny(value any) any {
-    switch val := value.(type) {
-    case map[string]any:
-        copyMap := make(map[string]any, len(val))
+	switch val := value.(type) {
+	case map[string]any:
+		copyMap := make(map[string]any, len(val))
 		for k, v := range val {
 			copyMap[k] = deepCopyAny(v)
 		}
 
-        return copyMap
-    case []any:
-        copySlice := make([]any, len(val))
-        for i, s := range val {
-            copySlice[i] = deepCopyAny(s)
-        }
+		return copyMap
+	case []any:
+		copySlice := make([]any, len(val))
+		for i, s := range val {
+			copySlice[i] = deepCopyAny(s)
+		}
 
-        return copySlice
-    default:
-        return val
-    }
+		return copySlice
+	default:
+		return val
+	}
 }

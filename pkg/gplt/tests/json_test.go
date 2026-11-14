@@ -16,11 +16,7 @@ func TestJSONEncode(t *testing.T) {
 		{{ emit "nil" (jsonEncode nil) }}
 	`
 
-	trt, err := testutils.Collect(t, tmpl)
-	if err != nil {
-		t.Fatalf("unexpected error: %v\ntemplate: %s", err, tmpl)
-	}
-
+	trt := testutils.Collect(t, tmpl)
 	trt.Equal(t, "string", `"hello"`)
 	trt.Equal(t, "number", "123")
 	trt.Equal(t, "bool", "true")
@@ -40,11 +36,7 @@ func TestJSONDecode(t *testing.T) {
 		{{ emit "null" (jsonDecode "null") }}
 	`
 
-	trt, err := testutils.Collect(t, tmpl)
-	if err != nil {
-		t.Fatalf("unexpected error: %v\ntemplate: %s", err, tmpl)
-	}
-
+	trt := testutils.Collect(t, tmpl)
 	trt.Equal(t, "string", "hello")
 	trt.Equal(t, "number", float64(123))
 	trt.Equal(t, "float", float64(12.5))
@@ -60,9 +52,5 @@ func TestJSONDecode(t *testing.T) {
 func TestJSONDecodeInvalidJSON(t *testing.T) {
 	tmpl := `{{ jsonDecode "{invalid}" }}`
 
-	_, err := testutils.ExpectErr(t, tmpl, nil)
-
-	if err != nil {
-		t.Fatal(err.Error())
-	}
+	testutils.ExpectErr(t, tmpl, nil)
 }

@@ -1,14 +1,14 @@
 package tests
 
 import (
-	"fmt"
+	"strconv"
 	"testing"
 
 	"github.com/codeshelldev/goplater/pkg/gplt/utils/testutils"
 )
 
 func createFuncTestTmpl(name, tmpl string) string {
-	return "{{ $output := " + tmpl + " }} {{ emit \"" + name + "\" $output}}"
+	return `{{ $output := ` + tmpl + ` }} {{ emit ` + strconv.Quote(name) + ` $output }}`
 }
 
 func TestToString(t *testing.T) {
@@ -52,11 +52,8 @@ func TestToString(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			tmpl := createFuncTestTmpl(tt.name, "toString .")
-			fmt.Println(tmpl)
-			trt, err := testutils.Collect(t, tmpl, tt.input)
-			if err != nil {
-				t.Fatal(err)
-			}
+
+			trt := testutils.Collect(t, tmpl, tt.input)
 
 			trt.Equal(t, tt.name, tt.want)
 		})
@@ -89,10 +86,8 @@ func TestToBytes(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			tmpl := createFuncTestTmpl(tt.name, "toBytes .")
-			trt, err := testutils.Collect(t, tmpl, tt.input)
-			if err != nil {
-				t.Fatal(err)
-			}
+
+			trt := testutils.Collect(t, tmpl, tt.input)
 
 			trt.Equal(t, tt.name, tt.want)
 		})
@@ -141,18 +136,13 @@ func TestToInt(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			tmpl := createFuncTestTmpl(tt.name, "toInt .")
-			trt, err := testutils.Collect(t, tmpl, tt.input)
 
 			if tt.wantErr {
-				if err == nil {
-					t.Fatal("expected an error")
-				}
+				testutils.ExpectErr(t, tmpl, nil)
 				return
 			}
 
-			if err != nil {
-				t.Fatal(err)
-			}
+			trt := testutils.Collect(t, tmpl, tt.input)
 
 			trt.Equal(t, tt.name, tt.want)
 		})
@@ -201,18 +191,13 @@ func TestToFloat64(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			tmpl := createFuncTestTmpl(tt.name, "toFloat64 .")
-			trt, err := testutils.Collect(t, tmpl, tt.input)
 
 			if tt.wantErr {
-				if err == nil {
-					t.Fatal("expected an error")
-				}
+				testutils.ExpectErr(t, tmpl, nil)
 				return
 			}
 
-			if err != nil {
-				t.Fatal(err)
-			}
+			trt := testutils.Collect(t, tmpl, tt.input)
 
 			trt.Equal(t, tt.name, tt.want)
 		})
@@ -261,18 +246,13 @@ func TestToFloat32(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			tmpl := createFuncTestTmpl(tt.name, "toFloat32 .")
-			trt, err := testutils.Collect(t, tmpl, tt.input)
 
 			if tt.wantErr {
-				if err == nil {
-					t.Fatal("expected an error")
-				}
+				testutils.ExpectErr(t, tmpl, nil)
 				return
 			}
 
-			if err != nil {
-				t.Fatal(err)
-			}
+			trt := testutils.Collect(t, tmpl, tt.input)
 
 			trt.Equal(t, tt.name, tt.want)
 		})
@@ -331,18 +311,13 @@ func TestToBool(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			tmpl := createFuncTestTmpl(tt.name, "toBool .")
-			trt, err := testutils.Collect(t, tmpl, tt.input)
 
 			if tt.wantErr {
-				if err == nil {
-					t.Fatal("expected an error")
-				}
+				testutils.ExpectErr(t, tmpl, nil)
 				return
 			}
 
-			if err != nil {
-				t.Fatal(err)
-			}
+			trt := testutils.Collect(t, tmpl, tt.input)
 
 			trt.Equal(t, tt.name, tt.want)
 		})

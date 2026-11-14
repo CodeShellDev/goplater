@@ -34,8 +34,8 @@ func hash(_ *gplt.Runtime, _ *gplt.Context, str string) string {
 var sha1Func = modules.NewFunc("sha1", sha1)
 
 func sha1(_ *gplt.Runtime, _ *gplt.Context, str string) string {
-    sum := sha1Utils.Sum([]byte(str))
-    return hex.EncodeToString(sum[:])
+	sum := sha1Utils.Sum([]byte(str))
+	return hex.EncodeToString(sum[:])
 }
 
 // Hashes a given string with SHA-512.
@@ -44,8 +44,8 @@ func sha1(_ *gplt.Runtime, _ *gplt.Context, str string) string {
 var sha512Func = modules.NewFunc("sha512", sha512)
 
 func sha512(_ *gplt.Runtime, _ *gplt.Context, str string) string {
-    sum := sha512Utils.Sum512([]byte(str))
-    return hex.EncodeToString(sum[:])
+	sum := sha512Utils.Sum512([]byte(str))
+	return hex.EncodeToString(sum[:])
 }
 
 // Hashes a given string with MD-5.
@@ -54,6 +54,6 @@ func sha512(_ *gplt.Runtime, _ *gplt.Context, str string) string {
 var md5Func = modules.NewFunc("md5", md5)
 
 func md5(_ *gplt.Runtime, _ *gplt.Context, str string) string {
-    sum := md5Utils.Sum([]byte(str))
-    return hex.EncodeToString(sum[:])
+	sum := md5Utils.Sum([]byte(str))
+	return hex.EncodeToString(sum[:])
 }

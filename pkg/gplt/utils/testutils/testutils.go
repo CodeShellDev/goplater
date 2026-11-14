@@ -2,12 +2,12 @@ package testutils
 
 import (
 	"errors"
-	"fmt"
 	"reflect"
 	"testing"
 
 	"github.com/codeshelldev/goplater/pkg/gplt"
 	"github.com/codeshelldev/goplater/pkg/gplt/collections"
+	"github.com/codeshelldev/goplater/pkg/gplt/modules"
 	"github.com/codeshelldev/goplater/pkg/gplt/modules/test"
 	"github.com/codeshelldev/goplater/pkg/gplt/resolvers"
 )
@@ -17,13 +17,17 @@ type TestRuntime struct {
 	Output string
 }
 
-func render(tmpl string, data ...any) (string, *gplt.Runtime, error) {
+func render(tmpl string, ctx *gplt.Context, modules []modules.Module, data ...any) (string, *gplt.Runtime, error) {
 	e := gplt.NewEngine()
 
 	e.Use(collections.Unsafe...)
 	e.UseSafe(collections.Safe...)
 
 	e.Use(test.Module)
+
+	if modules != nil {
+		e.Use(modules...)
+	}
 
 	e.SetResolver(gplt.NewResolverChain(resolvers.NewHttpResolver()))
 
@@ -34,7 +38,11 @@ func render(tmpl string, data ...any) (string, *gplt.Runtime, error) {
 		input = data[0]
 	}
 
-	output, err := rt.Render("test", tmpl, input, &gplt.Context{})
+	if ctx == nil {
+		ctx = &gplt.Context{}
+	}
+
+	output, err := rt.Render("test", tmpl, input, ctx)
 
 	if err != nil {
 		return "", rt, err
@@ -43,39 +51,50 @@ func render(tmpl string, data ...any) (string, *gplt.Runtime, error) {
 	return output, rt, nil
 }
 
-func Collect(t *testing.T, tmpl string, data ...any) (TestRuntime, error) {
+func Collect(t *testing.T, tmpl string, data ...any) TestRuntime {
 	t.Helper()
 
-	output, rt, err := render(tmpl, data...)
+	return CollectWithContext(t, tmpl, nil, nil, data...)
+}
 
+func CollectWithContext(t *testing.T, tmpl string, ctx *gplt.Context,  modules []modules.Module, data ...any) TestRuntime {
+	t.Helper()
+
+	output, rt, err := render(tmpl, ctx, modules, data...)
 	if err != nil {
-		return TestRuntime{}, err
+		t.Fatalf("unexpected error: %v\ntemplate: %s", err, tmpl)
 	}
 
 	s, _ := test.GetResults(rt)
-	
+
 	return TestRuntime{
-		store: s,
+		store:  s,
 		Output: output,
-	}, nil
+	}
 }
 
-func ExpectErr(t *testing.T, tmpl string, expectErr error) (TestRuntime, error) {
+func ExpectErr(t *testing.T, tmpl string, expectErr error) TestRuntime {
 	t.Helper()
 
-	output, _, err := render(tmpl)
+	return ExpectErrWithContext(t, tmpl, nil, nil, expectErr)
+}
+
+func ExpectErrWithContext(t *testing.T, tmpl string, ctx *gplt.Context, modules []modules.Module, expectErr error) TestRuntime {
+	t.Helper()
+
+	output, _, err := render(tmpl, ctx, modules, nil)
 
 	if err == nil {
-		return TestRuntime{}, fmt.Errorf("returned no errors, expected: %v", expectErr)
+		t.Fatalf("returned no errors, expected: %v", expectErr)
 	}
 
 	if expectErr != nil && !errors.Is(err, expectErr) {
-		return TestRuntime{}, fmt.Errorf("expected: %v, got: %v", expectErr, err)
+		t.Fatalf("expected: %v, got: %v", expectErr, err)
 	}
 
 	return TestRuntime{
 		Output: output,
-	}, nil
+	}
 }
 
 func (trt TestRuntime) Expect(t *testing.T, want ...any) {

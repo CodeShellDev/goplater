@@ -14,11 +14,7 @@ func TestGlobals(t *testing.T) {
 	{{ emit "get" (globalGet "abc") }}
 	`
 
-	trt, err := testutils.Collect(t, tmpl)
-
-	if err != nil {
-		t.Fatalf("unexpected error: %v\ntemplate: %s", err, tmpl)
-	}
+	trt := testutils.Collect(t, tmpl)
 
 	trt.Equal(t, "has", true)
 	trt.Equal(t, "get", 123)
@@ -48,11 +44,7 @@ func TestFuncs(t *testing.T) {
 		{{ emit "nested" (call "nested" 1 2) }}
 	`
 
-	trt, err := testutils.Collect(t, tmpl)
-
-	if err != nil {
-		t.Fatalf("unexpected error: %v\ntemplate: %s", err, tmpl)
-	}
+	trt := testutils.Collect(t, tmpl)
 
 	trt.Equal(t, "simple", "1, 2")
 	trt.Equal(t, "output", "1, 2")
@@ -75,11 +67,7 @@ func TestReturns(t *testing.T) {
 		{{ emit "earlyExit" (call "earlyExit") }}
 	`
 
-	trt, err := testutils.Collect(t, tmpl)
-
-	if err != nil {
-		t.Fatalf("unexpected error: %v\ntemplate: %s", err, tmpl)
-	}
+	trt := testutils.Collect(t, tmpl)
 
 	trt.Equal(t, "simple", "doing simple stuff")
 	trt.Equal(t, "earlyExit", "doing simple stuff")
@@ -87,9 +75,5 @@ func TestReturns(t *testing.T) {
 
 	tmpl = `{{ return "naughty return" }}`
 
-	_, err = testutils.ExpectErr(t, tmpl, core.OutsideFuncErr)
-
-	if err != nil {
-		t.Fatalf("unexpected error: %v\ntemplate: %s", err, tmpl)
-	}
+	testutils.ExpectErr(t, tmpl, core.OutsideFuncErr)
 }

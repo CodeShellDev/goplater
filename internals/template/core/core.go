@@ -8,7 +8,7 @@ var Renderer IRenderer
 var Matcher IMatcher
 
 type IRenderer interface {
-    Render(content string, ctx *context.TemplateContext) (string, error)
+	Render(content string, ctx *context.TemplateContext) (string, error)
 }
 
 type IMatcher interface {
