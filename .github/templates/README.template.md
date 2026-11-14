@@ -186,13 +186,6 @@ Need something that is not there? Add your own with a custom module or your own 
 Found a bug or just want to change or add something?
 Feel free to open up an issue or a PR!
 
-## Dev Notes
-
-Here some common mistakes when working with goplater and how to prevent them:
-
-- **Template funcs which only return an error must be avoided.** They will not throw ANY errors, use `(string, error)` with empty string returns instead!
-- ...
-
 ## Support
 
 Like this Project? Or just want to help?
