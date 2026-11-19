@@ -13,7 +13,7 @@
 -->
 
 <p align="center">
-    <img width="256" height="256" alt="Goplater Logo" src="https://github.com/CodeShellDev/goplater/raw/refs/heads/main/logo/goplater.png">
+    <img width="256" height="256" alt="Goplater Logo" src="https://github.com/CodeShellDev/goplater/raw/refs/heads/main/images/goplater.png">
 </p>
 
 <h1 align="center">Goplater</h1>
@@ -47,6 +47,10 @@
             alt="License: MIT">
     </a>
 </div>
+
+<p align="center">
+    <img width="256" height="256" alt="Goplater Logo" src="https://github.com/CodeShellDev/goplater/raw/refs/heads/main/images/termina.svg">
+</p>
 
 ## See it in action
 
@@ -197,7 +201,7 @@ This Project is licensed under the [MIT License](./LICENSE).
 
 ## Legal
 
-Logo designed by [@CodeShellDev](https://github.com/CodeShellDev) — All Rights Reserved.
+Logo designed by [@CodeShellDev](https://github.com/CodeShellDev). All rights reserved for original design contributions.
 
 Go gopher mascot originally created by [Renée French](https://instagram.com/reneefrench/),
-used under the [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/) license.
+used and adapted under the [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/) license.
