@@ -48,11 +48,11 @@
     </a>
 </div>
 
+## See it in action
+
 <p align="center">
     <img width="1024" height="512" alt="Goplater Logo" src="https://github.com/CodeShellDev/goplater/raw/refs/heads/main/images/terminal.svg">
 </p>
-
-## See it in action
 
 +{{ call "composer.section" "see-it-in-action" }}
 
