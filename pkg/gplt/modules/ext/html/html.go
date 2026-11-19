@@ -31,7 +31,7 @@ func htmlDecode(_ *gplt.Runtime, _ *gplt.Context, str string) (*goquery.Document
 // @returns error
 var htmlDocFindAllFunc = modules.NewFunc("htmlDocFindAll", htmlDocFindAll)
 
-func htmlDocFindAll(_ *gplt.Runtime, _ *gplt.Context, doc *goquery.Document, selector string) []*goquery.Selection  {
+func htmlDocFindAll(_ *gplt.Runtime, _ *gplt.Context, doc *goquery.Document, selector string) []*goquery.Selection	{
 	all := []*goquery.Selection{}
 
 	doc.Find(selector).Each(func(i int, s *goquery.Selection) {
@@ -61,7 +61,7 @@ func htmlDocFind(_ *gplt.Runtime, _ *gplt.Context, doc *goquery.Document, select
 // @returns error
 var htmlFindAllFunc = modules.NewFunc("htmlFindAll", htmlFindAll)
 
-func htmlFindAll(_ *gplt.Runtime, _ *gplt.Context, el *goquery.Selection, selector string) []*goquery.Selection  {
+func htmlFindAll(_ *gplt.Runtime, _ *gplt.Context, el *goquery.Selection, selector string) []*goquery.Selection	 {
 	all := []*goquery.Selection{}
 
 	el.Find(selector).Each(func(i int, s *goquery.Selection) {
@@ -80,7 +80,7 @@ func htmlFindAll(_ *gplt.Runtime, _ *gplt.Context, el *goquery.Selection, select
 // @returns error
 var htmlFindFunc = modules.NewFunc("htmlFind", htmlFind)
 
-func htmlFind(_ *gplt.Runtime, _ *gplt.Context, el *goquery.Selection, selector string) *goquery.Selection  {
+func htmlFind(_ *gplt.Runtime, _ *gplt.Context, el *goquery.Selection, selector string) *goquery.Selection	{
 	return el.Find(selector).First()
 }
 
@@ -101,7 +101,7 @@ func htmlText(_ *gplt.Runtime, _ *gplt.Context, el *goquery.Selection) string  {
 // @returns string
 var htmlAttrFunc = modules.NewFunc("htmlAttr", htmlAttr)
 
-func htmlAttr(_ *gplt.Runtime, _ *gplt.Context, el *goquery.Selection, attr string) string  {
+func htmlAttr(_ *gplt.Runtime, _ *gplt.Context, el *goquery.Selection, attr string) string	{
 	val, _ := el.Attr(attr)
 
 	return val
@@ -113,7 +113,7 @@ func htmlAttr(_ *gplt.Runtime, _ *gplt.Context, el *goquery.Selection, attr stri
 // @returns string
 var htmlInnerFunc = modules.NewFunc("htmlInner", htmlInner)
 
-func htmlInner(_ *gplt.Runtime, _ *gplt.Context, el *goquery.Selection) string  {
+func htmlInner(_ *gplt.Runtime, _ *gplt.Context, el *goquery.Selection) string	{
 	val, _ := el.Html()
 
 	return val

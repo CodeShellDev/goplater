@@ -16,7 +16,7 @@ var Module = modules.NewModule(jsonEncodeFunc, jsonDecodeFunc)
 // @returns error
 var jsonEncodeFunc = modules.NewFunc("jsonEncode", jsonEncode)
 
-func jsonEncode(_ *gplt.Runtime, _ *gplt.Context, obj any) (string, error)  {
+func jsonEncode(_ *gplt.Runtime, _ *gplt.Context, obj any) (string, error)	{
 	json, err := jsonUtils.Marshal(obj)
 
 	return string(json), err
@@ -29,7 +29,7 @@ func jsonEncode(_ *gplt.Runtime, _ *gplt.Context, obj any) (string, error)  {
 // @returns error
 var jsonDecodeFunc = modules.NewFunc("jsonDecode", jsonDecode)
 
-func jsonDecode(_ *gplt.Runtime, _ *gplt.Context, json string) (any, error)  {
+func jsonDecode(_ *gplt.Runtime, _ *gplt.Context, json string) (any, error)	 {
 	var obj any
 
 	err := jsonUtils.Unmarshal([]byte(json), &obj)

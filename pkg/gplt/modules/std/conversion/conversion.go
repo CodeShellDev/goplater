@@ -77,6 +77,6 @@ func toFloat32(_ *gplt.Runtime, _ *gplt.Context, str string) (float32, error)  {
 // @returns error
 var toBoolFunc = modules.NewFunc("toBool", toBool)
 
-func toBool(_ *gplt.Runtime, _ *gplt.Context, str string) (bool, error)  {
+func toBool(_ *gplt.Runtime, _ *gplt.Context, str string) (bool, error)	 {
 	return strconv.ParseBool(str)
 }

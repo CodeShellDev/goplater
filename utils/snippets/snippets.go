@@ -122,7 +122,7 @@ func ParseCodeSnippet(snippet string, start int) []SnippetLine {
 
 	for i, line := range lines {
 		result[i] = SnippetLine{
-			Number:  start + i + 1,
+			Number:	 start + i + 1,
 			Content: line,
 		}
 	}

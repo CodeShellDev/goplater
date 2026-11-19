@@ -11,8 +11,8 @@ import (
 )
 
 type ParsedTemplate struct {
-	Template 	*template.Template
-	Source   	string
+	Template	*template.Template
+	Source		string
 }
 
 type TemplateError struct {
@@ -48,9 +48,9 @@ func Parse(t ParsedTemplate, err error) (TemplateError, bool) {
 	}
 
 	res := TemplateError{
-		raw:      err,
+		raw:	  err,
 		template: t,
-		Column:   -1,
+		Column:	  -1,
 	}
 
 	raw := err.Error()

@@ -68,7 +68,7 @@ func CollectWithContext(t *testing.T, tmpl string, ctx *gplt.Context,  modules [
 	s, _ := test.GetResults(rt)
 
 	return TestRuntime{
-		store:  s,
+		store:	s,
 		Output: output,
 	}
 }

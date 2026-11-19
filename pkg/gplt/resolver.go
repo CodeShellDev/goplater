@@ -10,9 +10,9 @@ type Resolver interface {
 }
 
 type ResolvedModule struct {
-	Template  	string
-	Name 		string
-	Trusted 	bool
+	Template	string
+	Name		string
+	Trusted		bool
 }
 
 type ResolverChain struct {

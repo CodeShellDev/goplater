@@ -73,7 +73,7 @@ func globalSet(rt *gplt.Runtime, _ *gplt.Context, key string, value any) (string
 // @returns error
 var globalGetFunc = modules.NewFunc("globalGet", globalGet)
 
-func globalGet(rt *gplt.Runtime, _ *gplt.Context, key string) (any, error)  {
+func globalGet(rt *gplt.Runtime, _ *gplt.Context, key string) (any, error)	{
 	return GetGlobal(rt, key)
 }
 
@@ -83,7 +83,7 @@ func globalGet(rt *gplt.Runtime, _ *gplt.Context, key string) (any, error)  {
 // @returns bool
 var globalHasFunc = modules.NewFunc("globalHas", globalHas)
 
-func globalHas(rt *gplt.Runtime, _ *gplt.Context, key string) bool  {
+func globalHas(rt *gplt.Runtime, _ *gplt.Context, key string) bool	{
 	return HasGlobal(rt, key)
 }
 

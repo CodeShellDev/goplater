@@ -38,33 +38,33 @@ func (s Status) String() string {
 }
 
 type TreeOptions struct {
-	Root         string
-	Writer       io.Writer
-	Style        pretty.Style
-	Symbols      pretty.Symbols
-	Live         bool
+	Root		 string
+	Writer		 io.Writer
+	Style		 pretty.Style
+	Symbols		 pretty.Symbols
+	Live		 bool
 	SpinnerEvery time.Duration
 }
 
 type Tree struct {
-	mu              sync.Mutex
-	opts            TreeOptions
-	root            *Node
-	stop            chan struct{}
-	done            chan struct{}
-	ticker          *time.Ticker
+	mu				sync.Mutex
+	opts			TreeOptions
+	root			*Node
+	stop			chan struct{}
+	done			chan struct{}
+	ticker			*time.Ticker
 	started, closed bool
 	frame, rendered int
 }
 
 type Node struct {
-	tree                  *Tree
-	parent                *Node
-	children              []*Node
-	Source, Output        string
-	Status                Status
+	tree				  *Tree
+	parent				  *Node
+	children			  []*Node
+	Source, Output		  string
+	Status				  Status
 	Data					string
-	Err                   error
+	Err					  error
 	StartedAt, FinishedAt time.Time
 }
 
@@ -74,11 +74,11 @@ func NewTree(w io.Writer, root string) *Tree {
 	}
 
 	return NewTreeWithOptions(TreeOptions{
-		Root:         root,
-		Writer:       w,
-		Style:        pretty.NewStyle(w, false),
-		Symbols:      pretty.SymbolsFor(w),
-		Live:         pretty.IsTerminal(w),
+		Root:		  root,
+		Writer:		  w,
+		Style:		  pretty.NewStyle(w, false),
+		Symbols:	  pretty.SymbolsFor(w),
+		Live:		  pretty.IsTerminal(w),
 		SpinnerEvery: 90 * time.Millisecond,
 	})
 }
@@ -141,7 +141,7 @@ func (t *Tree) Add(source string) *Node {
 
 		if child == nil {
 			child = &Node{
-				tree:   t,
+				tree:	t,
 				parent: cur,
 				Source: part,
 				Status: Waiting,
@@ -183,7 +183,7 @@ func (n *Node) AddChild(label string) *Node {
 	defer t.mu.Unlock()
 
 	child := &Node{
-		tree:   t,
+		tree:	t,
 		parent: n,
 		Source: label,
 		Status: Waiting,
@@ -364,7 +364,7 @@ func (t *Tree) writeNode(b *strings.Builder, n *Node, ancestors []bool, last, ro
 			if hasNext {
 				p.WriteString(t.opts.Symbols.Vertical)
 			} else {
-				p.WriteString("    ")
+				p.WriteString("	   ")
 			}
 		}
 
@@ -402,11 +402,11 @@ func (t *Tree) writeNode(b *strings.Builder, n *Node, ancestors []bool, last, ro
 				if hasNext {
 					continuation.WriteString(t.opts.Symbols.Vertical)
 				} else {
-					continuation.WriteString("    ")
+					continuation.WriteString("	  ")
 				}
 			}
 
-			continuation.WriteString("    ")
+			continuation.WriteString("	  ")
 
 			for _, line := range lines {
 				b.WriteString(continuation.String())

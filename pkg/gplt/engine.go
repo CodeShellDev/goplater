@@ -8,13 +8,13 @@ import (
 )
 
 type Engine struct {
-	modules 		[]modules.Module
-	safeModules 	[]modules.Module // modules that are safe to be called from imported resources
-	resolver 		*ResolverChain
+	modules			[]modules.Module
+	safeModules		[]modules.Module // modules that are safe to be called from imported resources
+	resolver		*ResolverChain
 }
 
 type EngineOptions struct {
-	Delims 			types.Delims
+	Delims			types.Delims
 	ProcessFunc	func(t *template.Template) error
 	ParseFunc	func(s string, t *template.Template) (error)
 }

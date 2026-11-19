@@ -8,8 +8,8 @@ import (
 )
 
 type number struct {
-	Int       int
-	Float       float64
+	Int		  int
+	Float		float64
 	isFloat bool
 }
 

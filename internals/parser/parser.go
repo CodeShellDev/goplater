@@ -22,8 +22,8 @@ type Processor interface {
 }
 
 type ProcessorFunc struct {
-	ProcessorName 	string
-	Func           	func(input string, ctx Context) (string, error)
+	ProcessorName	string
+	Func			func(input string, ctx Context) (string, error)
 }
 
 func (p ProcessorFunc) Name() string {
@@ -35,7 +35,7 @@ func (p ProcessorFunc) Process(input string, ctx Context) (string, error) {
 }
 
 type Parser struct {
-	delims     types.Delims
+	delims	   types.Delims
 	processors []Processor
 }
 

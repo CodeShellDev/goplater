@@ -9,7 +9,7 @@ import (
 func TestTrim(t *testing.T) {
 	tmpl := `
 		{{ emit "trim" (trim "--hello--" "-") }}
-		{{ emit "trimSpace" (trimSpace "  hello  ") }}
+		{{ emit "trimSpace" (trimSpace "  hello	 ") }}
 		{{ emit "trimPrefix" (trimPrefix "hello world" "hello ") }}
 		{{ emit "trimSuffix" (trimSuffix "hello world" " world") }}
 	`

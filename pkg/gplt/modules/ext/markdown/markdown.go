@@ -51,7 +51,7 @@ var markdownParser = goldmark.DefaultParser()
 type Document struct {
 	Root ast.Node
 
-	Source  []byte
+	Source	[]byte
 	Sources [][]byte
 
 	textSources map[*ast.Text][]byte
@@ -61,7 +61,7 @@ type Document struct {
 
 type Node struct {
 	Document *Document
-	Node     ast.Node
+	Node	 ast.Node
 }
 
 type Nodeish interface {
@@ -97,8 +97,8 @@ func markdownDecode(_ *gplt.Runtime, _ *gplt.Context, md string) *Document {
 
 func newDocument(source []byte) *Document {
 	doc := &Document{
-		Source:      source,
-		Sources:     [][]byte{source},
+		Source:		 source,
+		Sources:	 [][]byte{source},
 		textSources: make(map[*ast.Text][]byte),
 		nodeSources: make(map[ast.Node][]byte),
 	}
@@ -357,7 +357,7 @@ func encodeIndentedCodeBlock(
 
 	for i := 0; i < lines.Len(); i++ {
 		segment := lines.At(i)
-		buf.WriteString("    ")
+		buf.WriteString("	 ")
 		buf.Write(segment.Value(source))
 	}
 
@@ -367,7 +367,7 @@ func encodeIndentedCodeBlock(
 func wrapNode(doc *Document, node ast.Node) *Node {
 	return &Node{
 		Document: doc,
-		Node:     node,
+		Node:	  node,
 	}
 }
 
@@ -638,7 +638,7 @@ func markdownHeadings(_ *gplt.Runtime, _ *gplt.Context, doc *Document) []*Headin
 		result = append(result, &Heading{
 			Node: &Node{
 				Document: doc,
-				Node:     heading,
+				Node:	  heading,
 			},
 			Level: heading.Level,
 		})
@@ -671,7 +671,7 @@ func markdownLinks(_ *gplt.Runtime, _ *gplt.Context, doc *Document) []*Link {
 		result = append(result, &Link{
 			Node: &Node{
 				Document: doc,
-				Node:     link,
+				Node:	  link,
 			},
 		})
 
@@ -746,7 +746,7 @@ func markdownImages(_ *gplt.Runtime, _ *gplt.Context, doc *Document) []*Image {
 		result = append(result, &Image{
 			Node: &Node{
 				Document: doc,
-				Node:     image,
+				Node:	  image,
 			},
 		})
 
@@ -816,7 +816,7 @@ func markdownParagraphs(_ *gplt.Runtime, _ *gplt.Context, doc *Document) []*Para
 		result = append(result, &Paragraph{
 			Node: &Node{
 				Document: doc,
-				Node:     p,
+				Node:	  p,
 			},
 		})
 
@@ -845,7 +845,7 @@ func markdownCodeBlocks(_ *gplt.Runtime, _ *gplt.Context, doc *Document) []*Code
 			result = append(result, &CodeBlock{
 				Node: &Node{
 					Document: doc,
-					Node:     n,
+					Node:	  n,
 				},
 			})
 		}
@@ -878,7 +878,7 @@ func markdownBlockquotes(_ *gplt.Runtime, _ *gplt.Context, doc *Document) []*Blo
 		result = append(result, &Blockquote{
 			Node: &Node{
 				Document: doc,
-				Node:     bq,
+				Node:	  bq,
 			},
 		})
 

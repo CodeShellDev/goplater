@@ -9,52 +9,52 @@ import (
 type Color string
 
 const (
-	Reset   Color = "\033[0m"
-	Black   Color = "\033[30m"
-	Red     Color = "\033[31m"
-	Green   Color = "\033[32m"
-	Yellow  Color = "\033[33m"
-	Blue    Color = "\033[34m"
+	Reset	Color = "\033[0m"
+	Black	Color = "\033[30m"
+	Red		Color = "\033[31m"
+	Green	Color = "\033[32m"
+	Yellow	Color = "\033[33m"
+	Blue	Color = "\033[34m"
 	Magenta Color = "\033[35m"
-	Cyan    Color = "\033[36m"
-	White   Color = "\033[37m"
-	Gray    Color = "\033[90m"
-	Bold    Color = "\033[1m"
-	Dim     Color = "\033[2m"
+	Cyan	Color = "\033[36m"
+	White	Color = "\033[37m"
+	Gray	Color = "\033[90m"
+	Bold	Color = "\033[1m"
+	Dim		Color = "\033[2m"
 )
 
 type Symbols struct {
-	Success  string
-	Error    string
-	Warning  string
-	Info     string
-	Pending  string
-	Branch   string
-	Last     string
+	Success	 string
+	Error	 string
+	Warning	 string
+	Info	 string
+	Pending	 string
+	Branch	 string
+	Last	 string
 	Vertical string
-	Spinner  []string
+	Spinner	 []string
 }
 
 var UnicodeSymbols = Symbols{
 	Success:  "✓",
-	Error:    "✗",
+	Error:	  "✗",
 	Warning:  "!",
-	Info:     "ℹ",
+	Info:	  "ℹ",
 	Pending:  "○",
-	Branch:   "├── ",
-	Last:     "└── ",
-	Vertical: "│   ",
+	Branch:	  "├── ",
+	Last:	  "└── ",
+	Vertical: "│	 ",
 	Spinner:  []string{"⠋", "⠙", "⠹", "⠸", "⠼", "⠴", "⠦", "⠧", "⠇", "⠏"},
 }
 
 var ASCIISymbols = Symbols{
 	Success:  "OK",
-	Error:    "ERROR",
+	Error:	  "ERROR",
 	Warning:  "WARN",
-	Info:     "INFO",
+	Info:	  "INFO",
 	Pending:  "...",
-	Branch:   "|-- ",
-	Last:     "`-- ",
+	Branch:	  "|-- ",
+	Last:	  "`-- ",
 	Vertical: "|   ",
 	Spinner:  []string{"-", "\\", "|", "/"},
 }
@@ -75,11 +75,11 @@ func (s Style) Paint(c Color, text string) string {
 	return string(c) + text + string(Reset)
 }
 
-func (s Style) Success(text string) string  { return s.Paint(Green, text) }
-func (s Style) Error(text string) string    { return s.Paint(Red, text) }
-func (s Style) Warning(text string) string  { return s.Paint(Yellow, text) }
-func (s Style) Info(text string) string     { return s.Paint(Cyan, text) }
-func (s Style) Muted(text string) string    { return s.Paint(Gray, text) }
+func (s Style) Success(text string) string	{ return s.Paint(Green, text) }
+func (s Style) Error(text string) string	{ return s.Paint(Red, text) }
+func (s Style) Warning(text string) string	{ return s.Paint(Yellow, text) }
+func (s Style) Info(text string) string		{ return s.Paint(Cyan, text) }
+func (s Style) Muted(text string) string	{ return s.Paint(Gray, text) }
 func (s Style) Emphasis(text string) string { return s.Paint(Bold, text) }
 
 func (s Style) Printf(w io.Writer, c Color, format string, args ...any) {

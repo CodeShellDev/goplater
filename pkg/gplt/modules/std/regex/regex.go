@@ -93,7 +93,7 @@ func regexFindGroups(_ *gplt.Runtime, _ *gplt.Context, regex string, str string)
 // @returns error
 var regexFindGroupsIndexFunc = modules.NewFunc("regexFindGroupsIndex", regexFindGroupsIndex)
 
-func regexFindGroupsIndex(_ *gplt.Runtime, _ *gplt.Context, regex string, str string) ([][]int, error)  {
+func regexFindGroupsIndex(_ *gplt.Runtime, _ *gplt.Context, regex string, str string) ([][]int, error)	{
 	re, err := compile(regex)
 
 	if err != nil {

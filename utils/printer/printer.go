@@ -10,8 +10,8 @@ import (
 )
 
 type Printer struct {
-	Out        io.Writer
-	Err        io.Writer
+	Out		   io.Writer
+	Err		   io.Writer
 	OutColors  bool
 	ErrColors  bool
 }
@@ -31,10 +31,10 @@ func NewWithWriters(out, errOut io.Writer) *Printer {
 	}
 
 	return &Printer{
-		Out:        out,
-		Err:        errOut,
-		OutColors:  pretty.ColorsEnabled(out, false),
-		ErrColors:  pretty.ColorsEnabled(errOut, false),
+		Out:		out,
+		Err:		errOut,
+		OutColors:	pretty.ColorsEnabled(out, false),
+		ErrColors:	pretty.ColorsEnabled(errOut, false),
 	}
 }
 

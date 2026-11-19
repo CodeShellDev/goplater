@@ -6,28 +6,28 @@ import (
 )
 
 type treeEntry struct {
-	tmpl    *template.Template
+	tmpl	*template.Template
 	trusted bool
-	alias   string
+	alias	string
 }
 
 const CurrentTreeKey ContextKey = "currentTree"
 
 type TreeScope struct {
-	Name    string
+	Name	string
 	Trusted bool
 }
 
 type ModuleRegistry struct {
-	root      *template.Template
-	trees     map[string]*treeEntry      // import name -> tree
+	root	  *template.Template
+	trees	  map[string]*treeEntry		 // import name -> tree
 	reachable map[string]map[string]bool // owner scope -> names it is allowed to call into
 }
 
 func NewModuleRegistry(root *template.Template) *ModuleRegistry {
 	return &ModuleRegistry{
-		root:      root,
-		trees:     map[string]*treeEntry{},
+		root:	   root,
+		trees:	   map[string]*treeEntry{},
 		reachable: map[string]map[string]bool{"root": {}},
 	}
 }

@@ -92,7 +92,7 @@ func GetOutputs(rt *gplt.Runtime, callerID string) []any {
 
 type FuncContext struct {
 	CallerID string
-	Name     string
+	Name	 string
 }
 
 const FuncContextKey gplt.ContextKey = "funcContext"
@@ -100,9 +100,9 @@ const FuncContextKey gplt.ContextKey = "funcContext"
 // Calls a func by name with args, optionally with a namespace handle.
 // Fails if func is not accessible or undefined.
 // Result:
-//   - `return` not called (or called with no values): captured template output
-//   - `return` with one value: that value
-//   - `return` with multiple values: a slice of all values
+//	 - `return` not called (or called with no values): captured template output
+//	 - `return` with one value: that value
+//	 - `return` with multiple values: a slice of all values
 //
 // @param name string
 // @param args []any
@@ -113,16 +113,16 @@ const FuncContextKey gplt.ContextKey = "funcContext"
 //	 +{{ define "greet(name)" }}
 //		 +{{ echo (printf "Hello %s!" .name) }}
 //	 +{{ end }}
-// 	 
+//	 
 //	 +{{ call "greet" "John" }}
 // @output
 //	 Hello John!
 //
 // @example
 //	 +{{ define "greet(name)" }}
-// 		 Hello +{{ .name }}!
+//		 Hello +{{ .name }}!
 //	 +{{ end }}
-// 	 
+//	 
 //	 +{{ output := call "greet" "John" }}
 //	 +{{ echo $output }}
 // @output
@@ -130,9 +130,9 @@ const FuncContextKey gplt.ContextKey = "funcContext"
 //
 // @example
 //	 +{{ define "greet(name)" }}
-// 		 +{{ return (printf "Hello %s!" .name) }}
+//		 +{{ return (printf "Hello %s!" .name) }}
 //	 +{{ end }}
-// 	 
+//	 
 //	 +{{ output := call "greet" "John" }}
 //	 +{{ echo $output }}
 // @output

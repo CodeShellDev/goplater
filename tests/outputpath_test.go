@@ -8,12 +8,12 @@ import (
 )
 
 type outputPathCase struct {
-	name       	string
-	root 		string
-	source     	string
-	output     	string
-	expect     	string
-	wantErr    	bool
+	name		string
+	root		string
+	source		string
+	output		string
+	expect		string
+	wantErr		bool
 }
 
 func relToCwd(absPath string) (string, error) {

@@ -26,7 +26,7 @@ func isPathAllowed(path string, allowed []string) bool {
 // @returns error
 //
 // @example
-//   +{{ read "/path/to/file" }}
+//	 +{{ read "/path/to/file" }}
 var readFunc = modules.NewFunc("read", read)
 
 func read(rt *gplt.Runtime, ctx *gplt.Context, path string) (string, error) {
@@ -52,7 +52,7 @@ func read(rt *gplt.Runtime, ctx *gplt.Context, path string) (string, error) {
 // @returns error
 //
 // @example
-//   +{{ readRaw "/path/to/file" }}
+//	 +{{ readRaw "/path/to/file" }}
 var readRawFunc = modules.NewFunc("readRaw", readRaw)
 
 func readRaw(_ *gplt.Runtime, ctx *gplt.Context, path string) (string, error) {
@@ -78,7 +78,7 @@ func readRaw(_ *gplt.Runtime, ctx *gplt.Context, path string) (string, error) {
 // @returns error
 //
 // @example
-//   +{{ readArgs "/path/to/file" (list "my" "args") }}
+//	 +{{ readArgs "/path/to/file" (list "my" "args") }}
 var readArgsFunc = modules.NewFunc("readArgs", readArgs)
 
 func readArgs(rt *gplt.Runtime, ctx *gplt.Context, path string, args any) (string, error) {
@@ -127,7 +127,7 @@ func readHandler(ctx *gplt.Context, path string) (string, *gplt.Context, error) 
 // @returns error
 //
 // @example
-//   +{{ write "/path/to/file" "Hello" }}
+//	 +{{ write "/path/to/file" "Hello" }}
 var writeFunc = modules.NewFunc("write", write)
 
 func write(_ *gplt.Runtime, ctx *gplt.Context, path string, content string) (string, error) {
@@ -148,7 +148,7 @@ func write(_ *gplt.Runtime, ctx *gplt.Context, path string, content string) (str
 // @returns error
 //
 // @example
-//   +{{ mkdir "/path/to/somewhere/" }}
+//	 +{{ mkdir "/path/to/somewhere/" }}
 var mkdirFunc = modules.NewFunc("mkdir", mkdir)
 
 func mkdir(_ *gplt.Runtime, ctx *gplt.Context, path string) (string, error) {
@@ -170,7 +170,7 @@ func mkdir(_ *gplt.Runtime, ctx *gplt.Context, path string) (string, error) {
 // @returns error
 //
 // @example
-//   +{{ appendFile "/path/to/somewhere/" "Goodbye" }}
+//	 +{{ appendFile "/path/to/somewhere/" "Goodbye" }}
 var appendFileFunc = modules.NewFunc("appendFile", appendFile)
 
 func appendFile(_ *gplt.Runtime, ctx *gplt.Context, path string, content string) (string, error) {
@@ -198,7 +198,7 @@ func appendFile(_ *gplt.Runtime, ctx *gplt.Context, path string, content string)
 // @returns bool
 //
 // @example
-//   +{{ if (fsExists "/path/to/somewhere") }}
+//	 +{{ if (fsExists "/path/to/somewhere") }}
 //		Path exists!
 //	 +{{ end }}
 var fsExistsFunc = modules.NewFunc("fsExists", fsExists)
@@ -222,7 +222,7 @@ func fsExists(_ *gplt.Runtime, ctx *gplt.Context, path string) bool {
 // @returns bool
 //
 // @example
-//   +{{ if (isFile "/path/to/file") }}
+//	 +{{ if (isFile "/path/to/file") }}
 //		Path is a file!
 //	 +{{ end }}
 var isFileFunc = modules.NewFunc("isFile", isFile)
@@ -246,7 +246,7 @@ func isFile(_ *gplt.Runtime, ctx *gplt.Context, path string) bool {
 // @returns bool
 //
 // @example
-//   +{{ if (isDir "/path/to/somewhere") }}
+//	 +{{ if (isDir "/path/to/somewhere") }}
 //		Path is a folder!
 //	 +{{ end }}
 var isDirFunc = modules.NewFunc("isDir", isDir)
@@ -271,7 +271,7 @@ func isDir(_ *gplt.Runtime, ctx *gplt.Context, path string) bool {
 // @returns error
 //
 // @example
-//   +{{ join ", " (listDir "/path/to") }}
+//	 +{{ join ", " (listDir "/path/to") }}
 // @output
 //	 /path/to/file1.txt, /path/to/file2.txt, /path/to/folder
 var listDirFunc = modules.NewFunc("listDir", listDir)
@@ -302,7 +302,7 @@ func listDir(_ *gplt.Runtime, ctx *gplt.Context, path string) ([]string, error) 
 // @returns error
 //
 // @example
-//   +{{ join ", " (walkDir "/path/to") }}
+//	 +{{ join ", " (walkDir "/path/to") }}
 // @output
 //	 /path/to/file1.txt, /path/to/file2.txt, /path/to/folder, /path/to/folder/file3.txt
 var walkDirFunc = modules.NewFunc("walkDir", walkDir)
@@ -332,7 +332,7 @@ func walkDir(_ *gplt.Runtime, ctx *gplt.Context, path string) ([]string, error) 
 // @returns error
 //
 // @example
-//   +{{ fsRemove "/path/to/file/or/folder" }}
+//	 +{{ fsRemove "/path/to/file/or/folder" }}
 var fsRemoveFunc = modules.NewFunc("fsRemove", fsRemove)
 
 func fsRemove(_ *gplt.Runtime, ctx *gplt.Context, path string) (string, error) {

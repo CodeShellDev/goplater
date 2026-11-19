@@ -82,7 +82,7 @@ func TestSetMap(t *testing.T) {
 	trt := testutils.Collect(t, tmpl)
 	trt.Equal(t, "result", map[string]any{
 		"name": "Bob",
-		"age":  30,
+		"age":	30,
 	})
 }
 
@@ -211,7 +211,7 @@ func TestDict(t *testing.T) {
 	trt.Equal(t, "empty", map[string]any{})
 	trt.Equal(t, "values", map[string]any{
 		"name": "Alice",
-		"age":  30,
+		"age":	30,
 	})
 }
 

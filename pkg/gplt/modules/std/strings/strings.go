@@ -53,7 +53,7 @@ var Module = modules.NewModule(
 // @returns string
 var trimSpaceFunc = modules.NewFunc("trimSpace", trimSpace)
 
-func trimSpace(_ *gplt.Runtime, _ *gplt.Context, str string) string  {
+func trimSpace(_ *gplt.Runtime, _ *gplt.Context, str string) string	 {
 	return strings.TrimSpace(str)
 }
 
@@ -74,7 +74,7 @@ func trim(_ *gplt.Runtime, _ *gplt.Context, str string, cutset string) string  {
 // @returns string
 var upperFunc = modules.NewFunc("upper", upper)
 
-func upper(_ *gplt.Runtime, _ *gplt.Context, str string) string  {
+func upper(_ *gplt.Runtime, _ *gplt.Context, str string) string	 {
 	return strings.ToUpper(str)
 }
 
@@ -84,7 +84,7 @@ func upper(_ *gplt.Runtime, _ *gplt.Context, str string) string  {
 // @returns string
 var lowerFunc = modules.NewFunc("lower", lower)
 
-func lower(_ *gplt.Runtime, _ *gplt.Context, str string) string  {
+func lower(_ *gplt.Runtime, _ *gplt.Context, str string) string	 {
 	return strings.ToLower(str)
 }
 
@@ -138,7 +138,7 @@ func hasSuffix(_ *gplt.Runtime, _ *gplt.Context, str string, suffix string) bool
 // @returns bool
 var isEmptyFunc = modules.NewFunc("isEmpty", isEmpty)
 
-func isEmpty(_ *gplt.Runtime, _ *gplt.Context, str string) bool  {
+func isEmpty(_ *gplt.Runtime, _ *gplt.Context, str string) bool	 {
 	return str == ""
 }
 
@@ -171,7 +171,7 @@ func split(_ *gplt.Runtime, _ *gplt.Context, str string, sep string) []string  {
 // @returns string
 var afterFunc = modules.NewFunc("after", after)
 
-func after(_ *gplt.Runtime, _ *gplt.Context, str string, sub string) string  {
+func after(_ *gplt.Runtime, _ *gplt.Context, str string, sub string) string	 {
 	_, a, found := strings.Cut(str, sub)
 	if !found {
 		return str
@@ -232,7 +232,7 @@ func beforeLast(_ *gplt.Runtime, _ *gplt.Context, str string, sub string) string
 // @returns string
 var betweenFunc = modules.NewFunc("between", between)
 
-func between(_ *gplt.Runtime, _ *gplt.Context, str string, startSub, endSub string) string  {
+func between(_ *gplt.Runtime, _ *gplt.Context, str string, startSub, endSub string) string	{
 	after, okAfter := strings.CutPrefix(str, startSub)
 
 	if !okAfter {
@@ -313,7 +313,7 @@ func joinVariadic(_ *gplt.Runtime, _ *gplt.Context, sep string, args ...any) str
 // @returns string
 var repeatFunc = modules.NewFunc("repeat", repeat)
 
-func repeat(_ *gplt.Runtime, _ *gplt.Context, str string, count int) string  {
+func repeat(_ *gplt.Runtime, _ *gplt.Context, str string, count int) string	 {
 	return strings.Repeat(str, count)
 }
 
@@ -347,6 +347,6 @@ func concatVariadic(_ *gplt.Runtime, _ *gplt.Context, args ...any) string {
 
 var indexOfFunc = modules.NewFunc("indexOf", indexOf)
 
-func indexOf(_ *gplt.Runtime, _ *gplt.Context, str string, sub string) int  {
+func indexOf(_ *gplt.Runtime, _ *gplt.Context, str string, sub string) int	{
 	return strings.Index(str, sub)
 }

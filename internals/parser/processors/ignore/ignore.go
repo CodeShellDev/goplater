@@ -11,7 +11,7 @@ import (
 
 const (
 	IgnoreStartMarker = "GOPLATER_IGNORE"
-	IgnoreEndMarker   = "GOPLATER_ENDIGNORE"
+	IgnoreEndMarker	  = "GOPLATER_ENDIGNORE"
 )
 
 type IgnoreProcessor struct{}

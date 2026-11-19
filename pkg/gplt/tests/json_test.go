@@ -44,7 +44,7 @@ func TestJSONDecode(t *testing.T) {
 	trt.Equal(t, "array", []any{float64(1), float64(2), float64(3)})
 	trt.Equal(t, "object", map[string]any{
 		"name": "Alice",
-		"age":  float64(30),
+		"age":	float64(30),
 	})
 	trt.Equal(t, "null", nil)
 }

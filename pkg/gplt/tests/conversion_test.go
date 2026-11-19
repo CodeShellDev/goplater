@@ -96,9 +96,9 @@ func TestToBytes(t *testing.T) {
 
 func TestToInt(t *testing.T) {
 	tests := []struct {
-		name    string
-		input   string
-		want    int
+		name	string
+		input	string
+		want	int
 		wantErr bool
 	}{
 		{
@@ -117,18 +117,18 @@ func TestToInt(t *testing.T) {
 			want:  0,
 		},
 		{
-			name:    "decimal",
-			input:   "3.14",
+			name:	 "decimal",
+			input:	 "3.14",
 			wantErr: true,
 		},
 		{
-			name:    "invalid string",
-			input:   "hello",
+			name:	 "invalid string",
+			input:	 "hello",
 			wantErr: true,
 		},
 		{
-			name:    "empty string",
-			input:   "",
+			name:	 "empty string",
+			input:	 "",
 			wantErr: true,
 		},
 	}
@@ -151,9 +151,9 @@ func TestToInt(t *testing.T) {
 
 func TestToFloat64(t *testing.T) {
 	tests := []struct {
-		name    string
-		input   string
-		want    float64
+		name	string
+		input	string
+		want	float64
 		wantErr bool
 	}{
 		{
@@ -177,13 +177,13 @@ func TestToFloat64(t *testing.T) {
 			want:  150,
 		},
 		{
-			name:    "invalid string",
-			input:   "hello",
+			name:	 "invalid string",
+			input:	 "hello",
 			wantErr: true,
 		},
 		{
-			name:    "empty string",
-			input:   "",
+			name:	 "empty string",
+			input:	 "",
 			wantErr: true,
 		},
 	}
@@ -206,9 +206,9 @@ func TestToFloat64(t *testing.T) {
 
 func TestToFloat32(t *testing.T) {
 	tests := []struct {
-		name    string
-		input   string
-		want    float32
+		name	string
+		input	string
+		want	float32
 		wantErr bool
 	}{
 		{
@@ -232,13 +232,13 @@ func TestToFloat32(t *testing.T) {
 			want:  150,
 		},
 		{
-			name:    "invalid string",
-			input:   "hello",
+			name:	 "invalid string",
+			input:	 "hello",
 			wantErr: true,
 		},
 		{
-			name:    "empty string",
-			input:   "",
+			name:	 "empty string",
+			input:	 "",
 			wantErr: true,
 		},
 	}
@@ -261,9 +261,9 @@ func TestToFloat32(t *testing.T) {
 
 func TestToBool(t *testing.T) {
 	tests := []struct {
-		name    string
-		input   string
-		want    bool
+		name	string
+		input	string
+		want	bool
 		wantErr bool
 	}{
 		{
@@ -297,13 +297,13 @@ func TestToBool(t *testing.T) {
 			want:  false,
 		},
 		{
-			name:    "invalid string",
-			input:   "yes",
+			name:	 "invalid string",
+			input:	 "yes",
 			wantErr: true,
 		},
 		{
-			name:    "empty string",
-			input:   "",
+			name:	 "empty string",
+			input:	 "",
 			wantErr: true,
 		},
 	}

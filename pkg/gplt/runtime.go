@@ -15,11 +15,11 @@ import (
 )
 
 type Runtime struct {
-	engine        *Engine
+	engine		  *Engine
 	engineOptions EngineOptions
-	store         map[string]StoreContainer
-	registry      *ModuleRegistry
-	signatures    map[string][]string
+	store		  map[string]StoreContainer
+	registry	  *ModuleRegistry
+	signatures	  map[string][]string
 }
 
 type StoreContainer interface {

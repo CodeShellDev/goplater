@@ -8,10 +8,10 @@ import (
 	"github.com/codeshelldev/goplater/utils/fsutils"
 )
 var (
-	ErrDirToFile      	= errors.New("directory source needs directory output")
-	ErrOutsideRoot    	= errors.New("source is outside root")
-	ErrNoSharedParent 	= errors.New("source and output share no parent, use flatten or set root")
-	ErrEmptyRoot      	= errors.New("root is empty")
+	ErrDirToFile		= errors.New("directory source needs directory output")
+	ErrOutsideRoot		= errors.New("source is outside root")
+	ErrNoSharedParent	= errors.New("source and output share no parent, use flatten or set root")
+	ErrEmptyRoot		= errors.New("root is empty")
 )
 
 func hasTrailingSep(p string) bool {

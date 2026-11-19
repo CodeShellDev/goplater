@@ -10,8 +10,8 @@ import (
 )
 
 type Module struct {
-	funcs 	map[string]Func
-	id 		string
+	funcs	map[string]Func
+	id		string
 }
 
 func NewModule(funcs ...Func) Module {
@@ -39,18 +39,18 @@ type Func struct {
 
 type entry struct {
 	handlerFunc reflect.Value
-	typ      	reflect.Type
-	inputs    	[]reflect.Type
-	variadic 	bool
-	outputLen 	int
-	hasErr   	bool
+	typ			reflect.Type
+	inputs		[]reflect.Type
+	variadic	bool
+	outputLen	int
+	hasErr		bool
 }
 
 var errType = reflect.TypeFor[error]()
 
 func NewFunc(name string, handlers ...any) Func {
 	fn := Func{
-		Name:     name,
+		Name:	  name,
 		handlers: make([]*entry, 0, len(handlers)),
 	}
 
@@ -207,7 +207,7 @@ func (fn Func) noMatch(args []any) error {
 		available = append(available, e.typ.String())
 	}
 
-	return fmt.Errorf("%s(%s): no match; have:\n%s", fn.Name, strings.Join(got, ", "), strings.Join(available, "\n  "))
+	return fmt.Errorf("%s(%s): no match; have:\n%s", fn.Name, strings.Join(got, ", "), strings.Join(available, "\n	"))
 }
 
 // return param at index (last one if variadic)
