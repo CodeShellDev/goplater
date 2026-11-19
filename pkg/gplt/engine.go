@@ -56,6 +56,6 @@ func (e *Engine) NewRuntime(options EngineOptions) *Runtime {
 	return &Runtime{engine: e, engineOptions: options, store: map[string]StoreContainer{}}
 }
 
-func (e *Engine) Execute(name, body string, data any, options EngineOptions, ctx *Context) (string, error) {
+func (e *Engine) Execute(name, body string, data any, options EngineOptions, ctx *Context) (string, *template.Template, error) {
 	return e.NewRuntime(options).Render(name, body, data, ctx)
 }

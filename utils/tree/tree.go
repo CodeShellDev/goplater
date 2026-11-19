@@ -63,6 +63,7 @@ type Node struct {
 	children              []*Node
 	Source, Output        string
 	Status                Status
+	Data					string
 	Err                   error
 	StartedAt, FinishedAt time.Time
 }
@@ -299,17 +300,30 @@ func (n *Node) Skip() {
 	n.SetStatus(Skipped)
 }
 
-func (n *Node) Fail(err error) {
-	if n != nil && n.tree != nil {
-		n.tree.setStatus(n, Failed, err)
+func (n *Node) Fail(err error, data ...string) {
+	if n == nil || n.tree == nil {
+		return
 	}
+
+	var details string
+	if len(data) > 0 {
+		details = data[0]
+	}
+
+	n.tree.setStatus(n, Failed, err, details)
 }
 
-func (t *Tree) setStatus(n *Node, s Status, err error) {
+func (t *Tree) setStatus(n *Node, s Status, err error, data ...string) {
 	t.mu.Lock()
 	defer t.mu.Unlock()
 
 	n.Status, n.Err = s, err
+	n.Data = ""
+
+	if len(data) > 0 {
+		n.Data = data[0]
+	}
+
 	now := time.Now()
 
 	switch s {
@@ -338,24 +352,31 @@ func (t *Tree) renderLocked() {
 }
 
 func (t *Tree) writeNode(b *strings.Builder, n *Node, ancestors []bool, last, root bool) {
+	var prefix string
+
 	if root {
 		b.WriteString(n.Source)
 		b.WriteByte('\n')
 	} else {
+		var p strings.Builder
+
 		for _, hasNext := range ancestors {
 			if hasNext {
-				b.WriteString(t.opts.Symbols.Vertical)
+				p.WriteString(t.opts.Symbols.Vertical)
 			} else {
-				b.WriteString("    ")
+				p.WriteString("    ")
 			}
 		}
 
 		if last {
-			b.WriteString(t.opts.Symbols.Last)
+			p.WriteString(t.opts.Symbols.Last)
 		} else {
-			b.WriteString(t.opts.Symbols.Branch)
+			p.WriteString(t.opts.Symbols.Branch)
 		}
 
+		prefix = p.String()
+
+		b.WriteString(prefix)
 		b.WriteString(t.statusGlyph(n.Status))
 		b.WriteByte(' ')
 		b.WriteString(n.Source)
@@ -370,6 +391,29 @@ func (t *Tree) writeNode(b *strings.Builder, n *Node, ancestors []bool, last, ro
 		}
 
 		b.WriteByte('\n')
+
+		// separate data lines (optional)
+		if n.Data != "" {
+			lines := strings.Split(strings.TrimRight(n.Data, "\n"), "\n")
+
+			continuation := strings.Builder{}
+
+			for _, hasNext := range ancestors {
+				if hasNext {
+					continuation.WriteString(t.opts.Symbols.Vertical)
+				} else {
+					continuation.WriteString("    ")
+				}
+			}
+
+			continuation.WriteString("    ")
+
+			for _, line := range lines {
+				b.WriteString(continuation.String())
+				b.WriteString(line)
+				b.WriteByte('\n')
+			}
+		}
 	}
 
 	next := ancestors
@@ -378,7 +422,7 @@ func (t *Tree) writeNode(b *strings.Builder, n *Node, ancestors []bool, last, ro
 	}
 
 	for i, child := range n.children {
-		t.writeNode(b, child, next, i == len(n.children) - 1, false)
+		t.writeNode(b, child, next, i == len(n.children)-1, false)
 	}
 }
 

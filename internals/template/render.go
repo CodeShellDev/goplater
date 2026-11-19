@@ -6,6 +6,7 @@ import (
 	"github.com/codeshelldev/goplater/pkg/gplt"
 	"github.com/codeshelldev/goplater/pkg/gplt/collections"
 	"github.com/codeshelldev/goplater/pkg/gplt/resolvers"
+	"github.com/codeshelldev/goplater/utils/tmplerrors"
 )
 
 func (t *Templater) Render(content string, ctx *context.TemplateContext) (string, error) {
@@ -20,7 +21,7 @@ func templateContent(content string, ctx *context.TemplateContext) (string, erro
 	return tmplStr, err
 }
 
-func templateStr(str string, tmplContext *context.TemplateContext) (string, error) {
+func templateStr(input string, tmplContext *context.TemplateContext) (string, error) {
 	e := gplt.NewEngine()
 
 	e.Use(funcs.Module)
@@ -38,9 +39,17 @@ func templateStr(str string, tmplContext *context.TemplateContext) (string, erro
 	ctx := &gplt.Context{}
 	ctx.Set(context.TemplateContextKey, tmplContext)
 
-	return e.Execute(tmplContext.Path, str, nil, gplt.EngineOptions{
+	output, t, err := e.Execute(tmplContext.Path, input, nil, gplt.EngineOptions{
 		Delims: DELIMS,
 		ParseFunc: parseFunc(tmplContext),
 		ProcessFunc: transformFunc(tmplContext),
 	}, ctx)
+
+	tmplErr, ok := tmplerrors.Parse(tmplerrors.ParsedTemplate{Template: t, Source: input}, err)
+
+	if ok {
+		err = tmplErr
+	}
+
+	return output, err
 }

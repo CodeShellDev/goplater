@@ -1,9 +1,13 @@
 package cmd
 
 import (
+	"errors"
+	"fmt"
 	"os"
 
+	"github.com/codeshelldev/goplater/utils/pretty"
 	"github.com/codeshelldev/goplater/utils/printer"
+	"github.com/codeshelldev/goplater/utils/tmplerrors"
 	"github.com/spf13/cobra"
 )
 
@@ -19,7 +23,16 @@ func Execute() {
 	
 	err := rootCmd.Execute()
 	if err != nil {
-		printer.Error(printer.FormatError(err))
+		tmplErr, ok := errors.AsType[tmplerrors.TemplateError](err)
+		
+		if ok {
+			printer.Error(tmplErr.CleanContext() + "\n" + tmplErr.ErrorSnippet(pretty.ColorsEnabled(os.Stdout, false)))
+		} else {
+			printer.Error(err.Error())
+		}
+
+		fmt.Println()
+
 		os.Exit(1)
 	}
 }

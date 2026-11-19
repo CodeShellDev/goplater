@@ -205,16 +205,16 @@ func (rt *Runtime) Params(name string) ([]string, bool) {
 
 // Render runs gplt engine on a template body with optional data and context.
 // Be sure to create a new runtime for every Render(), a runtime is expected to only be a single-use object
-func (rt *Runtime) Render(name, body string, data any, ctx *Context) (string, error) {
+func (rt *Runtime) Render(name, body string, data any, ctx *Context) (string, *template.Template, error) {
 	t, err := rt.PrepareRender(name, body, data, ctx)
 	
 	if err != nil {
-		return "", err
+		return "", nil, err
 	}
 
 	sigs, err := ExtractSignatures(t, "")
 	if err != nil {
-		return "", err
+		return "", nil, err
 	}
 	rt.signatures = sigs
 
@@ -222,7 +222,7 @@ func (rt *Runtime) Render(name, body string, data any, ctx *Context) (string, er
 
 	var buf bytes.Buffer
 	err = t.Execute(&buf, data)
-	return buf.String(), err
+	return buf.String(), t, err
 }
 
 func (rt *Runtime) PrepareRender(name, body string, data any, ctx *Context) (*template.Template, error) {

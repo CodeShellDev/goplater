@@ -50,8 +50,8 @@ var UnicodeSymbols = Symbols{
 var ASCIISymbols = Symbols{
 	Success:  "OK",
 	Error:    "ERROR",
-	Warning:  "!",
-	Info:     "i",
+	Warning:  "WARN",
+	Info:     "INFO",
 	Pending:  "...",
 	Branch:   "|-- ",
 	Last:     "`-- ",

@@ -14,8 +14,6 @@ type Printer struct {
 	Err        io.Writer
 	OutColors  bool
 	ErrColors  bool
-	OutSymbols pretty.Symbols
-	ErrSymbols pretty.Symbols
 }
 
 var Default = New()
@@ -37,8 +35,6 @@ func NewWithWriters(out, errOut io.Writer) *Printer {
 		Err:        errOut,
 		OutColors:  pretty.ColorsEnabled(out, false),
 		ErrColors:  pretty.ColorsEnabled(errOut, false),
-		OutSymbols: pretty.SymbolsFor(out),
-		ErrSymbols: pretty.SymbolsFor(errOut),
 	}
 }
 
@@ -50,38 +46,23 @@ func SetDefault(p *Printer) {
 }
 
 func (p *Printer) Info(args ...any) {
-	p.write(p.Out, pretty.Info(
-		p.SymbolsMessage(p.OutSymbols.Info, args...),
-		p.OutColors,
-	))
+	p.write(p.Out, fmt.Sprintf("%s %s", pretty.Info(pretty.ASCIISymbols.Info, p.OutColors), formatMessage(args...)))
 }
 
 func (p *Printer) Success(args ...any) {
-	p.write(p.Out, pretty.Success(
-		p.SymbolsMessage(p.OutSymbols.Success, args...),
-		p.OutColors,
-	))
+	p.write(p.Out, fmt.Sprintf("%s %s", pretty.Success(pretty.ASCIISymbols.Success, p.OutColors), formatMessage(args...)))
 }
 
 func (p *Printer) Warn(args ...any) {
-	p.write(p.Err, pretty.Warning(
-		p.SymbolsMessage(p.ErrSymbols.Warning, args...),
-		p.ErrColors,
-	))
+	p.write(p.Err, fmt.Sprintf("%s %s", pretty.Warning(pretty.ASCIISymbols.Warning, p.ErrColors), formatMessage(args...)))
 }
 
 func (p *Printer) Error(args ...any) {
-	p.write(p.Err, pretty.Error(
-		p.SymbolsMessage(p.ErrSymbols.Error, args...),
-		p.ErrColors,
-	))
+	p.write(p.Err, fmt.Sprintf("%s %s", pretty.Error(pretty.ASCIISymbols.Error, p.ErrColors), formatMessage(args...)))
 }
 
 func (p *Printer) Debug(args ...any) {
-	p.write(p.Err, pretty.Muted(
-		p.SymbolsMessage("DEBUG", args...),
-		p.ErrColors,
-	))
+	p.write(p.Out, fmt.Sprintf("%s %s", pretty.Muted("DEBUG", p.OutColors), formatMessage(args...)))
 }
 
 func (p *Printer) Infof(format string, args ...any) {
@@ -104,12 +85,9 @@ func (p *Printer) Debugf(format string, args ...any) {
 	p.Debug(fmt.Sprintf(format, args...))
 }
 
-func (p *Printer) SymbolsMessage(symbol string, args ...any) string {
+func formatMessage(args ...any) string {
 	message := strings.TrimSuffix(fmt.Sprintln(args...), "\n")
-	if symbol == "" {
-		return message
-	}
-	return symbol + " " + message
+	return message
 }
 
 func (p *Printer) Blank() {
@@ -159,30 +137,6 @@ func Debugf(format string, args ...any) {
 
 func Blank() {
 	Default.Blank()
-}
-
-func FormatError(err error) string {
-	return FormatErrorWithSymbols(err, pretty.DefaultSymbols())
-}
-
-func FormatErrorWithSymbols(err error, symbols pretty.Symbols) string {
-	lines := strings.Split(err.Error(), ": ")
-
-	var b strings.Builder
-
-	for i, line := range lines {
-		if i == 0 {
-			b.WriteString(line)
-			continue
-		}
-
-		b.WriteByte('\n')
-		b.WriteString(strings.Repeat("  ", i))
-		b.WriteString(symbols.Last)
-		b.WriteString(line)
-	}
-
-	return b.String()
 }
 
 func (p *Printer) write(w io.Writer, message string) {

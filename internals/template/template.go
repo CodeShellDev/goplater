@@ -1,6 +1,7 @@
 package template
 
 import (
+	"errors"
 	"fmt"
 	"io/fs"
 	"os"
@@ -8,6 +9,8 @@ import (
 
 	"github.com/codeshelldev/goplater/internals/template/context"
 	"github.com/codeshelldev/goplater/utils/fsutils"
+	"github.com/codeshelldev/goplater/utils/pretty"
+	"github.com/codeshelldev/goplater/utils/tmplerrors"
 	"github.com/codeshelldev/goplater/utils/tree"
 )
 
@@ -29,6 +32,8 @@ func run(ctx *context.TemplateContext) error {
 
 	if isDir {
 		t := tree.NewTree(os.Stdout, ctx.Path)
+
+		t.Start()
 
 		err := filepath.WalkDir(ctx.Path, func(path string, d fs.DirEntry, err error) error {
 			if err != nil {
@@ -70,9 +75,17 @@ func run(ctx *context.TemplateContext) error {
 			file := t.Add(relPath)
 
 			err = handleFile(&newContext)
-
 			if err != nil {
-				file.Fail(err)
+				tmplErr, ok := errors.AsType[tmplerrors.TemplateError](err)
+		
+				if ok {
+					color := pretty.ColorsEnabled(os.Stdout, false)
+					file.Fail(errors.New(tmplErr.CleanContext()), tmplErr.ErrorSnippet(color))
+				} else {
+					file.Fail(err)
+				}
+
+				fmt.Println()
 
 				if !ctx.Options.IgnoreErrors {
 					os.Exit(1)
@@ -96,7 +109,6 @@ func run(ctx *context.TemplateContext) error {
 			return nil
 		})
 
-		t.Start()
 		t.Close()
 
 		// should have already errored
