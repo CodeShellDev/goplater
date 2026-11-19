@@ -49,7 +49,7 @@
 </div>
 
 <p align="center">
-    <img width="256" height="256" alt="Goplater Logo" src="https://github.com/CodeShellDev/goplater/raw/refs/heads/main/images/terminal.svg">
+    <img width="1024" height="512" alt="Goplater Logo" src="https://github.com/CodeShellDev/goplater/raw/refs/heads/main/images/terminal.svg">
 </p>
 
 ## See it in action
