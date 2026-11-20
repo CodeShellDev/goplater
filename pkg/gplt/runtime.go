@@ -223,7 +223,7 @@ func (rt *Runtime) Render(name, body string, data any, ctx *Context) (string, er
 	rt.registry = NewModuleRegistry(t, body)
 
 	var buf bytes.Buffer
-	rt.Execute(t, body, &buf, data)
+	err = rt.Execute(t, body, &buf, data)
 	
 	return buf.String(), err
 }
