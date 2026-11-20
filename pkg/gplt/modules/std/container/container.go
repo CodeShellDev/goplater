@@ -71,7 +71,6 @@ func delete(_ *gplt.Runtime, _ *gplt.Context, container, key any) (any, error) {
 // @param container map|slice
 // @param key any
 // @param value any
-// @returns any
 // @returns error
 // 
 // @example
