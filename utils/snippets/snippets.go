@@ -78,7 +78,7 @@ func BuildSnippetPointer(snippet string, ptr SnippetPointer) SnippetLines {
 
 	sourceLine := lines[lineIndex].Content
 
-	column := ptr.Column + 1
+	column := ptr.Column
 	length := ptr.Length
 
 	// entire line fallback
@@ -96,10 +96,11 @@ func BuildSnippetPointer(snippet string, ptr SnippetPointer) SnippetLines {
 		length = 1
 	}
 
-	lineNumberWidth := countDigits(ptr.Start + len(lines))
+	maxLine := ptr.Start + len(lines) - 1
+	lineNumberWidth := countDigits(maxLine)
 	gutterWidth := lineNumberWidth + 3 // " | "
 
-	padding := strings.Repeat(" ", gutterWidth + column - 1)
+	padding := strings.Repeat(" ", gutterWidth + column)
 
 	pointerLine := padding + strings.Repeat("^", length)
 
