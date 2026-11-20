@@ -144,9 +144,9 @@ func isEmpty(_ *gplt.Runtime, _ *gplt.Context, str string) bool	 {
 
 // Replaces all occurences of old with new.
 //
+// @param str string
 // @param old string
 // @param new string
-// @param str string
 // @returns string
 var replaceFunc = modules.NewFunc("replace", replace)
 
