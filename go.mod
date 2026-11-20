@@ -3,8 +3,8 @@ module github.com/codeshelldev/goplater
 go 1.27.3
 
 require (
-	github.com/codeshelldev/goplater/pkg/gplt v0.3.3
-	github.com/codeshelldev/goplater/pkg/gplt/collections v0.2.1
+	github.com/codeshelldev/goplater/pkg/gplt v0.3.5
+	github.com/codeshelldev/goplater/pkg/gplt/collections v0.2.2
 	github.com/codeshelldev/goplater/pkg/transformer v0.1.0
 	github.com/mattn/go-runewidth v0.0.31
 	github.com/spf13/cobra v1.10.2
@@ -13,8 +13,8 @@ require (
 require (
 	github.com/PuerkitoBio/goquery v1.14.0 // indirect
 	github.com/andybalholm/cascadia v1.3.5 // indirect
-	github.com/clipperhouse/uax29/v2 v2.2.0 // indirect
-	github.com/codeshelldev/goplater/pkg/gplt/modules/ext/html v0.1.2 // indirect
+	github.com/clipperhouse/uax29/v2 v2.7.0 // indirect
+	github.com/codeshelldev/goplater/pkg/gplt/modules/ext/html v0.1.3 // indirect
 	github.com/codeshelldev/goplater/pkg/gplt/modules/ext/markdown v0.1.2 // indirect
 	github.com/codeshelldev/goplater/pkg/gplt/modules/ext/yaml v0.1.2 // indirect
 	github.com/google/uuid v1.6.0 // indirect
