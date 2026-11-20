@@ -10,6 +10,7 @@ import (
 	"github.com/codeshelldev/goplater/pkg/gplt/modules/std/conversion"
 	"github.com/codeshelldev/goplater/pkg/gplt/modules/std/debug"
 	"github.com/codeshelldev/goplater/pkg/gplt/modules/std/encoding"
+	"github.com/codeshelldev/goplater/pkg/gplt/modules/std/hash"
 	"github.com/codeshelldev/goplater/pkg/gplt/modules/std/http"
 	"github.com/codeshelldev/goplater/pkg/gplt/modules/std/json"
 	"github.com/codeshelldev/goplater/pkg/gplt/modules/std/math"
@@ -20,6 +21,7 @@ import (
 
 var Safe = []modules.Module{
 	encoding.Module,
+	hash.Module,
 	container.Module,
 	conversion.Module,
 	html.Module,
