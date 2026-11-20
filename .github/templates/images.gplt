@@ -23,7 +23,7 @@
     +{{ if call "cacheHit" .path .source }}
     +{{ end }}
 
-    +{{ $svg := call "s.generate" .source .opt }}
+    +{{ $svg := call "terminal.generate" .source .opt }}
 
     +{{ call "generateImage" .path $svg .source }}
 +{{ end }}
