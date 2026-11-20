@@ -1,0 +1,29 @@
++{{ define "cacheHit(path, source)" }}
+	+{{ if not (isFile .path) }}
+		+{{ return false }}
+	+{{ end }}
+
+	+{{ $content := readRaw .path }}
+	+{{ if not $content }}
+		+{{ return false }}
+	+{{ end }}
+
+	+{{ $key := hash .source }}
+	+{{ return (contains $content (concat "<!-- goplater-cache:" $key " -->")) }}
++{{ end }}
+
++{{ define "generateImage(path, svg, source)" }}
+	+{{ $key := hash .source }}
+	+{{ $image := concat "<!-- goplater-cache:" $key " -->\n" .svg }}
+	+{{ write .path $image }}
++{{ end }}
+
++{{ define "generateTerminal(path, source, opt)" }}
+	+{{ import "terminal" "./terminal" }}
+    +{{ if call "cacheHit" .path .source }}
+    +{{ end }}
+
+    +{{ $svg := call "s.generate" .source .opt }}
+
+    +{{ call "generateImage" .path $svg .source }}
++{{ end }}

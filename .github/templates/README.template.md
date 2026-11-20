@@ -6,6 +6,8 @@
 +{{ import "commands" "./commands" }}
 +{{ import "contents" "./contents" }}
 +{{ import "composer" "./composer" }}
++{{ import "images" "./images" }}
++{{ import "terminal" "./terminal" }}
 
 # library commands
 +{{ $cmds := call "commands.renderCommandDocs" }}
@@ -13,7 +15,7 @@
 -->
 
 <p align="center">
-    <img width="256" height="256" alt="Goplater Logo" src="https://github.com/CodeShellDev/goplater/raw/refs/heads/main/images/goplater.png">
+    <img width="256" height="256" alt="Goplater Logo" src="/images/goplater.png">
 </p>
 
 <h1 align="center">Goplater</h1>
@@ -50,8 +52,22 @@
 
 ## See it in action
 
+<!-- prettier-ignore -->
++{{- $showcaseSvgSource := `~/Welcome-To-Goplater
+[fg=gray]├──[/] [b,fg=green]✓[/] Build.md → Build.md
+[fg=gray]├──[/] [b,fg=green]✓[/] Create.md → Create.md
+[fg=gray]├──[/] [b,fg=green]✓[/] Goplater.md → Goplater.md
+[fg=gray]└──[/] [b,fg=red]✗[/] Test.md (~/Welcome-To-Goplater/Test.md:1)
+    [fg=gray]1[/] | [fg=cyan]+{{ if $user }}[/]
+        [fg=red]^^^^^^^^^^^^^^^[/]
+        [fg=red]undefined variable "$user"[/]
+    [fg=gray]2[/] |     [fg=cyan]Hello, +{{ $user.name }}[/]`
+-}}
+
++{{- call "images.generateTerminal" "~/images/terminal.svg" $showcaseSvgSource }}
+
 <p align="center">
-    <img width="1024" height="512" alt="Goplater Logo" src="https://github.com/CodeShellDev/goplater/raw/refs/heads/main/images/terminal.svg">
+    <img width="1024" height="512" alt="Goplater Logo" src="./images/terminal.svg">
 </p>
 
 +{{ call "composer.section" "see-it-in-action" }}

@@ -20,6 +20,8 @@ jobs:
     name: Update
     with:
       version: "latest-prerelease"
+      allowed-inputs: images
+      allowed-outputs: images
       path: .github/templates/README.template.md
       output: README.md
       commit-and-push: false
