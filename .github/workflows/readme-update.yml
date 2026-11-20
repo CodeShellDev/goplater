@@ -26,11 +26,11 @@ jobs:
       output: README.md
       commit-and-push: false
       commit-message: "auto: update README.md"
-      branch: auto/update-README.md
-      branch-suffix: ${{ github.run_number }}
-      pr-assignees: codeshelldev
       pr-title: "auto: update README.md"
       pr-labels: goplater
+      pr-assignees: codeshelldev
+      branch: auto/update-README.md
+      branch-suffix: ${{ github.run_number }}
       client-id: ${{ vars.GOPLATER_APP_CLIENT_ID }}
     secrets:
       app_private_key: ${{ secrets.GOPLATER_APP_PRIVATE_KEY }}
