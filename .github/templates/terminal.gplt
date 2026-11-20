@@ -163,7 +163,11 @@
 	+{{ $o := .opts }}
 	+{{ $fs := call "opt" $o "fontSize" 15 }}
 	+{{ $lh := call "opt" $o "lineHeight" 23 }}
-	+{{ $pad := call "opt" $o "padding" 24 }}
+	+{{ $padding := call "opt" $o "padding" (list 24 24 24 24) }}
+	+{{ $padLeft := index $padding 0 }}
+	+{{ $padRight := index $padding 1 }}
+	+{{ $padTop := index $padding 2 }}
+	+{{ $padBottom := index $padding 3 }}
 	+{{ $bar := call "opt" $o "barHeight" 40 }}
 	+{{ $bg := call "opt" $o "bg" "#282a36" }}
 	+{{ $fg := call "opt" $o "fg" "#f8f8f2" }}
@@ -217,9 +221,9 @@
 
 				+{{ if $p }}
 					+{{ $n := len (regexFindAll `(?s).` $p) }}
-					+{{ $top := add $head $pad (mul $li $lh) }}
+					+{{ $top := add $head $padTop (mul $li $lh) }}
 					+{{ $base := add $top (div $lh 2.0) (div $fs 3.0) }}
-					+{{ $x := add $pad (mul $col $cw) }}
+					+{{ $x := add $padLeft (mul $col $cw) }}
 
 					+{{ $c := index $e "fg" }}
 					+{{ if isEmpty $c }}
@@ -261,9 +265,9 @@
 		+{{ end }}
 	+{{ end }}
 
-	+{{ $auto := max (round (add (mul 2 $pad) (mul $maxCols $cw))) (call "opt" $o "minWidth" 480) }}
+	+{{ $auto := max (round (add $padLeft $padRight (mul $maxCols $cw))) (call "opt" $o "minWidth" 480) }}
 	+{{ $width := call "opt" $o "width" $auto }}
-	+{{ $height := add $head (mul 2 $pad) (mul (add $li 1) $lh) }}
+	+{{ $height := add $head $padTop $padBottom (mul (add $li 1) $lh) }}
     +{{ $scaledWidth := mul $width $scaleWidth }}
     +{{ $scaledHeight := mul $height $scaleHeight }}
 

@@ -1,6 +1,7 @@
 package tmplerrors
 
 import (
+	"errors"
 	"fmt"
 	"regexp"
 	"strconv"
@@ -40,8 +41,15 @@ var (
 	)
 )
 
-func WrapTemplateError(tmpl *template.Template, body string, err error) (TemplateError, bool) {
-	return Parse(ParseTemplate(tmpl, body), err)
+func TryWrapTemplateErrorOnce(tmpl *template.Template, body string, err error) (TemplateError, bool) {
+	var existing TemplateError
+
+	// prevent rewrapping
+	if !errors.As(err, &existing) {
+		return Parse(ParseTemplate(tmpl, body), err)
+	}
+	
+	return TemplateError{}, false
 }
 
 func ParseTemplate(tmpl *template.Template, body string) ParsedTemplate {

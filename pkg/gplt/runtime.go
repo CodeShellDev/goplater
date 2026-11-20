@@ -268,14 +268,10 @@ func (rt *Runtime) PrepareRender(name, body string, data any, ctx *Context) (*te
 func (rt *Runtime) Execute(tmpl *template.Template, body string, wr io.Writer, data any) (error) {
 	err := tmpl.Execute(wr, data)
 
-	var existing tmplerrors.TemplateError
+	tmplErr, ok := tmplerrors.TryWrapTemplateErrorOnce(tmpl, body, err)
 
-	if !errors.As(err, &existing) {
-		tmplErr, ok := tmplerrors.WrapTemplateError(tmpl, body, err)
-
-		if ok {
-			return tmplErr
-		}
+	if ok {
+		return tmplErr
 	}
 
 	return err

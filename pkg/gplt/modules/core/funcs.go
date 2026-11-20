@@ -194,7 +194,7 @@ func call(rt *gplt.Runtime, ctx *gplt.Context, name string, args ...any) (any, e
 
 	// the ReturnExitErr exists to make the func stop early
 	if err != nil && !errors.Is(err, ReturnExitErr) {
-		tmplErr, ok := tmplerrors.WrapTemplateError(tmpl, body, err)
+		tmplErr, ok := tmplerrors.TryWrapTemplateErrorOnce(tmpl, body, err)
 
 		if ok {
 			err = tmplErr
