@@ -67,7 +67,7 @@
 +{{- call "images.generateTerminal" "~/images/terminal.svg" $showcaseSvgSource }}
 
 <p align="center">
-    <img width="1024" height="512" alt="Goplater Logo" src="./images/terminal.svg">
+    <img width="768" height="384" alt="Goplater Logo" src="./images/terminal.svg">
 </p>
 
 +{{ call "composer.section" "see-it-in-action" }}
