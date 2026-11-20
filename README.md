@@ -7,13 +7,15 @@
 
 
 
+
+
 # library commands
 
 
 -->
 
 <p align="center">
-    <img width="256" height="256" alt="Goplater Logo" src="https://github.com/CodeShellDev/goplater/raw/refs/heads/main/images/goplater.png">
+    <img width="256" height="256" alt="Goplater Logo" src="./images/goplater.png">
 </p>
 
 <h1 align="center">Goplater</h1>
@@ -49,6 +51,24 @@
 </div>
 
 ## See it in action
+
+<!-- prettier-ignore -->
+	
+    
+    
+
+    
+
+    
+	
+	
+	
+
+
+
+<p align="center">
+    <img width="768" height="384" alt="Goplater Logo" src="./images/terminal.svg">
+</p>
 
 **`TEMPLATE.md`**
 
@@ -91,6 +111,7 @@ Run `npm install my-app`
 - [Standard Library](#standard-library)
 	- [fs](#fs)
 	- [outputto](#outputto)
+	- [funcs](#funcs)
 	- [globals](#globals)
 	- [import](#import)
 	- [return](#return)
@@ -109,6 +130,7 @@ Run `npm install my-app`
 	- [operators](#operators)
 	- [regex](#regex)
 	- [strings](#strings)
+	- [test](#test)
 - [Contributing](#contributing)
 - [Support](#support)
 - [License](#license)
@@ -191,7 +213,7 @@ Define a function in the template and call it:
 <!-- prettier-ignore -->
 ```handlebars
 +{{ define "greet(name)" }}
-    +{{ returnNext (printf "Hello, %s!" .name) }}
+    +{{ return (printf "Hello, %s!" .name) }}
 +{{ end }}
 
 +{{ call "greet" "Gopher" }}
@@ -320,7 +342,7 @@ Arguments are available as <code>.arg</code> in the file being read.</p>
 
 **Example**:
 ```handlebars
-+{{ readArgs "/path/to/file" (sliceCreate "my" "args") }}
++{{ readArgs "/path/to/file" (list "my" "args") }}
 ```
 
 </details>
@@ -589,6 +611,65 @@ Errors if path is not allowed.</p>
 
 
 </td></tr></table>
+<h3><a href="https://github.com/codeshelldev/goplater/blob/main/pkg/gplt/modules/core/funcs.go">funcs</a></h3>
+
+
+<table width="100%">
+<tr><th align="left"><h4><code>call(name string, args []any) (any, throws error)</code></h4></th>
+</tr><tr><td>
+<p>Calls a func by name with args, optionally with a namespace handle.
+Fails if func is not accessible or undefined.
+Result:</p>
+<ul>
+<li><code>return</code> not called (or called with no values): captured template output</li>
+<li><code>return</code> with one value: that value</li>
+<li><code>return</code> with multiple values: a slice of all values</li>
+</ul>
+
+
+<details>
+  <summary>Examples</summary>
+  <br/>
+
+**Example**:
+```handlebars
++{{ define "greet(name)" }}
++{{ echo (printf "Hello %s!" .name) }}
++{{ end }}
+```
+**Output**:
+```
+Hello John!
+```
+
+
+**Example**:
+```handlebars
++{{ define "greet(name)" }}
+Hello +{{ .name }}!
++{{ end }}
+```
+**Output**:
+```
+Hello John!
+```
+
+
+**Example**:
+```handlebars
++{{ define "greet(name)" }}
++{{ return (printf "Hello %s!" .name) }}
++{{ end }}
+```
+**Output**:
+```
+Hello John!
+```
+
+
+</details>
+
+</td></tr></table>
 <h3><a href="https://github.com/codeshelldev/goplater/blob/main/pkg/gplt/modules/core/globals.go">globals</a></h3>
 
 
@@ -684,27 +765,9 @@ The fs resolver is only available as an internal module and does not ship with t
 
 
 <table width="100%">
-<tr><th align="left"><h4><code>return(i int, value any) throws error</code></h4></th>
+<tr><th align="left"><h4><code>return(values []any?)</code></h4></th>
 </tr><tr><td>
-<p>Sets an output value at the given index.</p>
-
-
-</td></tr></table>
-
-
-<table width="100%">
-<tr><th align="left"><h4><code>returnNext(value any) throws error</code></h4></th>
-</tr><tr><td>
-<p>Appends a value to the output.</p>
-
-
-</td></tr></table>
-
-
-<table width="100%">
-<tr><th align="left"><h4><code>returnAll(value []any) throws error</code></h4></th>
-</tr><tr><td>
-<p>Sets the output object as a whole.</p>
+<p>Sets output value(s).</p>
 
 
 <details>
@@ -713,8 +776,8 @@ The fs resolver is only available as an internal module and does not ship with t
 
 **Example**:
 ```handlebars
-+{{ returnAll "1" "2" "3" }}
-+{{ returnAll (sliceCreate "1" "2" "3") }}
++{{ return "a" "b" 1 2 }}
++{{ return (list "3" "4" "5") }}
 ```
 
 </details>
@@ -1033,9 +1096,9 @@ The fs resolver is only available as an internal module and does not ship with t
 
 
 <table width="100%">
-<tr><th align="left"><h4><code>delete(container map[any]any|[]any, key any) (any, throws error)</code></h4></th>
+<tr><th align="left"><h4><code>delete(container map|slice, key any) (any, throws error)</code></h4></th>
 </tr><tr><td>
-<p>Deletes a container entry with the given key.</p>
+<p>Deletes a container entry with the given key (mutates maps, but must return modified slice).</p>
 
 
 <details>
@@ -1044,12 +1107,25 @@ The fs resolver is only available as an internal module and does not ship with t
 
 **Example**:
 ```handlebars
-+{{ $newSlice := delete (sliceCreate "Apple" "Banana") 0 }}
++{{ $slice := list "Apple" "Banana" }}
++{{ $newSlice := delete $slice 0 }}
 +{{ echo $newSlice }}
 ```
 **Output**:
 ```
 [Banana]
+```
+
+
+**Example**:
+```handlebars
++{{ $map := dict "key1" "value1" "key2" "value2" }}
++{{ delete $map "key1" }}
++{{ echo $map }}
+```
+**Output**:
+```
+map[key2:value2]
 ```
 
 
@@ -1059,7 +1135,7 @@ The fs resolver is only available as an internal module and does not ship with t
 
 
 <table width="100%">
-<tr><th align="left"><h4><code>set(container map[any]any|[]any, key any, value any) (any, throws error)</code></h4></th>
+<tr><th align="left"><h4><code>set(container map|slice, key any, value any) throws error</code></h4></th>
 </tr><tr><td>
 <p>Set a container entry value with the given key.</p>
 
@@ -1070,8 +1146,9 @@ The fs resolver is only available as an internal module and does not ship with t
 
 **Example**:
 ```handlebars
-+{{ $newSlice := set (sliceCreate "Apple" "Banana") 0 "Strawberry" }}
-+{{ echo $newSlice }}
++{{ $slice := list "Apple" "Banana" }}
++{{ set $slice 0 "Strawberry" }}
++{{ echo $slice }}
 ```
 **Output**:
 ```
@@ -1085,7 +1162,7 @@ The fs resolver is only available as an internal module and does not ship with t
 
 
 <table width="100%">
-<tr><th align="left"><h4><code>has(container map[any]any|[]any, key any) (bool, throws error)</code></h4></th>
+<tr><th align="left"><h4><code>hasKey(container map|slice, key any) (bool, throws error)</code></h4></th>
 </tr><tr><td>
 <p>Returns if an entry with the given key exists in container.</p>
 
@@ -1096,7 +1173,7 @@ The fs resolver is only available as an internal module and does not ship with t
 
 **Example**:
 ```handlebars
-+{{ if (has (mapCreate "version" "v1") "version") }}
++{{ if (hasKey (list "version" "v1") "version") }}
 Container has "version"!
 +{{ end }}
 ```
@@ -1107,9 +1184,9 @@ Container has "version"!
 
 
 <table width="100%">
-<tr><th align="left"><h4><code>slicePush(container []any, value any) []any</code></h4></th>
+<tr><th align="left"><h4><code>includes(container map|slice, value any) (bool, throws error)</code></h4></th>
 </tr><tr><td>
-<p>Appends a value to a slice.</p>
+<p>Returns if an entry with the given value exists in container.</p>
 
 
 <details>
@@ -1118,8 +1195,30 @@ Container has "version"!
 
 **Example**:
 ```handlebars
-+{{ $newSlice := sliceCreate "Apple" "Banana" }}
-+{{ $newSlice = slicePush $newSlice "Strawberry" }}
++{{ if (includes (list "version" "v1") "v1") }}
+Container includes "v1"!
++{{ end }}
+```
+
+</details>
+
+</td></tr></table>
+
+
+<table width="100%">
+<tr><th align="left"><h4><code>append(container []any, value any) []any</code></h4></th>
+</tr><tr><td>
+<p>Appends a value to a slice (returns a new copy).</p>
+
+
+<details>
+  <summary>Examples</summary>
+  <br/>
+
+**Example**:
+```handlebars
++{{ $slice := list "Apple" "Banana" }}
++{{ $newSlice = append $slice "Strawberry" }}
 +{{ echo $newSlice }}
 ```
 **Output**:
@@ -1134,7 +1233,7 @@ Container has "version"!
 
 
 <table width="100%">
-<tr><th align="left"><h4><code>sliceCreate(values []any) []any</code></h4></th>
+<tr><th align="left"><h4><code>list(values []any) []any</code></h4></th>
 </tr><tr><td>
 <p>Creates a new slice, optionally with values.</p>
 
@@ -1145,8 +1244,8 @@ Container has "version"!
 
 **Example**:
 ```handlebars
-+{{ $newSlice := sliceCreate "Apple" "Banana" }}
-+{{ echo $newSlice }}
++{{ $slice := list "Apple" "Banana" }}
++{{ echo $slice }}
 ```
 **Output**:
 ```
@@ -1160,7 +1259,7 @@ Container has "version"!
 
 
 <table width="100%">
-<tr><th align="left"><h4><code>mapCreate(entries []any) (map[string]any, errors)</code></h4></th>
+<tr><th align="left"><h4><code>dict(entries []any) (map[string]any, errors)</code></h4></th>
 </tr><tr><td>
 <p>Creates a new map, optionally with key value pairs.
 Pairs are constructed one by one, a key followed by the given value.
@@ -1173,8 +1272,8 @@ Currently only supports string keys!</p>
 
 **Example**:
 ```handlebars
-+{{ $newMap := mapCreate "key1" "value1" "key2" "value2" }}
-+{{ echo $newMap }}
++{{ $map := dict "key1" "value1" "key2" "value2" }}
++{{ echo $map }}
 ```
 **Output**:
 ```
@@ -1413,9 +1512,9 @@ Outputs errors as string.</p>
 
 
 <table width="100%">
-<tr><th align="left"><h4><code>round(number int|float64) (int, throws error)</code></h4></th>
+<tr><th align="left"><h4><code>round(number int|float64, digits int?) (int, throws error)</code></h4></th>
 </tr><tr><td>
-<p>Rounds a number to the nearest integer.</p>
+<p>Rounds a number to the specified number of decimal digits (default: 0).</p>
 
 
 </td></tr></table>
@@ -1459,7 +1558,7 @@ Outputs errors as string.</p>
 
 
 <table width="100%">
-<tr><th align="left"><h4><code>mult(numbers [](int|float64)) (int|float64, throws error)</code></h4></th>
+<tr><th align="left"><h4><code>mul(numbers [](int|float64)) (int|float64, throws error)</code></h4></th>
 </tr><tr><td>
 <p>Multiplies numbers together.</p>
 
@@ -1468,7 +1567,7 @@ Outputs errors as string.</p>
 
 
 <table width="100%">
-<tr><th align="left"><h4><code>divd(numbers [](int|float64)) (int|float64, throws error)</code></h4></th>
+<tr><th align="left"><h4><code>div(numbers [](int|float64)) (int|float64, throws error)</code></h4></th>
 </tr><tr><td>
 <p>Divides numbers from each other.</p>
 
@@ -1496,9 +1595,9 @@ Outputs errors as string.</p>
 
 
 <table width="100%">
-<tr><th align="left"><h4><code>regexFind(regex string) ([]string, throws error)</code></h4></th>
+<tr><th align="left"><h4><code>regexFindAll(regex string) ([]string, throws error)</code></h4></th>
 </tr><tr><td>
-<p>Returns all matches against the given regex pattern in a string.</p>
+<p>Returns all (optionally up to n) matches against the given regex pattern in a string.</p>
 
 
 </td></tr></table>
@@ -1523,9 +1622,9 @@ Outputs errors as string.</p>
 
 
 <table width="100%">
-<tr><th align="left"><h4><code>regexReplace(regex string) (string, throws error)</code></h4></th>
+<tr><th align="left"><h4><code>regexReplaceAll(regex string) (string, throws error)</code></h4></th>
 </tr><tr><td>
-<p>Replaces all matches from the given regex pattern in a string with the replaceWith param (which allows using '$1', etc.).</p>
+<p>Replaces all matches from the given regex pattern in a string with new (which for allows using '$1', etc.).</p>
 
 
 </td></tr></table>
@@ -1587,7 +1686,7 @@ Outputs errors as string.</p>
 
 
 <table width="100%">
-<tr><th align="left"><h4><code>startsWith(str string, prefix string) bool</code></h4></th>
+<tr><th align="left"><h4><code>hasPrefix(str string, prefix string) bool</code></h4></th>
 </tr><tr><td>
 <p>Returns whether a string starts with the given prefix.</p>
 
@@ -1596,7 +1695,7 @@ Outputs errors as string.</p>
 
 
 <table width="100%">
-<tr><th align="left"><h4><code>endsWith(str string, suffix string) bool</code></h4></th>
+<tr><th align="left"><h4><code>hasSuffix(str string, suffix string) bool</code></h4></th>
 </tr><tr><td>
 <p>Returns whether a string ends with the given suffix.</p>
 
@@ -1614,9 +1713,9 @@ Outputs errors as string.</p>
 
 
 <table width="100%">
-<tr><th align="left"><h4><code>replace(str string, sub string, replaceWith string) string</code></h4></th>
+<tr><th align="left"><h4><code>replace(str string, old string, new string) string</code></h4></th>
 </tr><tr><td>
-<p>Replaces all occurences of a substring in the given string with the replaceWith param.</p>
+<p>Replaces all occurences of old with new.</p>
 
 
 </td></tr></table>
@@ -1677,7 +1776,7 @@ Outputs errors as string.</p>
 
 
 <table width="100%">
-<tr><th align="left"><h4><code>cutPrefix(str string, sub string) string</code></h4></th>
+<tr><th align="left"><h4><code>trimPrefix(str string, sub string) string</code></h4></th>
 </tr><tr><td>
 <p>Removes a substring at the start of the given string.</p>
 
@@ -1686,7 +1785,7 @@ Outputs errors as string.</p>
 
 
 <table width="100%">
-<tr><th align="left"><h4><code>cutSuffix(str string, sub string) string</code></h4></th>
+<tr><th align="left"><h4><code>trimSuffix(str string, sub string) string</code></h4></th>
 </tr><tr><td>
 <p>Removes a substring at the end of the given string.</p>
 
@@ -1695,7 +1794,7 @@ Outputs errors as string.</p>
 
 
 <table width="100%">
-<tr><th align="left"><h4><code>slice(str string, start int, end int) string</code></h4></th>
+<tr><th align="left"><h4><code>substr(str string, start int, end int) string</code></h4></th>
 </tr><tr><td>
 <p>Slices a string based on start and end index.</p>
 
@@ -1721,6 +1820,25 @@ Outputs errors as string.</p>
 </td></tr></table>
 
 
+<table width="100%">
+<tr><th align="left"><h4><code>concat(strs string) string</code></h4></th>
+</tr><tr><td>
+<p>Concat strings together (join without sep).</p>
+
+
+</td></tr></table>
+<h3><a href="https://github.com/codeshelldev/goplater/blob/main/pkg/gplt/modules/test/test.go">test</a></h3>
+
+
+<table width="100%">
+<tr><th align="left"><h4><code>emit(label string?, value any) throws error</code></h4></th>
+</tr><tr><td>
+<p>Records a value, optionally with a label.</p>
+
+
+</td></tr></table>
+
+
 ## Contributing
 
 Found a bug or just want to change or add something?
@@ -1737,7 +1855,7 @@ This Project is licensed under the [MIT License](./LICENSE).
 
 ## Legal
 
-Logo designed by [@CodeShellDev](https://github.com/CodeShellDev) — All Rights Reserved.
+Logo designed by [@CodeShellDev](https://github.com/CodeShellDev). All rights reserved for original design contributions.
 
 Go gopher mascot originally created by [Renée French](https://instagram.com/reneefrench/),
-used under the [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/) license.
+used and adapted under the [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/) license.
