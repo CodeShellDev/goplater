@@ -30,19 +30,19 @@ func isPathAllowed(path string, allowed []string) bool {
 var readFunc = modules.NewFunc("read", read)
 
 func read(rt *gplt.Runtime, ctx *gplt.Context, path string) (string, error) {
-	str, ctx, err := readHandler(ctx, path)
+	content, ctx, err := readHandler(ctx, path)
 
 	if err != nil {
 		return "", err
 	}
 
-	str, err = rt.GetEngine().Execute("read::" + path, str, nil, rt.GetEngineOptions(), ctx)
+	content, err = rt.GetEngine().Execute("read::" + path, content, nil, rt.GetEngineOptions(), ctx)
 
 	if err != nil {
 		return "", fmt.Errorf("could not template %q: %w", path, err)
 	}
 
-	return str, nil
+	return content, nil
 }
 
 // Reads file (without templating).
@@ -82,7 +82,7 @@ func readRaw(_ *gplt.Runtime, ctx *gplt.Context, path string) (string, error) {
 var readArgsFunc = modules.NewFunc("readArgs", readArgs)
 
 func readArgs(rt *gplt.Runtime, ctx *gplt.Context, path string, args any) (string, error) {
-	str, newContext, err := readHandler(ctx, path)
+	content, newContext, err := readHandler(ctx, path)
 
 	if err != nil {
 		return "", err
@@ -92,13 +92,13 @@ func readArgs(rt *gplt.Runtime, ctx *gplt.Context, path string, args any) (strin
 		"args": args,
 	}
 
-	str, err = rt.GetEngine().Execute("read::" + path, str, data, rt.GetEngineOptions(), newContext)
+	content, err = rt.GetEngine().Execute("read::" + path, content, data, rt.GetEngineOptions(), newContext)
 
 	if err != nil {
 		return "", fmt.Errorf("could not template %q: %w", path, err)
 	}
 
-	return str, nil
+	return content, nil
 }
 
 func readHandler(ctx *gplt.Context, path string) (string, *gplt.Context, error) {

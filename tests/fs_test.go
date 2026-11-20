@@ -115,9 +115,11 @@ func TestRead(t *testing.T) {
 
 	want := "Hello from nested template"
 
-	writeTestFile(t, filepath.Join(source, "hello.txt"), `{{ print ` + strconv.Quote(want) + ` }}`)
+	path := filepath.Join(source, "hello.txt")
 
-	trt := collectFS(t, `{{ read "./hello.txt" }}`, ctx)
+	writeTestFile(t, path, `{{ print ` + strconv.Quote(want) + ` }}`)
+
+	trt := collectFS(t, `{{ read ` + strconv.Quote(path) + ` }}`, ctx)
 
 	if trt.Output != want {
 		t.Fatalf("file templating failed: got %q, want %q", trt.Output, want)

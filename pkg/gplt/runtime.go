@@ -224,7 +224,7 @@ func (rt *Runtime) Render(name, body string, data any, ctx *Context) (string, er
 
 	var buf bytes.Buffer
 	err = rt.Execute(t, body, &buf, data)
-	
+
 	return buf.String(), err
 }
 
@@ -265,9 +265,8 @@ func (rt *Runtime) PrepareRender(name, body string, data any, ctx *Context) (*te
 	return t, nil
 }
 
-func (rt *Runtime) Execute(tmpl *template.Template, body string, wr io.Writer, data any) error {
-	var buf bytes.Buffer
-	err := tmpl.Execute(&buf, data)
+func (rt *Runtime) Execute(tmpl *template.Template, body string, wr io.Writer, data any) (error) {
+	err := tmpl.Execute(wr, data)
 
 	var existing tmplerrors.TemplateError
 
