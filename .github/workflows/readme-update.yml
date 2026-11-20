@@ -19,7 +19,7 @@ jobs:
     uses: codeshelldev/goplater-action/.github/workflows/goplater-bot.yml@main
     name: Update
     with:
-      version: "latest-prerelease"
+      version: latest-prerelease
       allowed-inputs: images
       allowed-outputs: images
       path: .github/templates/README.template.md
