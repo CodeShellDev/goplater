@@ -30,6 +30,7 @@ jobs:
       branch-suffix: ${{ github.run_number }}
       pr-assignees: codeshelldev
       pr-title: "auto: update README.md"
+      pr-labels: goplater
       client-id: ${{ vars.GOPLATER_APP_CLIENT_ID }}
     secrets:
       app_private_key: ${{ secrets.GOPLATER_APP_PRIVATE_KEY }}
