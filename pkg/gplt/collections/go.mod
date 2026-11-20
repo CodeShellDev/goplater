@@ -3,10 +3,10 @@ module github.com/codeshelldev/goplater/pkg/gplt/collections
 go 1.26.0
 
 require (
-	github.com/codeshelldev/goplater/pkg/gplt v0.2.0
-	github.com/codeshelldev/goplater/pkg/gplt/modules/ext/html v0.1.0
-	github.com/codeshelldev/goplater/pkg/gplt/modules/ext/markdown v0.1.0
-	github.com/codeshelldev/goplater/pkg/gplt/modules/ext/yaml v0.1.0
+	github.com/codeshelldev/goplater/pkg/gplt v0.3.0
+	github.com/codeshelldev/goplater/pkg/gplt/modules/ext/html v0.1.1
+	github.com/codeshelldev/goplater/pkg/gplt/modules/ext/markdown v0.1.1
+	github.com/codeshelldev/goplater/pkg/gplt/modules/ext/yaml v0.1.1
 )
 
 require (
