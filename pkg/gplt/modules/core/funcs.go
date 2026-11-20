@@ -159,7 +159,7 @@ func callFn(rt *gplt.Runtime, ctx *gplt.Context, name string, args ...any) (any,
 func call(rt *gplt.Runtime, ctx *gplt.Context, name string, args ...any) (any, error) {
 	scope, _ := ctx.Get(gplt.CurrentTreeKey).(gplt.TreeScope)
 
-	tmpl, raw := rt.GetRegistry().Lookup(scope.Name, name)
+	tmpl, body := rt.GetRegistry().Lookup(scope.Name, name)
 
 	if tmpl == nil {
 		return nil, fmt.Errorf("function %q is not defined or not accessible", name)
@@ -194,7 +194,7 @@ func call(rt *gplt.Runtime, ctx *gplt.Context, name string, args ...any) (any, e
 
 	// the ReturnExitErr exists to make the func stop early
 	if err != nil && !errors.Is(err, ReturnExitErr) {
-		tmplErr, ok := tmplerrors.WrapTemplateError(tmpl, raw, err)
+		tmplErr, ok := tmplerrors.WrapTemplateError(tmpl, body, err)
 
 		if ok {
 			err = tmplErr
