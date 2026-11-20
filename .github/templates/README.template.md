@@ -15,7 +15,7 @@
 -->
 
 <p align="center">
-    <img width="256" height="256" alt="Goplater Logo" src="/images/goplater.png">
+    <img width="256" height="256" alt="Goplater Logo" src="./images/goplater.png">
 </p>
 
 <h1 align="center">Goplater</h1>
