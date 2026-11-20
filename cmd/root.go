@@ -5,9 +5,10 @@ import (
 	"fmt"
 	"os"
 
+	"github.com/codeshelldev/goplater/pkg/gplt/utils/tmplerrors"
 	"github.com/codeshelldev/goplater/utils/pretty"
+	"github.com/codeshelldev/goplater/utils/prettyerrors"
 	"github.com/codeshelldev/goplater/utils/printer"
-	"github.com/codeshelldev/goplater/utils/tmplerrors"
 	"github.com/spf13/cobra"
 )
 
@@ -26,7 +27,8 @@ func Execute() {
 		tmplErr, ok := errors.AsType[tmplerrors.TemplateError](err)
 		
 		if ok {
-			printer.Error(tmplErr.CleanContext() + "\n" + tmplErr.ErrorSnippet(pretty.ColorsEnabled(os.Stdout, false)))
+			prettyErr := prettyerrors.Convert(tmplErr)
+			printer.Error(tmplErr.CleanContext() + "\n" + prettyErr.ErrorSnippet(pretty.ColorsEnabled(os.Stdout, false)))
 		} else {
 			printer.Error(err.Error())
 		}

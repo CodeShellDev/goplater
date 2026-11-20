@@ -6,12 +6,14 @@ import (
 	"encoding/hex"
 	"errors"
 	"fmt"
+	"io"
 	"maps"
 	"strings"
 	"text/template"
 	"text/template/parse"
 
 	"github.com/codeshelldev/goplater/pkg/gplt/modules"
+	"github.com/codeshelldev/goplater/pkg/gplt/utils/tmplerrors"
 )
 
 type Runtime struct {
@@ -98,7 +100,7 @@ func (rt *Runtime) Import(callerScope, path, aliasOverride, expectedHash string,
 		return err
 	}
 
-	t := rt.engine.NewTemplate(":import:" + path, rt.engineOptions.Delims)
+	t := rt.engine.NewTemplate("import::" + resolved.Path, rt.engineOptions.Delims)
 	t.Funcs(funcMap)
 
 	_, err = t.Parse(resolved.Template)
@@ -116,20 +118,20 @@ func (rt *Runtime) Import(callerScope, path, aliasOverride, expectedHash string,
 		return fmt.Errorf("module %q: %w", path, err)
 	}
 
-	rt.registry.Register(path, t, resolved.Trusted, name)
+	rt.registry.Register(path, t, resolved.Template, resolved.Trusted, name)
 	rt.registry.AllowReach(callerScope, path)
 
 	maps.Copy(rt.signatures, sigs)
 	return nil
 }
 
-func validateOnlyDefines(t *template.Template) error {
-	for _, tmpl := range t.Templates() {
-		if tmpl.Name() != t.Name() {
+func validateOnlyDefines(tmpl *template.Template) error {
+	for _, t := range tmpl.Templates() {
+		if t.Name() != tmpl.Name() {
 			continue
 		}
 
-		err := onlyWhitespace(tmpl.Root)
+		err := onlyWhitespace(t.Root)
 		if err != nil {
 			return fmt.Errorf("top-level content outside define blocks: %w", err)
 		}
@@ -205,24 +207,25 @@ func (rt *Runtime) Params(name string) ([]string, bool) {
 
 // Render runs gplt engine on a template body with optional data and context.
 // Be sure to create a new runtime for every Render(), a runtime is expected to only be a single-use object
-func (rt *Runtime) Render(name, body string, data any, ctx *Context) (string, *template.Template, error) {
+func (rt *Runtime) Render(name, body string, data any, ctx *Context) (string, error) {
 	t, err := rt.PrepareRender(name, body, data, ctx)
 	
 	if err != nil {
-		return "", nil, err
+		return "", err
 	}
 
 	sigs, err := ExtractSignatures(t, "")
 	if err != nil {
-		return "", nil, err
+		return "", err
 	}
 	rt.signatures = sigs
 
-	rt.registry = NewModuleRegistry(t)
+	rt.registry = NewModuleRegistry(t, body)
 
 	var buf bytes.Buffer
-	err = t.Execute(&buf, data)
-	return buf.String(), t, err
+	rt.Execute(t, body, &buf, data)
+	
+	return buf.String(), err
 }
 
 func (rt *Runtime) PrepareRender(name, body string, data any, ctx *Context) (*template.Template, error) {
@@ -239,8 +242,8 @@ func (rt *Runtime) PrepareRender(name, body string, data any, ctx *Context) (*te
 	t.Funcs(funcMap)
 
 	if rt.engineOptions.ParseFunc == nil {
-		rt.engineOptions.ParseFunc = func(s string, t *template.Template) (error) {
-			_, err := t.Parse(s)
+		rt.engineOptions.ParseFunc = func(s string, tmpl *template.Template) (error) {
+			_, err := tmpl.Parse(s)
 			return err
 		}
 	}
@@ -260,4 +263,21 @@ func (rt *Runtime) PrepareRender(name, body string, data any, ctx *Context) (*te
 	}
 
 	return t, nil
+}
+
+func (rt *Runtime) Execute(tmpl *template.Template, body string, wr io.Writer, data any) error {
+	var buf bytes.Buffer
+	err := tmpl.Execute(&buf, data)
+
+	var existing tmplerrors.TemplateError
+
+	if !errors.As(err, &existing) {
+		tmplErr, ok := tmplerrors.WrapTemplateError(tmpl, body, err)
+
+		if ok {
+			return tmplErr
+		}
+	}
+
+	return err
 }

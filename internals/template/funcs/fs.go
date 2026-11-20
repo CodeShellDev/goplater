@@ -36,7 +36,7 @@ func read(rt *gplt.Runtime, ctx *gplt.Context, path string) (string, error) {
 		return "", err
 	}
 
-	str, _, err = rt.GetEngine().Execute(":read:" + path, str, nil, rt.GetEngineOptions(), ctx)
+	str, err = rt.GetEngine().Execute("read::" + path, str, nil, rt.GetEngineOptions(), ctx)
 
 	if err != nil {
 		return "", fmt.Errorf("could not template %q: %w", path, err)
@@ -92,7 +92,7 @@ func readArgs(rt *gplt.Runtime, ctx *gplt.Context, path string, args any) (strin
 		"args": args,
 	}
 
-	str, _, err = rt.GetEngine().Execute(":read:" + path, str, data, rt.GetEngineOptions(), newContext)
+	str, err = rt.GetEngine().Execute("read::" + path, str, data, rt.GetEngineOptions(), newContext)
 
 	if err != nil {
 		return "", fmt.Errorf("could not template %q: %w", path, err)

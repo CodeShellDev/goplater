@@ -42,7 +42,7 @@ func render(tmpl string, ctx *gplt.Context, modules []modules.Module, data ...an
 		ctx = &gplt.Context{}
 	}
 
-	output, _, err := rt.Render("test", tmpl, input, ctx)
+	output, err := rt.Render("test", tmpl, input, ctx)
 
 	if err != nil {
 		return "", rt, err

@@ -6,11 +6,13 @@ type Resolver interface {
 	CanResolve(path string) bool
 	Resolve(path string) (string, error)
 	DeriveName(path string) (string, error)
+	CleanPath(path string) (string, error)
 	Trusted() bool
 }
 
 type ResolvedModule struct {
 	Template	string
+	Path		string
 	Name		string
 	Trusted		bool
 }
@@ -44,7 +46,13 @@ func (c *ResolverChain) Resolve(path string) (ResolvedModule, error) {
 				return ResolvedModule{}, err
 			}
 
-			return ResolvedModule{Template: source, Name: name, Trusted: r.Trusted()}, nil
+			clean, err := r.CleanPath(path)
+
+			if err != nil {
+				return ResolvedModule{}, err
+			}
+
+			return ResolvedModule{Template: source, Name: name, Path: clean, Trusted: r.Trusted()}, nil
 		}
 	}
 

@@ -23,13 +23,13 @@ var ReturnExitErr = errors.New("return exit (you should not see this message)")
 
 // Sets output value(s).
 //
-// @param values []any
+// @param values []any?
 //
 // @example
 //	 +{{ return "a" "b" 1 2 }}
 // @example
 //	 +{{ return (list "3" "4" "5") }}
-var returnFunc = modules.NewFunc("return", returnFn)
+var returnFunc = modules.NewFunc("return", returnFn, returnEmptyFn)
 
 func returnFn(rt *gplt.Runtime, ctx *gplt.Context, values ...any) (string, error) {
 	funcContext, err := mustFuncContext(ctx)
@@ -39,6 +39,17 @@ func returnFn(rt *gplt.Runtime, ctx *gplt.Context, values ...any) (string, error
 	}
 
 	SetOutput(rt, funcContext.CallerID, values)
+	return "", ReturnExitErr
+}
+
+func returnEmptyFn(rt *gplt.Runtime, ctx *gplt.Context) (string, error) {
+	funcContext, err := mustFuncContext(ctx)
+
+	if err != nil {
+		return "", err
+	}
+
+	SetOutput(rt, funcContext.CallerID, []any{""})
 	return "", ReturnExitErr
 }
 

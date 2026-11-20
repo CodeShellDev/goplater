@@ -71,6 +71,10 @@ func (r *FsResolver) DeriveName(path string) (string, error) {
 	return name, nil
 }
 
+func (r *FsResolver) CleanPath(path string) (string, error) {
+	return ResolvePath(*r.ctx, path + "." + gplt.IMPORT_FILE_EXTENSION), nil
+}
+
 func ResolvePath(ctx context.TemplateContext, path string) string {
 	isRel := strings.HasPrefix(path, "./") || strings.HasPrefix(path, "../")
 	isRelToSource := strings.HasPrefix(path, "~/")

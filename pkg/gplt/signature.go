@@ -8,24 +8,24 @@ import (
 
 // walks all defines already parsed, searches for "name(params)" pattern, re-registers that tree under plan name.
 // if prefix is not empty, every define is also namespaced
-func ExtractSignatures(t *template.Template, prefix string) (map[string][]string, error) {
+func ExtractSignatures(tmpl *template.Template, prefix string) (map[string][]string, error) {
 	signatures := map[string][]string{}
 
-	for _, tmpl := range t.Templates() {
-		if tmpl.Name() == t.Name() {
+	for _, t := range tmpl.Templates() {
+		if t.Name() == tmpl.Name() {
 			continue
 		}
 
-		base, params, hasSig := parseSignature(tmpl.Name())
+		base, params, hasSig := parseSignature(t.Name())
 		if !hasSig {
-			base = tmpl.Name()
+			base = t.Name()
 		}
 
 		// always register the clean bare name (signature-stripped, for self-reference)
-		if base != tmpl.Name() {
-			_, err := t.AddParseTree(base, tmpl.Tree)
+		if base != t.Name() {
+			_, err := tmpl.AddParseTree(base, t.Tree)
 			if err != nil {
-				return nil, fmt.Errorf("define %q: %w", tmpl.Name(), err)
+				return nil, fmt.Errorf("define %q: %w", t.Name(), err)
 			}
 		}
 
@@ -37,9 +37,9 @@ func ExtractSignatures(t *template.Template, prefix string) (map[string][]string
 		if prefix != "" {
 			prefixed := prefix + "." + base
 
-			_, err := t.AddParseTree(prefixed, tmpl.Tree)
+			_, err := tmpl.AddParseTree(prefixed, t.Tree)
 			if err != nil {
-				return nil, fmt.Errorf("define %q: %w", tmpl.Name(), err)
+				return nil, fmt.Errorf("define %q: %w", t.Name(), err)
 			}
 
 			if hasSig {

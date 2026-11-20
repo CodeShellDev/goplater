@@ -8,9 +8,10 @@ import (
 	"path/filepath"
 
 	"github.com/codeshelldev/goplater/internals/template/context"
+	"github.com/codeshelldev/goplater/pkg/gplt/utils/tmplerrors"
 	"github.com/codeshelldev/goplater/utils/fsutils"
 	"github.com/codeshelldev/goplater/utils/pretty"
-	"github.com/codeshelldev/goplater/utils/tmplerrors"
+	"github.com/codeshelldev/goplater/utils/prettyerrors"
 	"github.com/codeshelldev/goplater/utils/tree"
 )
 
@@ -79,8 +80,9 @@ func run(ctx *context.TemplateContext) error {
 				tmplErr, ok := errors.AsType[tmplerrors.TemplateError](err)
 		
 				if ok {
+					prettyErr := prettyerrors.Convert(tmplErr)
 					color := pretty.ColorsEnabled(os.Stdout, false)
-					file.Fail(errors.New(tmplErr.CleanContext()), tmplErr.ErrorSnippet(color))
+					file.Fail(errors.New(tmplErr.CleanContext()), prettyErr.ErrorSnippet(color))
 				} else {
 					file.Fail(err)
 				}

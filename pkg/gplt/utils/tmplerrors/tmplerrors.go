@@ -6,13 +6,11 @@ import (
 	"strconv"
 	"strings"
 	"text/template"
-
-	"github.com/codeshelldev/goplater/utils/snippets"
 )
 
 type ParsedTemplate struct {
+	Raw		string
 	Template	*template.Template
-	Source		string
 }
 
 type TemplateError struct {
@@ -41,6 +39,14 @@ var (
 		`^template: (?P<name>.*):(?P<line>\d+):(?P<column>\d+): executing "(?P<template>[^"]+)"(?: at <(?P<expression>.*?)>)?: (?P<message>.*)$`,
 	)
 )
+
+func WrapTemplateError(tmpl *template.Template, body string, err error) (TemplateError, bool) {
+	return Parse(ParseTemplate(tmpl, body), err)
+}
+
+func ParseTemplate(tmpl *template.Template, body string) ParsedTemplate {
+	return ParsedTemplate{Template: tmpl, Raw: body}
+}
 
 func Parse(t ParsedTemplate, err error) (TemplateError, bool) {
 	if err == nil {
@@ -127,7 +133,7 @@ func (e TemplateError) ErrorLines() (int, string) {
 		return 0, ""
 	}
 
-	lines := strings.Split(e.template.Source, "\n")
+	lines := strings.Split(e.template.Raw, "\n")
 
 	from := max(e.Line - 2, 0)
 	to := min(e.Line + 1, len(lines))
@@ -164,26 +170,4 @@ func (e TemplateError) CleanContext() string {
 
 func (e TemplateError) CleanError() string {
 	return strings.TrimSpace(e.ErrorMessage)
-}
-
-func (e TemplateError) ErrorSnippet(color bool) string {
-	if e.Line <= 0 {
-		return ""
-	}
-
-	start, source := e.ErrorLines()
-
-	length := 0
-	if e.Expression != "" {
-		length = len(e.Expression)
-	}
-
-	ptr := snippets.SnippetPointer{
-		Start: start, Line: 
-		e.Line, Column: e.Column,
-		Length: length,
-		Message: e.ErrorMessage,
-	}
-
-	return snippets.PointToPositionInSnippet(source, ptr, color)
 }

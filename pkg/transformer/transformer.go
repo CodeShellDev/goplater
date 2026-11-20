@@ -32,12 +32,12 @@ func (p *Transformer) Use(processors ...Processor) *Transformer {
 	return p
 }
 
-func (p *Transformer) Process(t *template.Template) error {
+func (p *Transformer) Process(tmpl *template.Template) error {
 	if len(p.processors) == 0 {
 		return nil
 	}
 
-	doc := newDocument(t)
+	doc := newDocument(tmpl)
 
 	for _, proc := range p.processors {
 		err := proc.Process(doc)

@@ -6,9 +6,15 @@ import (
 )
 
 type treeEntry struct {
-	tmpl	*template.Template
-	trusted bool
-	alias	string
+	body		string
+	template	*template.Template
+	trusted		bool
+	alias		string
+}
+
+type rootEntry struct {
+	body		string
+	template	*template.Template
 }
 
 const CurrentTreeKey ContextKey = "currentTree"
@@ -19,14 +25,14 @@ type TreeScope struct {
 }
 
 type ModuleRegistry struct {
-	root	  *template.Template
+	root	  rootEntry
 	trees	  map[string]*treeEntry		 // import name -> tree
 	reachable map[string]map[string]bool // owner scope -> names it is allowed to call into
 }
 
-func NewModuleRegistry(root *template.Template) *ModuleRegistry {
+func NewModuleRegistry(root *template.Template, body string) *ModuleRegistry {
 	return &ModuleRegistry{
-		root:	   root,
+		root:	   rootEntry{template: root, body: body},
 		trees:	   map[string]*treeEntry{},
 		reachable: map[string]map[string]bool{"root": {}},
 	}
@@ -37,8 +43,8 @@ func (r *ModuleRegistry) Loaded(name string) bool {
 	return ok
 }
 
-func (r *ModuleRegistry) Register(name string, tmpl *template.Template, trusted bool, alias string) {
-	r.trees[name] = &treeEntry{tmpl: tmpl, trusted: trusted, alias: alias}
+func (r *ModuleRegistry) Register(name string, tmpl *template.Template, body string, trusted bool, alias string) {
+	r.trees[name] = &treeEntry{template: tmpl, body: body, trusted: trusted, alias: alias}
 }
 
 func (r *ModuleRegistry) Trusted(name string) bool {
@@ -59,11 +65,11 @@ func (r *ModuleRegistry) CanReach(callerScope, target string) bool {
 }
 
 // finds name, restriced by what callerScope is allowed to see
-func (r *ModuleRegistry) Lookup(callerScope, name string) *template.Template {
+func (r *ModuleRegistry) Lookup(callerScope, name string) (*template.Template, string) {
 	if callerScope == "root" {
-		tmplt := r.root.Lookup(name)
-		if tmplt != nil {
-			return tmplt
+		t := r.root.template.Lookup(name)
+		if t != nil {
+			return t, r.root.body
 		}
 	}
 	
@@ -71,9 +77,9 @@ func (r *ModuleRegistry) Lookup(callerScope, name string) *template.Template {
 		entry, exists := r.trees[callerScope]
 
 		if exists {
-			tmplt := entry.tmpl.Lookup(name)
-			if tmplt != nil {
-				return tmplt
+			t := entry.template.Lookup(name)
+			if t != nil {
+				return t, entry.body
 			}
 		}
 	}
@@ -90,23 +96,23 @@ func (r *ModuleRegistry) Lookup(callerScope, name string) *template.Template {
 			continue
 		}
 
-		t := entry.tmpl.Lookup(name)
+		t := entry.template.Lookup(name)
 		if t != nil {
-			return t
+			return t, entry.body
 		}
 	}
 
-	return nil
+	return nil, ""
 }
 
 // looks up the tree scope of a template
 func (r *ModuleRegistry) ScopeOf(tmpl *template.Template) TreeScope {
-	if r.root.Lookup(tmpl.Name()) == tmpl {
+	if r.root.template.Lookup(tmpl.Name()) == tmpl {
 		return TreeScope{Name: "root", Trusted: true}
 	}
 
 	for path, e := range r.trees {
-		if e.tmpl.Lookup(tmpl.Name()) == tmpl {
+		if e.template.Lookup(tmpl.Name()) == tmpl {
 			return TreeScope{Name: path, Trusted: e.trusted}
 		}
 	}

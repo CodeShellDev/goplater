@@ -8,8 +8,8 @@ import (
 	"github.com/codeshelldev/goplater/pkg/transformer/processors/blanklines"
 )
 
-func transformFunc(tmplContext *context.TemplateContext) func(t *template.Template) error {
-	return func(t *template.Template) error {
+func transformFunc(tmplContext *context.TemplateContext) func(tmpl *template.Template) error {
+	return func(tmpl *template.Template) error {
 		tf := transformer.New()
 
 		blankLines := tmplContext.Options.TrimMaxBlankLines
@@ -19,6 +19,6 @@ func transformFunc(tmplContext *context.TemplateContext) func(t *template.Templa
 			))
 		}
 
-		return tf.Process(t)
+		return tf.Process(tmpl)
 	}
 }

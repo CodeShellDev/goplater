@@ -72,3 +72,13 @@ func (r *HttpResolver) DeriveName(path string) (string, error) {
 
 	return name, nil
 }
+
+func (r *HttpResolver) CleanPath(path string) (string, error) {
+	URL, err := url.Parse(path)
+
+	if err != nil {
+		return "", fmt.Errorf("malformed path: %q cannot derive import name", path)
+	}
+
+	return URL.String(), nil
+}

@@ -15,8 +15,8 @@ type Engine struct {
 
 type EngineOptions struct {
 	Delims			types.Delims
-	ProcessFunc	func(t *template.Template) error
-	ParseFunc	func(s string, t *template.Template) (error)
+	ProcessFunc	func(tmpl *template.Template) error
+	ParseFunc	func(body string, tmpl *template.Template) (error)
 }
 
 func NewEngine() *Engine { 
@@ -56,6 +56,6 @@ func (e *Engine) NewRuntime(options EngineOptions) *Runtime {
 	return &Runtime{engine: e, engineOptions: options, store: map[string]StoreContainer{}}
 }
 
-func (e *Engine) Execute(name, body string, data any, options EngineOptions, ctx *Context) (string, *template.Template, error) {
+func (e *Engine) Execute(name, body string, data any, options EngineOptions, ctx *Context) (string, error) {
 	return e.NewRuntime(options).Render(name, body, data, ctx)
 }
