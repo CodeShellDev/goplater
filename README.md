@@ -13,7 +13,7 @@
 -->
 
 <p align="center">
-    <img width="256" height="256" alt="Goplater Logo" src="https://github.com/CodeShellDev/goplater/raw/refs/heads/main/logo/goplater.png">
+    <img width="256" height="256" alt="Goplater Logo" src="https://github.com/CodeShellDev/goplater/raw/refs/heads/main/images/goplater.png">
 </p>
 
 <h1 align="center">Goplater</h1>
