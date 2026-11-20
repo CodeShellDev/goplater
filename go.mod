@@ -3,7 +3,7 @@ module github.com/codeshelldev/goplater
 go 1.27.3
 
 require (
-	github.com/codeshelldev/goplater/pkg/gplt v0.3.1
+	github.com/codeshelldev/goplater/pkg/gplt v0.3.3
 	github.com/codeshelldev/goplater/pkg/gplt/collections v0.2.1
 	github.com/codeshelldev/goplater/pkg/transformer v0.1.0
 	github.com/spf13/cobra v1.10.2
