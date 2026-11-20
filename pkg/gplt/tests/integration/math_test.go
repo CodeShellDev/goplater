@@ -2,8 +2,6 @@ package tests
 
 import (
 	"testing"
-
-	"github.com/codeshelldev/goplater/pkg/gplt/utils/testutils"
 )
 
 func TestAdd(t *testing.T) {
@@ -12,7 +10,7 @@ func TestAdd(t *testing.T) {
 		{{ emit "float" (add 1.5 2.5 3.0) }}
 	`
 
-	trt := testutils.Collect(t, tmpl)
+	trt := tester.Collect(t, tmpl)
 	trt.Equal(t, "int", 10)
 	trt.Equal(t, "float", 7.0)
 }
@@ -23,7 +21,7 @@ func TestSub(t *testing.T) {
 		{{ emit "float" (sub 10.5 2.5 1.0) }}
 	`
 
-	trt := testutils.Collect(t, tmpl)
+	trt := tester.Collect(t, tmpl)
 	trt.Equal(t, "int", 12)
 	trt.Equal(t, "float", 7.0)
 }
@@ -34,7 +32,7 @@ func TestMul(t *testing.T) {
 		{{ emit "float" (mul 1.5 2.0 3.0) }}
 	`
 
-	trt := testutils.Collect(t, tmpl)
+	trt := tester.Collect(t, tmpl)
 	trt.Equal(t, "int", 24)
 	trt.Equal(t, "float", 9.0)
 }
@@ -45,7 +43,7 @@ func TestDiv(t *testing.T) {
 		{{ emit "float" (div 12.0 2.0 3.0) }}
 	`
 
-	trt := testutils.Collect(t, tmpl)
+	trt := tester.Collect(t, tmpl)
 	trt.Equal(t, "int", 5)
 	trt.Equal(t, "float", 2.0)
 }
@@ -56,7 +54,7 @@ func TestMod(t *testing.T) {
 		{{ emit "float" (mod 17.5 5.0) }}
 	`
 
-	trt := testutils.Collect(t, tmpl)
+	trt := tester.Collect(t, tmpl)
 	trt.Equal(t, "int", 2)
 	trt.Equal(t, "float", 2.5)
 }
@@ -64,13 +62,13 @@ func TestMod(t *testing.T) {
 func TestDivByZero(t *testing.T) {
 	tmpl := `{{ div 10 0 }}`
 
-	testutils.ExpectErr(t, tmpl, nil)
+	tester.ExpectErr(t, tmpl, nil)
 }
 
 func TestModByZero(t *testing.T) {
 	tmpl := `{{ mod 10 0 }}`
 
-	testutils.ExpectErr(t, tmpl, nil)
+	tester.ExpectErr(t, tmpl, nil)
 }
 
 func TestAbs(t *testing.T) {
@@ -81,7 +79,7 @@ func TestAbs(t *testing.T) {
 		{{ emit "positiveFloat" (abs 3.14) }}
 	`
 
-	trt := testutils.Collect(t, tmpl)
+	trt := tester.Collect(t, tmpl)
 	trt.Equal(t, "negativeInt", 10)
 	trt.Equal(t, "positiveInt", 10)
 	trt.Equal(t, "negativeFloat", 3.14)
@@ -94,7 +92,7 @@ func TestMin(t *testing.T) {
 		{{ emit "float" (min 5.5 2.2 8.8) }}
 	`
 
-	trt := testutils.Collect(t, tmpl)
+	trt := tester.Collect(t, tmpl)
 	trt.Equal(t, "int", 1)
 	trt.Equal(t, "float", 2.2)
 }
@@ -105,7 +103,7 @@ func TestMax(t *testing.T) {
 		{{ emit "float" (max 5.5 2.2 8.8) }}
 	`
 
-	trt := testutils.Collect(t, tmpl)
+	trt := tester.Collect(t, tmpl)
 	trt.Equal(t, "int", 8)
 	trt.Equal(t, "float", 8.8)
 }
@@ -118,7 +116,7 @@ func TestClamp(t *testing.T) {
 		{{ emit "float" (clamp 3.5 1.5 2.5) }}
 	`
 
-	trt := testutils.Collect(t, tmpl)
+	trt := tester.Collect(t, tmpl)
 	trt.Equal(t, "below", 5)
 	trt.Equal(t, "inside", 7)
 	trt.Equal(t, "above", 10)
@@ -128,7 +126,7 @@ func TestClamp(t *testing.T) {
 func TestClampInvalidRange(t *testing.T) {
 	tmpl := `{{ clamp 5 10 1 }}`
 
-	testutils.ExpectErr(t, tmpl, nil)
+	tester.ExpectErr(t, tmpl, nil)
 }
 
 func TestPow(t *testing.T) {
@@ -137,7 +135,7 @@ func TestPow(t *testing.T) {
 		{{ emit "float" (pow 2.5 2) }}
 	`
 
-	trt := testutils.Collect(t, tmpl)
+	trt := tester.Collect(t, tmpl)
 	trt.Equal(t, "int", 8.0)
 	trt.Equal(t, "float", 6.25)
 }
@@ -149,7 +147,7 @@ func TestSqrt(t *testing.T) {
 		{{ emit "zero" (sqrt 0) }}
 	`
 
-	trt := testutils.Collect(t, tmpl)
+	trt := tester.Collect(t, tmpl)
 	trt.Equal(t, "perfect", 5.0)
 	trt.Equal(t, "float", 1.5)
 	trt.Equal(t, "zero", 0.0)
@@ -158,7 +156,7 @@ func TestSqrt(t *testing.T) {
 func TestSqrtNegative(t *testing.T) {
 	tmpl := `{{ sqrt -1 }}`
 
-	testutils.ExpectErr(t, tmpl, nil)
+	tester.ExpectErr(t, tmpl, nil)
 }
 
 func TestRound(t *testing.T) {
@@ -171,7 +169,7 @@ func TestRound(t *testing.T) {
 		{{ emit "negativePrecision" (round 1234.0 -2) }}
 	`
 
-	trt := testutils.Collect(t, tmpl)
+	trt := tester.Collect(t, tmpl)
 	trt.Equal(t, "positive", 4)
 	trt.Equal(t, "negative", -4)
 	trt.Equal(t, "integer", 5)
@@ -187,7 +185,7 @@ func TestFloor(t *testing.T) {
 		{{ emit "integer" (floor 5) }}
 	`
 
-	trt := testutils.Collect(t, tmpl)
+	trt := tester.Collect(t, tmpl)
 	trt.Equal(t, "positive", 3)
 	trt.Equal(t, "negative", -4)
 	trt.Equal(t, "integer", 5)
@@ -200,7 +198,7 @@ func TestCeil(t *testing.T) {
 		{{ emit "integer" (ceil 5) }}
 	`
 
-	trt := testutils.Collect(t, tmpl)
+	trt := tester.Collect(t, tmpl)
 	trt.Equal(t, "positive", 4)
 	trt.Equal(t, "negative", -3)
 	trt.Equal(t, "integer", 5)

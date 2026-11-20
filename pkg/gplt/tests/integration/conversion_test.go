@@ -3,8 +3,6 @@ package tests
 import (
 	"strconv"
 	"testing"
-
-	"github.com/codeshelldev/goplater/pkg/gplt/utils/testutils"
 )
 
 func createFuncTestTmpl(name, tmpl string) string {
@@ -53,7 +51,7 @@ func TestToString(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			tmpl := createFuncTestTmpl(tt.name, "toString .")
 
-			trt := testutils.Collect(t, tmpl, tt.input)
+			trt := tester.Collect(t, tmpl, tt.input)
 
 			trt.Equal(t, tt.name, tt.want)
 		})
@@ -87,7 +85,7 @@ func TestToBytes(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			tmpl := createFuncTestTmpl(tt.name, "toBytes .")
 
-			trt := testutils.Collect(t, tmpl, tt.input)
+			trt := tester.Collect(t, tmpl, tt.input)
 
 			trt.Equal(t, tt.name, tt.want)
 		})
@@ -138,11 +136,11 @@ func TestToInt(t *testing.T) {
 			tmpl := createFuncTestTmpl(tt.name, "toInt .")
 
 			if tt.wantErr {
-				testutils.ExpectErr(t, tmpl, nil)
+				tester.ExpectErr(t, tmpl, nil)
 				return
 			}
 
-			trt := testutils.Collect(t, tmpl, tt.input)
+			trt := tester.Collect(t, tmpl, tt.input)
 
 			trt.Equal(t, tt.name, tt.want)
 		})
@@ -193,11 +191,11 @@ func TestToFloat64(t *testing.T) {
 			tmpl := createFuncTestTmpl(tt.name, "toFloat64 .")
 
 			if tt.wantErr {
-				testutils.ExpectErr(t, tmpl, nil)
+				tester.ExpectErr(t, tmpl, nil)
 				return
 			}
 
-			trt := testutils.Collect(t, tmpl, tt.input)
+			trt := tester.Collect(t, tmpl, tt.input)
 
 			trt.Equal(t, tt.name, tt.want)
 		})
@@ -248,11 +246,11 @@ func TestToFloat32(t *testing.T) {
 			tmpl := createFuncTestTmpl(tt.name, "toFloat32 .")
 
 			if tt.wantErr {
-				testutils.ExpectErr(t, tmpl, nil)
+				tester.ExpectErr(t, tmpl, nil)
 				return
 			}
 
-			trt := testutils.Collect(t, tmpl, tt.input)
+			trt := tester.Collect(t, tmpl, tt.input)
 
 			trt.Equal(t, tt.name, tt.want)
 		})
@@ -313,11 +311,11 @@ func TestToBool(t *testing.T) {
 			tmpl := createFuncTestTmpl(tt.name, "toBool .")
 
 			if tt.wantErr {
-				testutils.ExpectErr(t, tmpl, nil)
+				tester.ExpectErr(t, tmpl, nil)
 				return
 			}
 
-			trt := testutils.Collect(t, tmpl, tt.input)
+			trt := tester.Collect(t, tmpl, tt.input)
 
 			trt.Equal(t, tt.name, tt.want)
 		})

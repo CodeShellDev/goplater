@@ -2,8 +2,6 @@ package tests
 
 import (
 	"testing"
-
-	"github.com/codeshelldev/goplater/pkg/gplt/utils/testutils"
 )
 
 func TestDeleteSlice(t *testing.T) {
@@ -13,7 +11,7 @@ func TestDeleteSlice(t *testing.T) {
 		{{ emit "result" $slice }}
 	`
 
-	trt := testutils.Collect(t, tmpl)
+	trt := tester.Collect(t, tmpl)
 	trt.Equal(t, "result", []any{"Apple", "Orange"})
 }
 
@@ -28,7 +26,7 @@ func TestDeleteSliceFirstAndLast(t *testing.T) {
 		{{ emit "last" $last }}
 	`
 
-	trt := testutils.Collect(t, tmpl)
+	trt := tester.Collect(t, tmpl)
 	trt.Equal(t, "first", []any{"Banana", "Orange"})
 	trt.Equal(t, "last", []any{"Apple", "Banana"})
 }
@@ -41,7 +39,7 @@ func TestDeleteMap(t *testing.T) {
 		{{ emit "has" (hasKey $map "name") }}
 	`
 
-	trt := testutils.Collect(t, tmpl)
+	trt := tester.Collect(t, tmpl)
 	trt.Equal(t, "has", false)
 	trt.Equal(t, "result", map[string]any{"age": 30})
 }
@@ -56,7 +54,7 @@ func TestDeleteErrors(t *testing.T) {
 	}
 
 	for _, tmpl := range tests {
-		testutils.ExpectErr(t, tmpl, nil)
+		tester.ExpectErr(t, tmpl, nil)
 	}
 }
 
@@ -67,7 +65,7 @@ func TestSetSlice(t *testing.T) {
 		{{ emit "result" $slice }}
 	`
 
-	trt := testutils.Collect(t, tmpl)
+	trt := tester.Collect(t, tmpl)
 	trt.Equal(t, "result", []any{"Strawberry", "Banana"})
 }
 
@@ -79,7 +77,7 @@ func TestSetMap(t *testing.T) {
 		{{ emit "result" $map }}
 	`
 
-	trt := testutils.Collect(t, tmpl)
+	trt := tester.Collect(t, tmpl)
 	trt.Equal(t, "result", map[string]any{
 		"name": "Bob",
 		"age":	30,
@@ -96,7 +94,7 @@ func TestSetErrors(t *testing.T) {
 	}
 
 	for _, tmpl := range tests {
-		testutils.ExpectErr(t, tmpl, nil)
+		tester.ExpectErr(t, tmpl, nil)
 	}
 }
 
@@ -107,7 +105,7 @@ func TestHasKeyMap(t *testing.T) {
 		{{ emit "missing" (hasKey $map "age") }}
 	`
 
-	trt := testutils.Collect(t, tmpl)
+	trt := tester.Collect(t, tmpl)
 	trt.Equal(t, "existing", true)
 	trt.Equal(t, "missing", false)
 }
@@ -121,7 +119,7 @@ func TestHasKeySlice(t *testing.T) {
 		{{ emit "negative" (hasKey $slice -1) }}
 	`
 
-	trt := testutils.Collect(t, tmpl)
+	trt := tester.Collect(t, tmpl)
 	trt.Equal(t, "first", true)
 	trt.Equal(t, "last", true)
 	trt.Equal(t, "missing", false)
@@ -134,7 +132,7 @@ func TestHasKeyErrors(t *testing.T) {
 	}
 
 	for _, tmpl := range tests {
-		testutils.ExpectErr(t, tmpl, nil)
+		tester.ExpectErr(t, tmpl, nil)
 	}
 }
 
@@ -145,7 +143,7 @@ func TestIncludesSlice(t *testing.T) {
 		{{ emit "missing" (includes $slice "Strawberry") }}
 	`
 
-	trt := testutils.Collect(t, tmpl)
+	trt := tester.Collect(t, tmpl)
 	trt.Equal(t, "existing", true)
 	trt.Equal(t, "missing", false)
 }
@@ -157,14 +155,14 @@ func TestIncludesMapValues(t *testing.T) {
 		{{ emit "missing" (includes $map "Banana") }}
 	`
 
-	trt := testutils.Collect(t, tmpl)
+	trt := tester.Collect(t, tmpl)
 	trt.Equal(t, "existing", true)
 	trt.Equal(t, "missing", false)
 }
 
 func TestIncludesErrors(t *testing.T) {
 	tmpl := `{{ includes "not a container" "value" }}`
-	testutils.ExpectErr(t, tmpl, nil)
+	tester.ExpectErr(t, tmpl, nil)
 }
 
 func TestAppend(t *testing.T) {
@@ -175,7 +173,7 @@ func TestAppend(t *testing.T) {
 		{{ emit "result" $newSlice }}
 	`
 
-	trt := testutils.Collect(t, tmpl)
+	trt := tester.Collect(t, tmpl)
 	trt.Equal(t, "original", []any{"Apple", "Banana"})
 	trt.Equal(t, "result", []any{"Apple", "Banana", "Orange"})
 }
@@ -186,7 +184,7 @@ func TestAppendErrors(t *testing.T) {
 	}
 
 	for _, tmpl := range tests {
-		testutils.ExpectErr(t, tmpl, nil)
+		tester.ExpectErr(t, tmpl, nil)
 	}
 }
 
@@ -196,7 +194,7 @@ func TestList(t *testing.T) {
 		{{ emit "values" (list "Apple" "Banana" 123) }}
 	`
 
-	trt := testutils.Collect(t, tmpl)
+	trt := tester.Collect(t, tmpl)
 	trt.Equal(t, "empty", []any{})
 	trt.Equal(t, "values", []any{"Apple", "Banana", 123})
 }
@@ -207,7 +205,7 @@ func TestDict(t *testing.T) {
 		{{ emit "values" (dict "name" "Alice" "age" 30) }}
 	`
 
-	trt := testutils.Collect(t, tmpl)
+	trt := tester.Collect(t, tmpl)
 	trt.Equal(t, "empty", map[string]any{})
 	trt.Equal(t, "values", map[string]any{
 		"name": "Alice",
@@ -222,6 +220,6 @@ func TestDictErrors(t *testing.T) {
 	}
 
 	for _, tmpl := range tests {
-		testutils.ExpectErr(t, tmpl, nil)
+		tester.ExpectErr(t, tmpl, nil)
 	}
 }

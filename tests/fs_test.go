@@ -9,9 +9,12 @@ import (
 	"github.com/codeshelldev/goplater/internals/template/context"
 	"github.com/codeshelldev/goplater/internals/template/funcs"
 	"github.com/codeshelldev/goplater/pkg/gplt"
+	"github.com/codeshelldev/goplater/pkg/gplt/collections"
 	"github.com/codeshelldev/goplater/pkg/gplt/modules"
 	"github.com/codeshelldev/goplater/pkg/gplt/utils/testutils"
 )
+
+var tester = testutils.NewTester(collections.Unsafe, collections.Safe)
 
 func newFSTestContext(t *testing.T) (*gplt.Context, string, string) {
 	t.Helper()
@@ -50,7 +53,7 @@ func newFSTestContext(t *testing.T) (*gplt.Context, string, string) {
 func collectFS(t *testing.T, tmpl string, ctx *gplt.Context) testutils.TestRuntime {
 	t.Helper()
 
-	return testutils.CollectWithContext(
+	return tester.CollectWithContext(
 		t,
 		tmpl,
 		ctx,
@@ -61,7 +64,7 @@ func collectFS(t *testing.T, tmpl string, ctx *gplt.Context) testutils.TestRunti
 func expectErrFS(t *testing.T, tmpl string, ctx *gplt.Context, expectErr error) testutils.TestRuntime {
 	t.Helper()
 
-	return testutils.ExpectErrWithContext(
+	return tester.ExpectErrWithContext(
 		t,
 		tmpl,
 		ctx,

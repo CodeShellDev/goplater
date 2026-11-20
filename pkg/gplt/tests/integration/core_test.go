@@ -4,7 +4,6 @@ import (
 	"testing"
 
 	"github.com/codeshelldev/goplater/pkg/gplt/modules/core"
-	"github.com/codeshelldev/goplater/pkg/gplt/utils/testutils"
 )
 
 func TestGlobals(t *testing.T) {
@@ -14,7 +13,7 @@ func TestGlobals(t *testing.T) {
 	{{ emit "get" (globalGet "abc") }}
 	`
 
-	trt := testutils.Collect(t, tmpl)
+	trt := tester.Collect(t, tmpl)
 
 	trt.Equal(t, "has", true)
 	trt.Equal(t, "get", 123)
@@ -44,7 +43,7 @@ func TestFuncs(t *testing.T) {
 		{{ emit "nested" (call "nested" 1 2) }}
 	`
 
-	trt := testutils.Collect(t, tmpl)
+	trt := tester.Collect(t, tmpl)
 
 	trt.Equal(t, "simple", "1, 2")
 	trt.Equal(t, "output", "1, 2")
@@ -67,7 +66,7 @@ func TestReturns(t *testing.T) {
 		{{ emit "earlyExit" (call "earlyExit") }}
 	`
 
-	trt := testutils.Collect(t, tmpl)
+	trt := tester.Collect(t, tmpl)
 
 	trt.Equal(t, "simple", "doing simple stuff")
 	trt.Equal(t, "earlyExit", "doing simple stuff")
@@ -75,5 +74,5 @@ func TestReturns(t *testing.T) {
 
 	tmpl = `{{ return "naughty return" }}`
 
-	testutils.ExpectErr(t, tmpl, core.OutsideFuncErr)
+	tester.ExpectErr(t, tmpl, core.OutsideFuncErr)
 }

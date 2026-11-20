@@ -2,8 +2,6 @@ package tests
 
 import (
 	"testing"
-
-	"github.com/codeshelldev/goplater/pkg/gplt/utils/testutils"
 )
 
 func TestJSONEncode(t *testing.T) {
@@ -16,7 +14,7 @@ func TestJSONEncode(t *testing.T) {
 		{{ emit "nil" (jsonEncode nil) }}
 	`
 
-	trt := testutils.Collect(t, tmpl)
+	trt := tester.Collect(t, tmpl)
 	trt.Equal(t, "string", `"hello"`)
 	trt.Equal(t, "number", "123")
 	trt.Equal(t, "bool", "true")
@@ -36,7 +34,7 @@ func TestJSONDecode(t *testing.T) {
 		{{ emit "null" (jsonDecode "null") }}
 	`
 
-	trt := testutils.Collect(t, tmpl)
+	trt := tester.Collect(t, tmpl)
 	trt.Equal(t, "string", "hello")
 	trt.Equal(t, "number", float64(123))
 	trt.Equal(t, "float", float64(12.5))
@@ -52,5 +50,5 @@ func TestJSONDecode(t *testing.T) {
 func TestJSONDecodeInvalidJSON(t *testing.T) {
 	tmpl := `{{ jsonDecode "{invalid}" }}`
 
-	testutils.ExpectErr(t, tmpl, nil)
+	tester.ExpectErr(t, tmpl, nil)
 }
