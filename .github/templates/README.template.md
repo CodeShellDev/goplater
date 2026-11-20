@@ -64,7 +64,7 @@
     [fg=gray]2[/] |     [fg=cyan]Hello, +{{ $user.name }}[/]`
 -}}
 
-+{{- call "images.generateTerminal" "~/images/terminal.svg" $showcaseSvgSource }}
++{{- call "images.generateTerminal" "~/images/terminal.svg" $showcaseSvgSource (dict "padding" 40) }}
 
 <p align="center">
     <img width="768" height="384" alt="Goplater Logo" src="./images/terminal.svg">
