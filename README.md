@@ -144,7 +144,7 @@ Need help? Come join our [Matrix Server](https://matrix.to/#/#codeshelldev.oss.g
 - **Batteries included.** Read and write files, fetch URLs, work with JSON, YAML, HTML and Markdown, run regex and string operations. See the [Standard Library](#standard-library).
 - **Write your own functions, inside the template.** Define them with `define`, call them with `call`. Arguments and return values included.
 - **Share and import functions.** Put your functions in a file, import them from disk or from a URL and reuse them everywhere.
-- **Not just a CLI.** The engine behind it, `gplt-engine`, is a separate library you can embed in your own Go program.
+- **Not just a CLI.** The engine behind it, `gplt`, is a separate library you can embed in your own Go program.
 - **Modular.** The library is split into independent modules. Load only what you need. Or let the CLI load them all.
 - **Automated.** Use the [GitHub Action and Bot](https://github.com/CodeShellDev/goplater-action) to render templates and automate pull requests. See [Automation](#automate-with-github-actions).
 
