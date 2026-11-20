@@ -209,12 +209,13 @@ func (rt *Runtime) Params(name string) ([]string, bool) {
 // Be sure to create a new runtime for every Render(), a runtime is expected to only be a single-use object
 func (rt *Runtime) Render(name, body string, data any, ctx *Context) (string, error) {
 	t, err := rt.PrepareRender(name, body, data, ctx)
-	
+
 	if err != nil {
 		return "", err
 	}
 
 	sigs, err := ExtractSignatures(t, "")
+
 	if err != nil {
 		return "", err
 	}
@@ -232,14 +233,14 @@ func (rt *Runtime) PrepareRender(name, body string, data any, ctx *Context) (*te
 	ctx.Set(InputContextKey, TemplateInputContext{Data: data, Body: body})
 	ctx.Set(CurrentTreeKey, TreeScope{Name: "root", Trusted: true})
 
-	t := rt.engine.NewTemplate(name, rt.engineOptions.Delims)
+	tmpl := rt.engine.NewTemplate(name, rt.engineOptions.Delims)
 
 	funcMap, err := rt.FuncMap(ctx, true)
 	if err != nil {
 		return nil, fmt.Errorf("could no create func map: %w", err)
 	}
 
-	t.Funcs(funcMap)
+	tmpl.Funcs(funcMap)
 
 	if rt.engineOptions.ParseFunc == nil {
 		rt.engineOptions.ParseFunc = func(s string, tmpl *template.Template) (error) {
@@ -248,21 +249,27 @@ func (rt *Runtime) PrepareRender(name, body string, data any, ctx *Context) (*te
 		}
 	}
 
-	err = rt.engineOptions.ParseFunc(body, t)
+	err = rt.engineOptions.ParseFunc(body, tmpl)
+
+	tmplErr, ok := tmplerrors.TryWrapTemplateErrorOnce(tmpl, body, err)
+
+	if ok {
+		err = tmplErr
+	}
 
 	if err != nil {
 		return nil, err
 	}
 
 	if rt.engineOptions.ProcessFunc != nil {
-		err = rt.engineOptions.ProcessFunc(t)
+		err = rt.engineOptions.ProcessFunc(tmpl)
 
 		if err != nil {
 			return nil, err
 		}
 	}
 
-	return t, nil
+	return tmpl, nil
 }
 
 func (rt *Runtime) Execute(tmpl *template.Template, body string, wr io.Writer, data any) (error) {

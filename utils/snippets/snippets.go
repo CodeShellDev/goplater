@@ -4,8 +4,10 @@ import (
 	"fmt"
 	"strconv"
 	"strings"
+	"unicode"
 
 	"github.com/codeshelldev/goplater/utils/pretty"
+	"github.com/mattn/go-runewidth"
 )
 
 type SnippetPointer struct {
@@ -76,20 +78,15 @@ func BuildSnippetPointer(snippet string, ptr SnippetPointer) SnippetLines {
 		return SnippetLines{Before: lines}
 	}
 
-	sourceLine := lines[lineIndex].Content
+	rs := []rune(strings.Split(snippet, "\n")[lineIndex])
 
-	column := ptr.Column
+	col := min(max(ptr.Column - 1, 0), len(rs))
+
+	column := cellWidth(string(rs[:col]))
+
 	length := ptr.Length
-
-	// entire line fallback
-	if column <= 1 {
-		column = 1
-		length = len(sourceLine)
-	}
-
-	// dynamic length
 	if length <= 0 {
-		length = len(sourceLine) - column + 1
+		length = cellWidth(string(rs)) - column
 	}
 
 	if length < 1 {
@@ -124,7 +121,7 @@ func ParseCodeSnippet(snippet string, start int) []SnippetLine {
 	for i, line := range lines {
 		result[i] = SnippetLine{
 			Number:	 start + i + 1,
-			Content: line,
+			Content: renderLine(line),
 		}
 	}
 
@@ -146,6 +143,28 @@ func FormatCodeSnippet(snippet string, start int) string {
 	}
 
 	return strings.Join(formatted, "\n")
+}
+
+const tabWidth = 2
+
+func renderLine(s string) string {
+	var b strings.Builder
+	for _, r := range s {
+		switch {
+		case r == '\t':
+			w := runewidth.StringWidth(b.String())
+			b.WriteString(strings.Repeat(" ", tabWidth - w % tabWidth))
+		case unicode.IsControl(r):
+			// drop \r, etc.
+		default:
+			b.WriteRune(r)
+		}
+	}
+	return b.String()
+}
+
+func cellWidth(s string) int {
+	return runewidth.StringWidth(renderLine(s))
 }
 
 func countDigits(max int) int {

@@ -7,6 +7,7 @@ import (
 	"strconv"
 	"strings"
 	"text/template"
+	"unicode/utf8"
 )
 
 type ParsedTemplate struct {
@@ -85,10 +86,14 @@ func Parse(t ParsedTemplate, err error) (TemplateError, bool) {
 func parseExecutionError(res TemplateError, matches []string) TemplateError {
 	res.ParseName = matches[1]
 	res.Line, _ = strconv.Atoi(matches[2])
-	res.Column, _ = strconv.Atoi(matches[3])
 	res.Expression = matches[5]
 	res.ErrorMessage = matches[6]
 	res.Message = res.ErrorMessage
+
+	col, err := strconv.Atoi(matches[3])
+	if err == nil {
+		res.Column = byteOffsetToColumn(res.template.Raw, res.Line, col)
+	}
 
 	res.ErrorContext = fmt.Sprintf(
 		"template: %s:%d:%d: executing %q",
@@ -112,7 +117,10 @@ func parseParseError(res TemplateError, matches []string) TemplateError {
 	res.Line, _ = strconv.Atoi(matches[2])
 
 	if matches[3] != "" {
-		res.Column, _ = strconv.Atoi(matches[3])
+		col, err := strconv.Atoi(matches[3])
+		if err == nil {
+			res.Column = byteOffsetToColumn(res.template.Raw, res.Line, col)
+		}
 	}
 
 	res.ErrorMessage = matches[4]
@@ -127,6 +135,32 @@ func parseParseError(res TemplateError, matches []string) TemplateError {
 	res.ErrorContext += ":"
 
 	return res
+}
+
+// byte offset (from go; 0-based) turned into actual column (runes; 1-based)
+func byteOffsetToColumn(raw string, line, byteOff int) int {
+	if byteOff < 0 {
+		return -1
+	}
+
+	lines := strings.Split(raw, "\n")
+	if line <= 0 || line > len(lines) {
+		return byteOff + 1
+	}
+
+	l := lines[line - 1]
+
+	// clamp
+	if byteOff > len(l) {
+		byteOff = len(l)
+	}
+
+	// avoid cutting mid-rune
+	for byteOff > 0 && byteOff < len(l) && !utf8.RuneStart(l[byteOff]) {
+		byteOff--
+	}
+
+	return utf8.RuneCountInString(l[:byteOff]) + 1
 }
 
 func (e TemplateError) Error() string {
