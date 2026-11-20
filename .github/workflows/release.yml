@@ -39,6 +39,7 @@ jobs:
           output-pattern: "{name}-${{ github.event.release.tag_name }}-{os}-{arch}"
 
       - name: Publish npm packages
+        if: ${{ !github.event.release.prerelease }}
         working-directory: npm
         env:
           RELEASE_TAG: ${{ github.event.release.tag_name }}
