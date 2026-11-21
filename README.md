@@ -67,7 +67,7 @@
 
 
 <p align="center">
-    <img width="768" height="384" alt="Goplater Logo" src="./images/terminal.svg">
+    <img width="768" height="384" alt="example terminal output of Goplater" src="./images/terminal.svg">
 </p>
 
 **`TEMPLATE.md`**
@@ -141,6 +141,7 @@ Need help? Come join our [Matrix Server](https://matrix.to/#/#codeshelldev.oss.g
 ## Why Goplater?
 
 - **Familiar.** It is Go's [`text/template`](https://pkg.go.dev/text/template) syntax. If you know it, you already know Goplater.
+- **Easy debugging.** See what's wrong and where, with clear errors and [helpful context](#reading-errors).
 - **Batteries included.** Read and write files, fetch URLs, work with JSON, YAML, HTML and Markdown, run regex and string operations. See the [Standard Library](#standard-library).
 - **Write your own functions, inside the template.** Define them with `define`, call them with `call`. Arguments and return values included.
 - **Share and import functions.** Put your functions in a file, import them from disk or from a URL and reuse them everywhere.
@@ -212,11 +213,16 @@ Define a function in the template and call it:
 
 <!-- prettier-ignore -->
 ```handlebars
-+{{ define "greet(name)" }}
-    +{{ return (printf "Hello, %s!" .name) }}
++{{ define "greet(name, surname?)" }}
+    +{{ $name := .name }}
+    +{{ if .surname }}
+        +{{ $name = concat .name " " .surname }}
+    +{{ end }}
+    +{{ return (printf "Hello, %s!" $name) }}
 +{{ end }}
 
 +{{ call "greet" "Gopher" }}
++{{ call "greet" "John" "Doe" }}
 ```
 
 
@@ -226,7 +232,16 @@ Output:
 <!-- prettier-ignore -->
 ```handlebars
 Hello, Gopher!
+Hello, John Doe!
 ```
+
+The `define` name is the function signature. Parameters are available as `.name` inside the function:
+
+- `name` is required
+- `name?` is optional (`nil` if not given)
+- `...name` collects all remaining arguments into a slice
+
+Optional and variadic parameters must come last. A `define` without a signature (e.g. `define "test"`) is a plain template and can't be called with `call`.
 
 Prefer Go? Register custom Go functions as well.
 
@@ -247,6 +262,41 @@ Keep your functions in one file and import them from the filesystem or from a UR
 
 Pin remote imports to a tag or a commit and treat them like any other dependency: imported functions run inside your template.
 
+
+### Reading errors
+
+When a template fails, Goplater shows what went wrong and where.
+
+<!-- prettier-ignore -->
+	
+    
+    
+
+    
+
+    
+	
+	
+	
+
+
+
+<p align="center">
+    <img width="768" height="384" alt="example terminal output of an error" src="./examples/images/error.svg">
+</p>
+
+Every error comes with:
+
+| Part     | What it shows                                             |
+| -------- | --------------------------------------------------------- |
+| Location | File, line and column where it happened                   |
+| Context  | The failing line and the lines around it                  |
+| Pointer  | `^` under the exact expression that failed                |
+| Message  | What went wrong, like an undefined variable or a bad type |
+
+Errors in imported files or `call`ed functions point to the file that holds the failing code.
+
+Goplater stops at the first error. Use `--ignore-errors` to report it and keep going with the remaining files.
 
 ### Use the engine instead
 
@@ -618,8 +668,15 @@ Errors if path is not allowed.</p>
 <tr><th align="left"><h4><code>call(name string, args []any) (any, throws error)</code></h4></th>
 </tr><tr><td>
 <p>Calls a func by name with args, optionally with a namespace handle.
-Fails if func is not accessible or undefined.
-Result:</p>
+Fails if func is not accessible, undefined or has no signature.</p>
+<p>Args are bound to the params of the func signature:</p>
+<ul>
+<li><code>name</code>: required, call fails if missing</li>
+<li><code>name?</code>: optional (end only), <code>nil</code> if not given</li>
+<li><code>...name</code>: variadic (last only), a slice of all remaining args</li>
+</ul>
+<p>Too many args fail unless the last param is variadic.</p>
+<p>Result:</p>
 <ul>
 <li><code>return</code> not called (or called with no values): captured template output</li>
 <li><code>return</code> with one value: that value</li>
@@ -705,8 +762,8 @@ Hello John!
 <tr><th align="left"><h4><code>import(alias string?, path string) throws error</code></h4></th>
 </tr><tr><td>
 <p>Tries to import a template file with func definitions.
-Optionally supply an alias for easier access.
-The fs resolver is only available as an internal module and does not ship with the <code>pkg/gplt/modules</code> directory.</p>
+Optionally supply an alias for easier access.</p>
+<p>The fs resolver is only available as an internal module and does not ship with <code>gplt</code>.</p>
 
 
 <details>
@@ -1261,9 +1318,9 @@ Container includes "v1"!
 <table width="100%">
 <tr><th align="left"><h4><code>dict(entries []any) (map[string]any, errors)</code></h4></th>
 </tr><tr><td>
-<p>Creates a new map, optionally with key value pairs.
-Pairs are constructed one by one, a key followed by the given value.
-Currently only supports string keys!</p>
+<p>Creates a new map, optionally with key value pairs.</p>
+<p>Pairs are constructed one by one, a key followed by the given value.</p>
+<p>Currently only supports string keys!</p>
 
 
 <details>
@@ -1586,7 +1643,7 @@ Outputs errors as string.</p>
 
 
 <table width="100%">
-<tr><th align="left"><h4><code>regexMatch(regex string) (bool, throws error)</code></h4></th>
+<tr><th align="left"><h4><code>regexMatch(regex string, str string) (bool, throws error)</code></h4></th>
 </tr><tr><td>
 <p>Returns whether a string matches the given regex pattern.</p>
 
@@ -1595,7 +1652,7 @@ Outputs errors as string.</p>
 
 
 <table width="100%">
-<tr><th align="left"><h4><code>regexFindAll(regex string) ([]string, throws error)</code></h4></th>
+<tr><th align="left"><h4><code>regexFindAll(regex string, str string, n int?) ([]string, throws error)</code></h4></th>
 </tr><tr><td>
 <p>Returns all (optionally up to n) matches against the given regex pattern in a string.</p>
 
@@ -1604,7 +1661,7 @@ Outputs errors as string.</p>
 
 
 <table width="100%">
-<tr><th align="left"><h4><code>regexFindGroups(regex string) ([][]string, throws error)</code></h4></th>
+<tr><th align="left"><h4><code>regexFindGroups(regex string, str string) ([][]string, throws error)</code></h4></th>
 </tr><tr><td>
 <p>Returns all matches and submatches from the given regex pattern in a string.</p>
 
@@ -1613,7 +1670,7 @@ Outputs errors as string.</p>
 
 
 <table width="100%">
-<tr><th align="left"><h4><code>regexFindGroupsIndex(regex string) ([][]int, throws error)</code></h4></th>
+<tr><th align="left"><h4><code>regexFindGroupsIndex(regex string, str string) ([][]int, throws error)</code></h4></th>
 </tr><tr><td>
 <p>Returns all match and submatch positions from the given regex pattern in a string.</p>
 
@@ -1622,7 +1679,7 @@ Outputs errors as string.</p>
 
 
 <table width="100%">
-<tr><th align="left"><h4><code>regexReplaceAll(regex string) (string, throws error)</code></h4></th>
+<tr><th align="left"><h4><code>regexReplaceAll(str string, regex string, new string) (string, throws error)</code></h4></th>
 </tr><tr><td>
 <p>Replaces all matches from the given regex pattern in a string with new (which for allows using '$1', etc.).</p>
 
@@ -1803,7 +1860,7 @@ Outputs errors as string.</p>
 
 
 <table width="100%">
-<tr><th align="left"><h4><code>join(sep string, strings []string) string</code></h4></th>
+<tr><th align="left"><h4><code>join(sep string, strs []string) string</code></h4></th>
 </tr><tr><td>
 <p>Joins multiple strings together by the given separator.</p>
 
@@ -1821,7 +1878,7 @@ Outputs errors as string.</p>
 
 
 <table width="100%">
-<tr><th align="left"><h4><code>concat(strs string) string</code></h4></th>
+<tr><th align="left"><h4><code>concat(strs []string) string</code></h4></th>
 </tr><tr><td>
 <p>Concat strings together (join without sep).</p>
 
@@ -1834,6 +1891,7 @@ Outputs errors as string.</p>
 <tr><th align="left"><h4><code>emit(label string?, value any) throws error</code></h4></th>
 </tr><tr><td>
 <p>Records a value, optionally with a label.</p>
+<p>Not bundled with goplater, used internally for unit and integration tests.</p>
 
 
 </td></tr></table>
