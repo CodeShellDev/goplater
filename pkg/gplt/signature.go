@@ -6,22 +6,60 @@ import (
 	"text/template"
 )
 
+type Param struct {
+	Name		string
+	Optional	bool	// "opts?"
+	Variadic	bool	// "...parts"
+}
+
+type Signature struct {
+	Name	string
+	Params	[]Param
+}
+
+func (s Signature) Required() int {
+	n := 0
+	for _, p := range s.Params {
+		if !p.Optional && !p.Variadic {
+			n++
+		}
+	}
+	return n
+}
+
+func (s Signature) Variadic() bool {
+	return len(s.Params) > 0 && s.Params[len(s.Params) - 1].Variadic
+}
+
+// max positional args, -1 if variadic
+func (s Signature) Max() int {
+	if s.Variadic() {
+		return -1
+	}
+	return len(s.Params)
+}
+
 // walks all defines already parsed, searches for "name(params)" pattern, re-registers that tree under plan name.
-// if prefix is not empty, every define is also namespaced
-func ExtractSignatures(tmpl *template.Template, prefix string) (map[string][]string, error) {
-	signatures := map[string][]string{}
+// if prefix is not empty, every define is also namespaced.
+// only defines with a signature are returned (if not it is just a plain sub-template)
+func ExtractSignatures(tmpl *template.Template, prefix string) (map[string]Signature, error) {
+	signatures := map[string]Signature{}
 
 	for _, t := range tmpl.Templates() {
 		if t.Name() == tmpl.Name() {
 			continue
 		}
 
-		base, params, hasSig := parseSignature(t.Name())
-		if !hasSig {
+		base, params, ok, err := parseSignature(t.Name())
+		if err != nil {
+			return nil, fmt.Errorf("define %q: %w", t.Name(), err)
+		}
+
+		if !ok {
 			base = t.Name()
 		}
 
-		// always register the clean bare name (signature-stripped, for self-reference)
+		// register under clean name (self-reference, no namespacing)
 		if base != t.Name() {
 			_, err := tmpl.AddParseTree(base, t.Tree)
 			if err != nil {
@@ -29,11 +67,11 @@ func ExtractSignatures(tmpl *template.Template, prefix string) (map[string][]str
 			}
 		}
 
-		if hasSig {
-			signatures[base] = params
+		if ok {
+			signatures[base] = Signature{Name: base, Params: params}
 		}
 
-		// additionally register the prefixed name (for external callers)
+		// additionally register namespaced name (external callers)
 		if prefix != "" {
 			prefixed := prefix + "." + base
 
@@ -42,8 +80,8 @@ func ExtractSignatures(tmpl *template.Template, prefix string) (map[string][]str
 				return nil, fmt.Errorf("define %q: %w", t.Name(), err)
 			}
 
-			if hasSig {
-				signatures[prefixed] = params
+			if ok {
+				signatures[prefixed] = Signature{Name: prefixed, Params: params}
 			}
 		}
 	}
@@ -51,27 +89,66 @@ func ExtractSignatures(tmpl *template.Template, prefix string) (map[string][]str
 	return signatures, nil
 }
 
-func parseSignature(name string) (base string, params []string, ok bool) {
+func parseSignature(name string) (base string, params []Param, ok bool, err error) {
 	open := strings.Index(name, "(")
 	if open == -1 || !strings.HasSuffix(name, ")") {
-		return "", nil, false
+		return "", nil, false, nil
 	}
 
 	base = name[:open]
-	return base, splitParams(name[open + 1:len(name) - 1]), true
+	params, err = splitParams(name[open + 1 : len(name) - 1])
+	if err != nil {
+		return "", nil, false, err
+	}
+
+	return base, params, true, nil
 }
 
-func splitParams(raw string) []string {
+func splitParams(raw string) ([]Param, error) {
 	if strings.TrimSpace(raw) == "" {
-		return nil
+		return nil, nil
 	}
 
 	parts := strings.Split(raw, ",")
-	params := make([]string, 0, len(parts))
+	params := make([]Param, 0, len(parts))
+	seenOptional := false
 
-	for _, p := range parts {
-		params = append(params, strings.TrimSpace(p))
+	for i, p := range parts {
+		p = strings.TrimSpace(p)
+		param := Param{}
+
+		// variadic
+		if strings.HasPrefix(p, "...") {
+			param.Variadic = true
+			p = strings.TrimPrefix(p, "...")
+			if i != len(parts) - 1 {
+				return nil, fmt.Errorf("variadic param %q must be last", p)
+			}
+		}
+
+		// optional
+		if strings.HasSuffix(p, "?") {
+			param.Optional = true
+			p = strings.TrimSuffix(p, "?")
+		}
+
+		if p == "" {
+			return nil, fmt.Errorf("empty param name")
+		}
+
+		if param.Variadic && param.Optional {
+			return nil, fmt.Errorf("variadic param %q is already optional", p)
+		}
+
+		if param.Optional {
+			seenOptional = true
+		} else if seenOptional && !param.Variadic {
+			return nil, fmt.Errorf("required param %q after optional", p)
+		}
+
+		param.Name = p
+		params = append(params, param)
 	}
-	
-	return params
+
+	return params, nil
 }

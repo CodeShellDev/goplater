@@ -67,7 +67,7 @@
 +{{- call "images.generateTerminal" "~/images/terminal.svg" $showcaseSvgSource (dict "padding" (list 24 200 24 24)) }}
 
 <p align="center">
-    <img width="768" height="384" alt="Goplater Logo" src="./images/terminal.svg">
+    <img width="768" height="384" alt="example terminal output of Goplater" src="./images/terminal.svg">
 </p>
 
 +{{ call "composer.section" "see-it-in-action" }}
@@ -90,6 +90,7 @@ Need help? Come join our [Matrix Server](https://matrix.to/#/#codeshelldev.oss.g
 ## Why Goplater?
 
 - **Familiar.** It is Go's [`text/template`](https://pkg.go.dev/text/template) syntax. If you know it, you already know Goplater.
+- **Easy debugging.** See what's wrong and where, with clear errors and [helpful context](#reading-errors)
 - **Batteries included.** Read and write files, fetch URLs, work with JSON, YAML, HTML and Markdown, run regex and string operations. See the [Standard Library](#standard-library).
 - **Write your own functions, inside the template.** Define them with `define`, call them with `call`. Arguments and return values included.
 - **Share and import functions.** Put your functions in a file, import them from disk or from a URL and reuse them everywhere.
@@ -160,6 +161,37 @@ Useful flags:
 ### Share functions
 
 +{{ call "composer.section" "share-functions" }}
+
+### Reading errors
+
+When a template fails, Goplater shows what went wrong and where.
+
+<!-- prettier-ignore -->
++{{- $errorSvgSource := `[fg=gray]└──[/] [b,fg=red]✗[/] Test.md (~/Welcome-To-Goplater/Test.md:1)
+    [fg=gray]1[/] | [fg=cyan]+{{ if $user }}[/]
+        [fg=red]^^^^^^^^^^^^^^^[/]
+        [fg=red]undefined variable "$user"[/]
+    [fg=gray]2[/] |     [fg=cyan]Hello, +{{ $user.name }}[/]`
+-}}
+
++{{- call "images.generateTerminal" "~/examples/images/error.svg" $errorSvgSource (dict "padding" (list 24 200 24 24)) }}
+
+<p align="center">
+    <img width="768" height="384" alt="example terminal output of an error" src="./examples/images/error.svg">
+</p>
+
+Every error comes with:
+
+| Part     | What it shows                                             |
+| -------- | --------------------------------------------------------- |
+| Location | File, line and column where it happened                   |
+| Context  | The failing line and the lines around it                  |
+| Pointer  | `^` under the exact expression that failed                |
+| Message  | What went wrong, like an undefined variable or a bad type |
+
+Errors in imported files or `call`ed functions point to the file that holds the failing code.
+
+Goplater stops at the first error. Use `--ignore-errors` to report it and keep going with the remaining files.
 
 ### Use the engine instead
 

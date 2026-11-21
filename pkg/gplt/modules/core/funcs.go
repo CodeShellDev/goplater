@@ -99,7 +99,14 @@ type FuncContext struct {
 const FuncContextKey gplt.ContextKey = "funcContext"
 
 // Calls a func by name with args, optionally with a namespace handle.
-// Fails if func is not accessible or undefined.
+// Fails if func is not accessible, undefined or has no signature.
+// Args are bound to the params of the func signature:
+//	 - `name`: required, call fails if missing
+//	 - `name?`: optional (end only), `nil` if not given
+//	 - `...name`: variadic (last only), a slice of all remaining args
+//
+// Too many args fail unless the last param is variadic.
+//
 // Result:
 //	 - `return` not called (or called with no values): captured template output
 //	 - `return` with one value: that value
@@ -165,8 +172,11 @@ func call(rt *gplt.Runtime, ctx *gplt.Context, name string, args ...any) (any, e
 		return nil, fmt.Errorf("function %q is not defined or not accessible", name)
 	}
 
-	params, _ := rt.Params(name)
-	data := bindParams(params, args)
+	sig, _ := rt.Signature(name)
+	data, err := bindParams(sig, args)
+	if err != nil {
+		return nil, err
+	}
 
 	callerID := uuid.NewString()
 
@@ -190,7 +200,7 @@ func call(rt *gplt.Runtime, ctx *gplt.Context, name string, args ...any) (any, e
 
 	var buf bytes.Buffer
 
-	err := tmpl.Execute(&buf, data)
+	err = tmpl.Execute(&buf, data)
 
 	// the ReturnExitErr exists to make the func stop early
 	if err != nil && !errors.Is(err, ReturnExitErr) {
@@ -215,14 +225,33 @@ func call(rt *gplt.Runtime, ctx *gplt.Context, name string, args ...any) (any, e
 	}
 }
 
-func bindParams(params []string, args []any) map[string]any {
-	data := map[string]any{}
-	
-	for i, p := range params {
-		if i < len(args) {
-			data[p] = args[i]
+func bindParams(sig gplt.Signature, args []any) (map[string]any, error) {
+	if len(args) < sig.Required() {
+		return nil, fmt.Errorf("missing argument %q", sig.Params[len(args)].Name)
+	}
+
+	max := sig.Max()
+	if max >= 0 && len(args) > max {
+		return nil, fmt.Errorf("too many arguments: takes %d, got %d", max, len(args))
+	}
+
+	data := make(map[string]any, len(sig.Params))
+
+	for i, p := range sig.Params {
+		switch {
+		case p.Variadic:
+			rest := []any{}
+			if i < len(args) {
+				rest = append(rest, args[i:]...)
+			}
+			data[p.Name] = rest
+		case i < len(args):
+			data[p.Name] = args[i]
+		default:
+			// always present as a key, but nil (allows for checking if set)
+			data[p.Name] = nil
 		}
 	}
 
-	return data
+	return data, nil
 }

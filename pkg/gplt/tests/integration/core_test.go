@@ -21,6 +21,10 @@ func TestGlobals(t *testing.T) {
 
 func TestFuncs(t *testing.T) {
 	tmpl := `
+		{{ define "empty()" }}
+			{{ return 1 }}
+		{{ end }}
+
 		{{ define "simple(a, b)" }}
 			{{ return ( printf "%d, %d" .a .b ) }}
 		{{ end }}
@@ -37,6 +41,7 @@ func TestFuncs(t *testing.T) {
 			{{ return (call "simple" .a .b) }}
 		{{ end }}
 
+		{{ emit "empty" (call "empty") }}
 		{{ emit "simple" (call "simple" 1 2) }}
 		{{ emit "output" (call "output" 1 2) }}
 		{{ emit "multiple" (call "multiple" 1 2) }}
@@ -45,10 +50,45 @@ func TestFuncs(t *testing.T) {
 
 	trt := tester.Collect(t, tmpl)
 
+	trt.Equal(t, "empty", 1)
 	trt.Equal(t, "simple", "1, 2")
 	trt.Equal(t, "output", "1, 2")
 	trt.Equal(t, "nested", "1, 2")
 	trt.Equal(t, "multiple", []any{1, 2})
+}
+
+func TestOptionalFunc(t *testing.T) {
+	tmpl := `
+		{{ define "multiple(a, b?)" }}
+			{{ return .a .b }}
+		{{ end }}
+
+		{{ emit "multipleA" (call "multiple" 1) }}
+		{{ emit "multipleAB" (call "multiple" 1 2) }}
+	`
+
+	trt := tester.Collect(t, tmpl)
+
+	trt.Equal(t, "multipleA", []any{1, nil})
+	trt.Equal(t, "multipleAB", []any{1, 2})
+}
+
+func TestVariadicFunc(t *testing.T) {
+	tmpl := `
+		{{ define "simple(...a)" }}
+			{{ return .a }}
+		{{ end }}
+
+		{{ emit "simpleEmpty" (call "simple") }}
+		{{ emit "simple1" (call "simple" 1) }}
+		{{ emit "simple2" (call "simple" 1 2) }}
+	`
+
+	trt := tester.Collect(t, tmpl)
+
+	trt.Equal(t, "simpleEmpty", []any{})
+	trt.Equal(t, "simple1", []any{1})
+	trt.Equal(t, "simple2", []any{1, 2})
 }
 
 func TestReturns(t *testing.T) {

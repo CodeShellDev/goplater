@@ -21,7 +21,7 @@ type Runtime struct {
 	engineOptions EngineOptions
 	store		  map[string]StoreContainer
 	registry	  *ModuleRegistry
-	signatures	  map[string][]string
+	signatures	  map[string]Signature
 }
 
 type StoreContainer interface {
@@ -199,10 +199,10 @@ func (rt *Runtime) FuncMap(ctx any, includeUnsafe bool) (template.FuncMap, error
 	return m, nil
 }
 
-func (rt *Runtime) Params(name string) ([]string, bool) { 
-	p, ok := rt.signatures[name]
+func (rt *Runtime) Signature(name string) (Signature, bool) { 
+	sig, ok := rt.signatures[name]
 	
-	return p, ok 
+	return sig, ok 
 }
 
 // Render runs gplt engine on a template body with optional data and context.
@@ -243,13 +243,13 @@ func (rt *Runtime) PrepareRender(name, body string, data any, ctx *Context) (*te
 	tmpl.Funcs(funcMap)
 
 	if rt.engineOptions.ParseFunc == nil {
-		rt.engineOptions.ParseFunc = func(s string, tmpl *template.Template) (error) {
+		rt.engineOptions.ParseFunc = func(s string, tmpl *template.Template) (string, error) {
 			_, err := tmpl.Parse(s)
-			return err
+			return body, err
 		}
 	}
 
-	err = rt.engineOptions.ParseFunc(body, tmpl)
+	body, err = rt.engineOptions.ParseFunc(body, tmpl)
 
 	tmplErr, ok := tmplerrors.TryWrapTemplateErrorOnce(tmpl, body, err)
 
