@@ -290,7 +290,7 @@ func substr(_ *gplt.Runtime, _ *gplt.Context, str string, start int, end int) st
 // Joins multiple strings together by the given separator.
 //
 // @param sep string
-// @param strings []string
+// @param strs []string
 // @returns string
 var joinFunc = modules.NewFunc("join", joinStrings, joinAny, joinVariadic)
 
