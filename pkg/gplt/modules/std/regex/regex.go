@@ -31,7 +31,7 @@ var Module = modules.NewModule(regexMatchFunc, regexFindAllFunc, regexFindGroups
 // Returns whether a string matches the given regex pattern.
 //
 // @param regex string
-// @params str string
+// @param str string
 // @returns bool
 // @returns error
 var regexMatchFunc = modules.NewFunc("regexMatch", regexMatch)
@@ -49,8 +49,8 @@ func regexMatch(_ *gplt.Runtime, _ *gplt.Context, regex string, str string) (boo
 // Returns all (optionally up to n) matches against the given regex pattern in a string.
 //
 // @param regex string
-// @params str string
-// @params n int?
+// @param str string
+// @param n int?
 // @returns []string
 // @returns error
 var regexFindAllFunc = modules.NewFunc("regexFindAll", regexFindAll, regexFindAllN)
@@ -70,7 +70,7 @@ func regexFindAllN(_ *gplt.Runtime, _ *gplt.Context, regex, str string, n int) (
 // Returns all matches and submatches from the given regex pattern in a string.
 //
 // @param regex string
-// @params str string
+// @param str string
 // @returns [][]string
 // @returns error
 var regexFindGroupsFunc = modules.NewFunc("regexFindGroups", regexFindGroups)
@@ -88,7 +88,7 @@ func regexFindGroups(_ *gplt.Runtime, _ *gplt.Context, regex string, str string)
 // Returns all match and submatch positions from the given regex pattern in a string.
 //
 // @param regex string
-// @params str string
+// @param str string
 // @returns [][]int
 // @returns error
 var regexFindGroupsIndexFunc = modules.NewFunc("regexFindGroupsIndex", regexFindGroupsIndex)
@@ -105,9 +105,9 @@ func regexFindGroupsIndex(_ *gplt.Runtime, _ *gplt.Context, regex string, str st
 
 // Replaces all matches from the given regex pattern in a string with new (which for allows using '$1', etc.).
 //
-// @params str string
+// @param str string
 // @param regex string
-// @params new string
+// @param new string
 // @returns string
 // @returns error
 var regexReplaceAllFunc = modules.NewFunc("regexReplaceAll", regexReplaceAll)
