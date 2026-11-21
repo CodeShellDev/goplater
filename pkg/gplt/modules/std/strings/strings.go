@@ -329,7 +329,7 @@ func toStringSlice(values []any) []string {
 
 // Concat strings together (join without sep).
 //
-// @param strs string
+// @param strs []string
 // @returns string
 var concatFunc = modules.NewFunc("concat", concatStrings, concatAny, concatVariadic)
 
