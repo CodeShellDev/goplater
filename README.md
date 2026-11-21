@@ -300,7 +300,7 @@ Goplater stops at the first error. Use `--ignore-errors` to report it and keep g
 
 ### Use the engine instead
 
-`gplt`, Goplaters underlying templating engine, is not tied to the CLI.
+`gplt`, Goplater's underlying templating engine, is not tied to the CLI.
 Load the modules you want and embed templating in your own Go application.
 Browse the packages on [pkg.go.dev](https://pkg.go.dev/github.com/CodeShellDev/goplater/pkg/gplt).
 
