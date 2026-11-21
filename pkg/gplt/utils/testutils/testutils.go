@@ -77,23 +77,23 @@ func (tester Tester) CollectWithContext(t *testing.T, tmpl string, ctx *gplt.Con
 	}
 }
 
-func (tester Tester) ExpectErr(t *testing.T, tmpl string, expectErr error) TestRuntime {
+func (tester Tester) ExpectErr(t *testing.T, tmpl string, expectedErr error) TestRuntime {
 	t.Helper()
 
-	return tester.ExpectErrWithContext(t, tmpl, nil, nil, expectErr)
+	return tester.ExpectErrWithContext(t, tmpl, nil, nil, expectedErr)
 }
 
-func (tester Tester) ExpectErrWithContext(t *testing.T, tmpl string, ctx *gplt.Context, modules []modules.Module, expectErr error) TestRuntime {
+func (tester Tester) ExpectErrWithContext(t *testing.T, tmpl string, ctx *gplt.Context, modules []modules.Module, expectedErr error) TestRuntime {
 	t.Helper()
 
 	output, _, err := render(tmpl, ctx, tester.modules, append(tester.safeModules, modules...), nil)
 
 	if err == nil {
-		t.Fatalf("returned no errors, expected: %v", expectErr)
+		t.Fatalf("returned no errors, expected: %v", expectedErr)
 	}
 
-	if expectErr != nil && !errors.Is(err, expectErr) {
-		t.Fatalf("expected: %v, got: %v", expectErr, err)
+	if expectedErr != nil && !errors.Is(err, expectedErr) {
+		t.Fatalf("expected: %v, got: %v", expectedErr, err)
 	}
 
 	return TestRuntime{

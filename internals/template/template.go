@@ -77,7 +77,7 @@ func run(ctx *context.TemplateContext) error {
 
 			err = handleFile(&newContext)
 			if err != nil {
-				tmplErr, ok := errors.AsType[tmplerrors.TemplateError](err)
+				tmplErr, ok := errors.AsType[*tmplerrors.TemplateError](err)
 		
 				if ok {
 					prettyErr := prettyerrors.Convert(tmplErr)

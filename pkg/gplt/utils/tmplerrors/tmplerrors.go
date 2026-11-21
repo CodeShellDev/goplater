@@ -29,7 +29,7 @@ type TemplateError struct {
 	ErrorMessage	string
 }
 
-var _ error = *new(TemplateError)
+var _ error = new(TemplateError)
 
 
 var (
@@ -42,27 +42,27 @@ var (
 	)
 )
 
-func TryWrapTemplateErrorOnce(tmpl *template.Template, body string, err error) (TemplateError, bool) {
-	var existing TemplateError
+func TryWrapTemplateErrorOnce(tmpl *template.Template, body string, err error) (*TemplateError, bool) {
+	var existing *TemplateError
 
 	// prevent rewrapping
 	if !errors.As(err, &existing) {
 		return Parse(ParseTemplate(tmpl, body), err)
 	}
 	
-	return TemplateError{}, false
+	return &TemplateError{}, false
 }
 
 func ParseTemplate(tmpl *template.Template, body string) ParsedTemplate {
 	return ParsedTemplate{Template: tmpl, Raw: body}
 }
 
-func Parse(t ParsedTemplate, err error) (TemplateError, bool) {
+func Parse(t ParsedTemplate, err error) (*TemplateError, bool) {
 	if err == nil {
-		return TemplateError{}, false
+		return &TemplateError{}, false
 	}
 
-	res := TemplateError{
+	res := &TemplateError{
 		raw:	  err,
 		template: t,
 		Column:	  -1,
@@ -72,18 +72,20 @@ func Parse(t ParsedTemplate, err error) (TemplateError, bool) {
 
 	matches := executionErrorRe.FindStringSubmatch(raw)
 	if matches != nil {
-		return parseExecutionError(res, matches), true
+		parseExecutionError(res, matches)
+		return res, true
 	}
 
 	matches = parseErrorRe.FindStringSubmatch(raw)
 	if matches != nil {
-		return parseParseError(res, matches), true
+		parseParseError(res, matches)
+		return res, true
 	}
 
-	return TemplateError{}, false
+	return &TemplateError{}, false
 }
 
-func parseExecutionError(res TemplateError, matches []string) TemplateError {
+func parseExecutionError(res *TemplateError, matches []string) {
 	res.ParseName = matches[1]
 	res.Line, _ = strconv.Atoi(matches[2])
 	res.Expression = matches[5]
@@ -108,11 +110,9 @@ func parseExecutionError(res TemplateError, matches []string) TemplateError {
 	}
 
 	res.ErrorContext += ":"
-
-	return res
 }
 
-func parseParseError(res TemplateError, matches []string) TemplateError {
+func parseParseError(res *TemplateError, matches []string) {
 	res.ParseName = matches[1]
 	res.Line, _ = strconv.Atoi(matches[2])
 
@@ -133,8 +133,6 @@ func parseParseError(res TemplateError, matches []string) TemplateError {
 	}
 
 	res.ErrorContext += ":"
-
-	return res
 }
 
 // byte offset (from go; 0-based) turned into actual column (runes; 1-based)
@@ -163,14 +161,18 @@ func byteOffsetToColumn(raw string, line, byteOff int) int {
 	return utf8.RuneCountInString(l[:byteOff]) + 1
 }
 
-func (e TemplateError) Error() string {
+func (e *TemplateError) Error() string {
 	if e.raw != nil {
 		return e.raw.Error()
 	}
 	return e.ErrorMessage
 }
 
-func (e TemplateError) ErrorLines() (int, string) {
+func (e *TemplateError) Unwrap() error {
+    return e.raw
+}
+
+func (e *TemplateError) ErrorLines() (int, string) {
 	if e.Line <= 0 {
 		return 0, ""
 	}
@@ -196,7 +198,7 @@ func (e TemplateError) ErrorLines() (int, string) {
 	return from, strings.Join(lines, "\n")
 }
 
-func (e TemplateError) CleanContext() string {
+func (e *TemplateError) CleanContext() string {
 	ctx := e.ErrorContext
 
 	ctx = strings.TrimPrefix(ctx, "template: ")
@@ -210,6 +212,6 @@ func (e TemplateError) CleanContext() string {
 	return strings.TrimSpace(ctx)
 }
 
-func (e TemplateError) CleanError() string {
+func (e *TemplateError) CleanError() string {
 	return strings.TrimSpace(e.ErrorMessage)
 }

@@ -24,7 +24,7 @@ func Execute() {
 	
 	err := rootCmd.Execute()
 	if err != nil {
-		tmplErr, ok := errors.AsType[tmplerrors.TemplateError](err)
+		tmplErr, ok := errors.AsType[*tmplerrors.TemplateError](err)
 		
 		if ok {
 			prettyErr := prettyerrors.Convert(tmplErr)

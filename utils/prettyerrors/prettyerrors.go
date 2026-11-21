@@ -6,16 +6,16 @@ import (
 )
 
 type TemplateError struct {
-    tmplerrors.TemplateError
+    *tmplerrors.TemplateError
 }
 
-var _ error = *new(TemplateError)
+var _ error = new(TemplateError)
 
-func Convert(err tmplerrors.TemplateError) TemplateError {
-	return TemplateError{err}
+func Convert(err *tmplerrors.TemplateError) *TemplateError {
+	return &TemplateError{err}
 }
 
-func (e TemplateError) ErrorSnippet(color bool) string {
+func (e *TemplateError) ErrorSnippet(color bool) string {
 	if e.Line <= 0 {
 		return ""
 	}
