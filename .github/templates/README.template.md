@@ -90,7 +90,7 @@ Need help? Come join our [Matrix Server](https://matrix.to/#/#codeshelldev.oss.g
 ## Why Goplater?
 
 - **Familiar.** It is Go's [`text/template`](https://pkg.go.dev/text/template) syntax. If you know it, you already know Goplater.
-- **Easy debugging.** See what's wrong and where, with clear errors and [helpful context](#reading-errors)
+- **Easy debugging.** See what's wrong and where, with clear errors and [helpful context](#reading-errors).
 - **Batteries included.** Read and write files, fetch URLs, work with JSON, YAML, HTML and Markdown, run regex and string operations. See the [Standard Library](#standard-library).
 - **Write your own functions, inside the template.** Define them with `define`, call them with `call`. Arguments and return values included.
 - **Share and import functions.** Put your functions in a file, import them from disk or from a URL and reuse them everywhere.
