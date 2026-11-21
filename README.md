@@ -300,7 +300,7 @@ Goplater stops at the first error. Use `--ignore-errors` to report it and keep g
 
 ### Use the engine instead
 
-`gplt-engine` is not tied to the CLI.
+`gplt`, Goplaters underlying templating engine, is not tied to the CLI.
 Load the modules you want and embed templating in your own Go application.
 Browse the packages on [pkg.go.dev](https://pkg.go.dev/github.com/CodeShellDev/goplater/pkg/gplt).
 
@@ -315,7 +315,7 @@ We use [Goplater Bot](https://github.com/CodeShellDev/goplater-action/blob/main/
 
 ## Standard Library
 
-`gplt-engine` includes a large and growing selection of built-in functions for use in your templates.
+The `gplt` engine includes a large and growing selection of built-in functions for use in your templates.
 Every module is independent, load all of them or only the ones you need.
 
 Goplater ships with all implemented modules in addition to `fs`-specific and cli dependent functions.
