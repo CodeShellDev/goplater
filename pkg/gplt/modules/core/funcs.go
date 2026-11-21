@@ -104,9 +104,7 @@ const FuncContextKey gplt.ContextKey = "funcContext"
 //	 - `name`: required, call fails if missing
 //	 - `name?`: optional (end only), `nil` if not given
 //	 - `...name`: variadic (last only), a slice of all remaining args
-//
 // Too many args fail unless the last param is variadic.
-//
 // Result:
 //	 - `return` not called (or called with no values): captured template output
 //	 - `return` with one value: that value
