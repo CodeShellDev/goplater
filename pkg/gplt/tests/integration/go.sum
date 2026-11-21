@@ -2,8 +2,8 @@ github.com/PuerkitoBio/goquery v1.14.0 h1:kfHPaR71dOh6TD4SS4g2bjN1MTYx8nUdLzb1xc
 github.com/PuerkitoBio/goquery v1.14.0/go.mod h1:XUxFiysSccNd2XFo0qKyhEzGlshiP21eN+7JgWvXWQc=
 github.com/andybalholm/cascadia v1.3.5 h1:RLjq12WJy58dN6eCIQrz0bAGZkztHWsEPFxP53Y7Ms8=
 github.com/andybalholm/cascadia v1.3.5/go.mod h1:BLRmbRjpEtNKieZOCCvYj4RqN+KRA41GBe/5O+G93kM=
-github.com/codeshelldev/goplater/pkg/gplt v0.3.1 h1:W/rj61Tl8c+ofpIvOBjgwh16OyA3EFX2NZzmQ1XQJ5M=
-github.com/codeshelldev/goplater/pkg/gplt v0.3.1/go.mod h1:6txZgoPxWu3eJuJnl7qeXmwBOe+BK6X9veAaNkbvzl4=
+github.com/codeshelldev/goplater/pkg/gplt v0.4.0 h1:uXWw9M5KiMAskvLQxo0cJjLJs+Atq+uVPY9IIduwTLM=
+github.com/codeshelldev/goplater/pkg/gplt v0.4.0/go.mod h1:6txZgoPxWu3eJuJnl7qeXmwBOe+BK6X9veAaNkbvzl4=
 github.com/codeshelldev/goplater/pkg/gplt/collections v0.2.1 h1:oFdkXOjXyiEAfkIIwTU75C4th/5aVB1qS7TwwE9tzP0=
 github.com/codeshelldev/goplater/pkg/gplt/collections v0.2.1/go.mod h1:4Y+1Vh/MSciN/qNcFHhWf454PDHSVDi2OgM3T+vd2WU=
 github.com/codeshelldev/goplater/pkg/gplt/modules/ext/html v0.1.2 h1:9TaHNwS2TcXbgzumLQyQZPelFaiqjNbOqx15IUIPPZ8=
