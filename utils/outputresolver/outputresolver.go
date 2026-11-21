@@ -64,16 +64,7 @@ func ResolveOutput(source, output string) string {
 
 // preserve output judging by root
 func ResolveOutputPreserved(root, source, output string) (string, error) {
-	isDirSource := IsDirPath(source)
-
-	// file output => rename or overwrite
-	if !IsDirPath(output) {
-		if isDirSource {
-			return "", ErrDirToFile
-		}
-
-		return filepath.Abs(output)
-	}
+	isSourceADir := IsDirPath(source)
 
 	if root == "" {
 		return "", ErrEmptyRoot
@@ -95,14 +86,24 @@ func ResolveOutputPreserved(root, source, output string) (string, error) {
 	}
 
 	if isOutside(rel) {
-		return "", errors.New(ErrOutsideRoot.Error() + ": " + source + " not in " + root)
+		return "", ErrOutsideRoot
 	}
 
-	// source is root and a file: keep basename
-	if rel == "." && !isDirSource {
-		rel = filepath.Base(sourceAbs)
+	// file output => rename or rewrite
+	if !IsDirPath(output) {
+		if isSourceADir {
+			return "", ErrDirToFile
+		}
+
+		return filepath.Abs(output)
 	}
 
+	// single file => preserve basename only
+	if !isSourceADir {
+		return filepath.Abs(filepath.Join(output, filepath.Base(sourceAbs)))
+	}
+
+	// dir => preserve relative structure
 	return filepath.Abs(filepath.Join(output, rel))
 }
 

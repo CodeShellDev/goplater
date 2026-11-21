@@ -79,21 +79,22 @@ func TestOutputPathPreserve(t *testing.T) {
 		{root: ".", source: "source.txt", output: ".", expect: "source.txt"},
 		{root: ".", source: "source.txt", output: "other.txt", expect: "other.txt"},
 		{root: ".", source: "source/source.txt", output: "output/other.txt", expect: "output/other.txt"},
+		{root: ".", source: "source/source.txt", output: ".", expect: "source.txt"},
 
 		{root: "source", source: "source/source.txt", output: ".", expect: "source.txt"},
 		{root: "source", source: "source/source.txt", output: "output/", expect: "output/source.txt"},
 		{root: "source", source: "source/source.txt", output: "output/sub/", expect: "output/sub/source.txt"},
 		{root: "source", source: "source/sub/", output: "output/", expect: "output/sub"},
-		{root: "source", source: "source/sub/folder/source.txt", output: "output/", expect: "output/sub/folder/source.txt"},
+		{root: "source", source: "source/sub/folder/source.txt", output: "output/", expect: "output/source.txt"},
 
-		{root: "fs/source", source: "fs/source/sub/folder/source.txt", output: "fs/output/", expect: "fs/output/sub/folder/source.txt"},
+		{root: "fs/source", source: "fs/source/sub/folder/source.txt", output: "fs/output/", expect: "fs/output/source.txt"},
 		{root: "fs/source", source: "fs/source/sub/folder/", output: "fs/output/", expect: "fs/output/sub/folder"},
 
 		{root: ".fs", source: ".fs/test.md", output: ".", expect: "test.md"},
-		{root: ".fs", source: ".fs/test/test.md", output: ".", expect: "test/test.md"},
+		{root: ".fs", source: ".fs/test/test.md", output: ".", expect: "test.md"},
 
 		// root as non-clean path
-		{name: "root with ./", root: "./source", source: "source/sub/x.txt", output: "output/", expect: "output/sub/x.txt"},
+		{name: "root with ./", root: "./source", source: "source/sub/x.txt", output: "output/", expect: "output/x.txt"},
 
 		// errors
 		{name: "source outside root", root: "source", source: "other/x.txt", output: "output/", wantErr: true},
@@ -137,8 +138,8 @@ func TestOutputPathInferred(t *testing.T) {
 		{source: "source/source.txt", output: "output/", expect: "output/source.txt"},
 		{source: "source/source.txt", output: "output/sub/", expect: "output/sub/source.txt"},
 		{source: "source/sub/", output: "output/", expect: "output/sub"},
-		{source: "source/sub/folder/source.txt", output: "output/", expect: "output/sub/folder/source.txt"},
-		{source: "fs/source/sub/folder/source.txt", output: "fs/output/", expect: "fs/output/sub/folder/source.txt"},
+		{source: "source/sub/folder/source.txt", output: "output/", expect: "output/source.txt"},
+		{source: "fs/source/sub/folder/source.txt", output: "fs/output/", expect: "fs/output/source.txt"},
 		{source: "fs/source/sub/folder/", output: "fs/output/", expect: "fs/output/sub/folder"},
 
 		// single segment below common parent: keep
@@ -148,7 +149,7 @@ func TestOutputPathInferred(t *testing.T) {
 		{name: "workspace", source: "ws/src/x.txt", output: "ws/build/", expect: "ws/build/x.txt"},
 
 		// same path, different text
-		{name: "leading ./", source: "./source/sub/x.txt", output: "./output/", expect: "output/sub/x.txt"},
+		{name: "leading ./", source: "./source/sub/x.txt", output: "./output/", expect: "output/x.txt"},
 
 		// errors
 		{name: "no shared parent", source: "/a/b/x.txt", output: "/c/d/", wantErr: true},
