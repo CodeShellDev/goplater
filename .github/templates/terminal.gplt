@@ -159,7 +159,7 @@
 +{{ end }}
 
 +{{/* opts: fontSize lineHeight padding barHeight bg fg family chrome width minWidth scaleWidth scaleHeight colors */}}
-+{{ define "generate(src, opts)" }}
++{{ define "generate(src, opts?)" }}
 	+{{ $o := .opts }}
 	+{{ $fs := call "opt" $o "fontSize" 15 }}
 	+{{ $lh := call "opt" $o "lineHeight" 23 }}

@@ -112,12 +112,10 @@
             +{{ break }}
         +{{ end }}
 
-        +{{ if ne $line "" }}
-            +{{ $summary = append $summary $line }}
-        +{{ end }}
+        +{{ $summary = append $summary $line }}
     +{{ end }}
 
-    +{{ return (join "\n" $summary) }}
+    +{{ return (trimSuffix (join "\n" $summary) "\n") }}
 +{{ end }}
 
 +{{ define "parseFuncParams(content)"}}
