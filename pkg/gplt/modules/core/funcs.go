@@ -100,11 +100,14 @@ const FuncContextKey gplt.ContextKey = "funcContext"
 
 // Calls a func by name with args, optionally with a namespace handle.
 // Fails if func is not accessible, undefined or has no signature.
+//
 // Args are bound to the params of the func signature:
 //	 - `name`: required, call fails if missing
 //	 - `name?`: optional (end only), `nil` if not given
 //	 - `...name`: variadic (last only), a slice of all remaining args
+//
 // Too many args fail unless the last param is variadic.
+//
 // Result:
 //	 - `return` not called (or called with no values): captured template output
 //	 - `return` with one value: that value

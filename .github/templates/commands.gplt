@@ -108,15 +108,13 @@
         +{{ $line = after $line "//"}}
         +{{ $line = trimSpace $line }}
 
-        +{{ if eq $line "" }}
-            +{{ break }}
-        +{{ end }}
-
         +{{ if regexMatch `^@(param|throws|returns|example|output)\b` $line }}
             +{{ break }}
         +{{ end }}
 
-        +{{ $summary = append $summary $line }}
+        +{{ if ne $line "" }}
+            +{{ $summary = append $summary $line }}
+        +{{ end }}
     +{{ end }}
 
     +{{ return (join "\n" $summary) }}
