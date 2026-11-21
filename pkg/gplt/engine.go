@@ -16,7 +16,7 @@ type Engine struct {
 type EngineOptions struct {
 	Delims			types.Delims
 	ProcessFunc	func(tmpl *template.Template) error
-	ParseFunc	func(body string, tmpl *template.Template) (error)
+	ParseFunc	func(body string, tmpl *template.Template) (string, error)
 }
 
 func NewEngine() *Engine { 

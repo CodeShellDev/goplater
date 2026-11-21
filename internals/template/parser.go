@@ -14,8 +14,8 @@ var DELIMS = types.Delims{
 	Right: "}}",
 }
 
-func parseFunc(_ *context.TemplateContext) func(s string, tmpl *template.Template) error {
-	return func (s string, tmpl *template.Template) error {
+func parseFunc(_ *context.TemplateContext) func(s string, tmpl *template.Template) (string, error) {
+	return func (s string, tmpl *template.Template) (string, error) {
 		p := parser.New().Delims(DELIMS)
 
 		p.Use(ignore.New())
@@ -23,11 +23,11 @@ func parseFunc(_ *context.TemplateContext) func(s string, tmpl *template.Templat
 		parsed, err := p.Process(s)
 
 		if err != nil {
-			return err
+			return "", err
 		}
 
 		_, err = tmpl.Parse(parsed)
 
-		return err
+		return parsed, err
 	}
 }
