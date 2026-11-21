@@ -100,6 +100,8 @@ var Module = modules.NewModule(emitFunc)
 
 // Records a value, optionally with a label.
 //
+// Not bundled with goplater, used internally for unit and integration tests.
+//
 // @param label string?
 // @param value any
 // @returns error

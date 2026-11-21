@@ -9,7 +9,8 @@ import (
 
 // Tries to import a template file with func definitions.
 // Optionally supply an alias for easier access.
-// The fs resolver is only available as an internal module and does not ship with the `pkg/gplt/modules` directory.
+//
+// The fs resolver is only available as an internal module and does not ship with `gplt`.
 //
 // @param alias string?
 // @param path string

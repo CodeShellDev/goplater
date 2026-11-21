@@ -235,7 +235,9 @@ func list(_ *gplt.Runtime, _ *gplt.Context, values ...any) []any {
 }
 
 // Creates a new map, optionally with key value pairs.
+//
 // Pairs are constructed one by one, a key followed by the given value.
+//
 // Currently only supports string keys!
 //
 // @param entries []any
