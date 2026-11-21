@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
+	"strings"
 
 	"github.com/codeshelldev/goplater/internals/template"
 	tmplContext "github.com/codeshelldev/goplater/internals/template/context"
@@ -85,10 +86,17 @@ func makePathsAbsolute(in []string) ([]string, error) {
 	return out, nil
 }
 
+func parseStringSlice(slice []string) []string {
+	for i, item := range slice {
+		slice[i] = strings.TrimSpace(item)
+	}
+	return slice
+}
+
 func run(cmd *cobra.Command, args []string) error {
 	templateContext := tmplContext.New(templateOptions)
 
-	allowedOutputFolders := append(templateOptions.AllowedOutputs, templateOptions.Output)
+	allowedOutputFolders := append(parseStringSlice(templateOptions.AllowedOutputs), templateOptions.Output)
 
 	var err error
 	templateOptions.AllowedOutputs, err = makePathsAbsolute(allowedOutputFolders)
@@ -97,7 +105,7 @@ func run(cmd *cobra.Command, args []string) error {
 		return err
 	}
 
-	allowedInputFolders := append(templateOptions.AllowedInputs, templateOptions.Source)
+	allowedInputFolders := append(parseStringSlice(templateOptions.AllowedInputs), templateOptions.Source)
 
 	templateOptions.AllowedInputs, err = makePathsAbsolute(allowedInputFolders)
 
