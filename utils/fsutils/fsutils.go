@@ -2,6 +2,7 @@ package fsutils
 
 import (
 	"errors"
+	"fmt"
 	"os"
 	"path/filepath"
 	"strings"
@@ -107,5 +108,5 @@ func WithAllowedRoot(path string, allowed []string, fn func(root *os.Root, relat
 		return closeErr
 	}
 
-	return errors.New("path is outside the allowed directories")
+	return fmt.Errorf("path %q is outside the allowed directories", path)
 }
