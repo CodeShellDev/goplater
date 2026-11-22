@@ -115,6 +115,7 @@ Run `npm install my-app`
 	- [globals](#globals)
 	- [import](#import)
 	- [return](#return)
+	- [types](#types)
 	- [html](#html)
 	- [markdown](#markdown)
 	- [yaml](#yaml)
@@ -846,6 +847,25 @@ Optionally supply an alias for easier access.</p>
 <tr><th align="left"><h4><code>getOutputs() []any</code></h4></th>
 </tr><tr><td>
 <p>Returns current outputs.</p>
+
+
+</td></tr></table>
+<h3><a href="https://github.com/codeshelldev/goplater/blob/main/pkg/gplt/modules/core/types.go">types</a></h3>
+
+
+<table width="100%">
+<tr><th align="left"><h4><code>typeOf(value any) (string, throws error)</code></h4></th>
+</tr><tr><td>
+<p>Returns the type of a value as a string (using <a href="https://pkg.go.dev/reflect#TypeOf">reflect.TypeOf</a>).</p>
+
+
+</td></tr></table>
+
+
+<table width="100%">
+<tr><th align="left"><h4><code>isType(value any, typeName string) bool</code></h4></th>
+</tr><tr><td>
+<p>Reports whether value is of type (using <a href="https://pkg.go.dev/reflect#TypeOf">reflect.TypeOf</a>).</p>
 
 
 </td></tr></table>
