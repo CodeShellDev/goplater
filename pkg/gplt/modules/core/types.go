@@ -8,7 +8,7 @@ import (
 	"github.com/codeshelldev/goplater/pkg/gplt/modules"
 )
 
-// Returns the type of a value as a string.
+// Returns the type of a value as a string (using [reflect.TypeOf](https://pkg.go.dev/reflect#TypeOf)).
 //
 // @param value any
 // @return string
@@ -23,7 +23,7 @@ func typeOf(_ *gplt.Runtime, _ *gplt.Context, value any) (string, error) {
     return reflect.TypeOf(value).String(), nil
 }
 
-// Reports whether value is of type.
+// Reports whether value is of type (using [reflect.TypeOf](https://pkg.go.dev/reflect#TypeOf)).
 //
 // @param value any
 // @param typeName string
