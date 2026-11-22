@@ -149,6 +149,7 @@ Useful flags:
 | `--match`                | Only template files matching a regex                               |
 | `--flatten`              | Drop the directory structure                                       |
 | `--root`                 | Choose the root that output paths are relative to                  |
+| `--allowed-inputs`       | Limit from where templates may read                                |
 | `--allowed-outputs`      | Limit where templates may write                                    |
 | `--trim-max-blank-lines` | Experimental: Remove blank lines left behind by non-output actions |
 | `--dry-run`              | Show what would be written, change nothing                         |
