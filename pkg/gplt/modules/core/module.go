@@ -17,4 +17,7 @@ var Module = modules.NewModule(
 
 	returnFunc, 
 	getOutputsFunc,
+
+	typeOfFunc,
+	isTypeFunc,
 )
