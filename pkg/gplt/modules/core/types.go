@@ -11,8 +11,8 @@ import (
 // Returns the type of a value as a string (using [reflect.TypeOf](https://pkg.go.dev/reflect#TypeOf)).
 //
 // @param value any
-// @return string
-// @return error
+// @returns string
+// @returns error
 var typeOfFunc = modules.NewFunc("typeOf", typeOf)
 
 func typeOf(_ *gplt.Runtime, _ *gplt.Context, value any) (string, error) {
@@ -27,7 +27,7 @@ func typeOf(_ *gplt.Runtime, _ *gplt.Context, value any) (string, error) {
 //
 // @param value any
 // @param typeName string
-// @return bool
+// @returns bool
 var isTypeFunc = modules.NewFunc("isType", isType)
 
 func isType(_ *gplt.Runtime, _ *gplt.Context, value any, typeName string) bool {
