@@ -4,7 +4,7 @@ go 1.26.0
 
 require (
 	github.com/PuerkitoBio/goquery v1.14.0
-	github.com/codeshelldev/goplater/pkg/gplt v0.3.3
+	github.com/codeshelldev/goplater/pkg/gplt v0.4.2
 )
 
 require (

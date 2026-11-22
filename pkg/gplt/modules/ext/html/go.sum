@@ -2,7 +2,7 @@ github.com/PuerkitoBio/goquery v1.14.0 h1:kfHPaR71dOh6TD4SS4g2bjN1MTYx8nUdLzb1xc
 github.com/PuerkitoBio/goquery v1.14.0/go.mod h1:XUxFiysSccNd2XFo0qKyhEzGlshiP21eN+7JgWvXWQc=
 github.com/andybalholm/cascadia v1.3.5 h1:RLjq12WJy58dN6eCIQrz0bAGZkztHWsEPFxP53Y7Ms8=
 github.com/andybalholm/cascadia v1.3.5/go.mod h1:BLRmbRjpEtNKieZOCCvYj4RqN+KRA41GBe/5O+G93kM=
-github.com/codeshelldev/goplater/pkg/gplt v0.3.3 h1:5j93W0X/A2s3yNSfTBOWam4S6XDqwQaLpmIHZwD4rJA=
-github.com/codeshelldev/goplater/pkg/gplt v0.3.3/go.mod h1:6txZgoPxWu3eJuJnl7qeXmwBOe+BK6X9veAaNkbvzl4=
+github.com/codeshelldev/goplater/pkg/gplt v0.4.2 h1:yajfHeZK8M9hek2aC6W3x2qXBh65DoxXGZmfmqk9zV0=
+github.com/codeshelldev/goplater/pkg/gplt v0.4.2/go.mod h1:6txZgoPxWu3eJuJnl7qeXmwBOe+BK6X9veAaNkbvzl4=
 golang.org/x/net v0.63.0 h1:HCoTmNh9EpD1PpK8gBNFY4gcTY4N+KQEO8ylfIKqFJ0=
 golang.org/x/net v0.63.0/go.mod h1:15JLg3IX1bLjHK264EZQEbIpTiR/KVLuo9CTRWd0pig=
