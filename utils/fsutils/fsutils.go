@@ -1,7 +1,6 @@
 package fsutils
 
 import (
-	"errors"
 	"fmt"
 	"os"
 	"path/filepath"
@@ -11,7 +10,10 @@ import (
 func Exists(path string) (bool, os.FileInfo) {
 	info, err := os.Stat(path)
 
-	return !errors.Is(err, os.ErrNotExist), info
+	if err != nil {
+		return false, nil
+	}
+	return true, info
 }
 
 func IsDir(path string) bool {
@@ -20,7 +22,6 @@ func IsDir(path string) bool {
 	if exists {
 		return info.IsDir()
 	}
-
 	return false
 }
 
@@ -30,7 +31,6 @@ func IsFile(path string) bool {
 	if exists {
 		return !info.IsDir()
 	}
-
 	return false
 }
 
@@ -72,28 +72,24 @@ func IsInside(file, dir string) bool {
 	return relPath == "." || (relPath != ".." && !strings.HasPrefix(relPath, ".." + string(filepath.Separator)))
 }
 
-func WithAllowedRoot(path string, allowed []string, fn func(root *os.Root, relative string) error) error {
-	path, err := filepath.Abs(path)
+func WithAllowedRoot(target string, allowed []string, fn func(root *os.Root, relative string) error) error {
+	targetAbs, err := filepath.Abs(target)
 	if err != nil {
 		return err
 	}
 
-	for _, dir := range allowed {
-		dir, err := filepath.Abs(dir)
+	for _, path := range allowed {
+		absPath, err := filepath.Abs(path)
 		if err != nil {
 			continue
 		}
 
-		relative, err := filepath.Rel(dir, path)
-		if err != nil {
+		relative, err := filepath.Rel(absPath, targetAbs)
+		if err != nil || !filepath.IsLocal(relative) {
 			continue
 		}
 
-		if relative == ".." || filepath.IsAbs(relative) || (len(relative) > 3 && relative[:3] == ".." + string(filepath.Separator)) {
-			continue
-		}
-
-		root, err := os.OpenRoot(dir)
+		root, err := os.OpenRoot(absPath)
 		if err != nil {
 			continue
 		}
@@ -108,5 +104,5 @@ func WithAllowedRoot(path string, allowed []string, fn func(root *os.Root, relat
 		return closeErr
 	}
 
-	return fmt.Errorf("path %q is outside the allowed directories", path)
+	return fmt.Errorf("path %q is outside the allowed directories", targetAbs)
 }

@@ -22,10 +22,18 @@ type TemplateOptions struct {
 }
 
 type TemplateContext struct {
+	Options		*TemplateOptions	// read-only
+	Local		Local				// copied each read/import
+	Shared		*Shared				// shared across top-level file run (entry file)
+}
+
+type Local struct {
 	Invoker		string
+}
+
+type Shared struct {
 	Path		string
 	OutputPath	string
-	Options		*TemplateOptions
 }
 
 const TemplateContextKey gplt.ContextKey = "templateContext"

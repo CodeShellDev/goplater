@@ -1,7 +1,6 @@
 package template
 
 import (
-	"errors"
 	"fmt"
 	"os"
 	"path/filepath"
@@ -24,37 +23,39 @@ func resolveOutput(root, source, output string, preserveStruct bool) (string, er
 }
 
 func templateFile(ctx *context.TemplateContext) (string, error) {
-	if !fsutils.IsFile(ctx.Path) {
-		return "", os.ErrNotExist
-	}
-
-	data, err := os.ReadFile(ctx.Path)
-
+	root, err := os.OpenRoot(filepath.Dir(ctx.Shared.Path))
 	if err != nil {
-		return string(data), err
+		return "", err
 	}
+	defer root.Close()
 
-	if data == nil {
-		return string(data), errors.New("empty file")
-	}
+	name := filepath.Base(ctx.Shared.Path)
 
-	tmplStr, err := templateContent(string(data), ctx)
-
+	info, err := root.Lstat(name)
 	if err != nil {
-		return string(data), err
+		return "", err
 	}
 
-	return tmplStr, nil
+	if !info.Mode().IsRegular() {
+		return "", fmt.Errorf("%q is not a regular file", ctx.Shared.Path)
+	}
+
+	data, err := root.ReadFile(name)
+	if err != nil {
+		return "", err
+	}
+
+	return templateContent(string(data), ctx)
 }
 
 func handleFile(ctx *context.TemplateContext) error {
-	output, err := resolveOutput(ctx.Options.Root, ctx.Path, ctx.Options.Output, !ctx.Options.Flatten)
+	output, err := resolveOutput(ctx.Options.Root, ctx.Shared.Path, ctx.Options.Output, !ctx.Options.Flatten)
 
 	if err != nil {
 		return err
 	}
 
-	ctx.OutputPath, err = filepath.Abs(output)
+	ctx.Shared.OutputPath, err = filepath.Abs(output)
 
 	if err != nil {
 		return err
@@ -70,29 +71,24 @@ func handleFile(ctx *context.TemplateContext) error {
 }
 
 func handleFileWrite(content string, ctx *context.TemplateContext) error {
-	filePathAbs, _ := filepath.Abs(ctx.OutputPath)
-
-	allowed := false
-	for _, try := range ctx.Options.AllowedOutputs {
-		if fsutils.IsInside(filePathAbs, try) {
-			allowed = true
-		}
-	}
-
-	if !allowed {
-		return fmt.Errorf("not allowed to output to %q", filePathAbs)
-	}
-
-	if ctx.Options.DryRun {
-		return nil
-	}
-	
-	dir := filepath.Dir(filePathAbs)
-	err := os.MkdirAll(dir, 0755)
+	filePathAbs, err := filepath.Abs(ctx.Shared.OutputPath)
 
 	if err != nil {
-		return fmt.Errorf("could not create output %q: %w", dir, err)
+		return err
 	}
 
-	return os.WriteFile(filePathAbs, []byte(content), 0644)
+	return fsutils.WithAllowedRoot(filePathAbs, ctx.Options.AllowedOutputs, func(root *os.Root, relative string) error {
+		if ctx.Options.DryRun {
+			return nil
+		}
+
+		dir := filepath.Dir(relative)
+		err := root.MkdirAll(dir, 0755)
+
+		if err != nil {
+			return fmt.Errorf("could not create output %q: %w", dir, err)
+		}
+
+		return root.WriteFile(relative, []byte(content), 0644)
+	})
 }

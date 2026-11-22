@@ -26,23 +26,23 @@ func New() *Templater {
 }
 
 func run(ctx *context.TemplateContext) error {
-	isDir := fsutils.IsDir(ctx.Path)
-	isFile := fsutils.IsFile(ctx.Path)
+	isDir := fsutils.IsDir(ctx.Shared.Path)
+	isFile := fsutils.IsFile(ctx.Shared.Path)
 	
-	ctx.Invoker = ctx.Path
+	ctx.Local.Invoker = ctx.Shared.Path
 
 	if isDir {
-		t := tree.NewTree(os.Stdout, ctx.Path)
+		t := tree.NewTree(os.Stdout, ctx.Shared.Path)
 
 		t.Start()
 
-		err := filepath.WalkDir(ctx.Path, func(path string, d fs.DirEntry, err error) error {
+		err := filepath.WalkDir(ctx.Shared.Path, func(path string, d fs.DirEntry, err error) error {
 			if err != nil {
 				return err
 			}
 
 			if d.IsDir() {
-				if path != ctx.Path && !ctx.Options.Recursive {
+				if path != ctx.Shared.Path && !ctx.Options.Recursive {
 					return filepath.SkipDir
 				}
 				return nil
@@ -55,8 +55,8 @@ func run(ctx *context.TemplateContext) error {
 			}
 
 			newContext := *ctx
-			newContext.Path = absPath
-			newContext.Invoker = absPath
+			newContext.Local.Invoker = absPath
+			newContext.Shared = &context.Shared{Path: absPath}
 
 			ok, err := matchFile(&newContext)
 
@@ -68,7 +68,7 @@ func run(ctx *context.TemplateContext) error {
 				return nil
 			}
 
-			relPath, err := filepath.Rel(ctx.Path, path)
+			relPath, err := filepath.Rel(ctx.Shared.Path, path)
 			if err != nil {
 				return err
 			}
@@ -90,12 +90,13 @@ func run(ctx *context.TemplateContext) error {
 				fmt.Println()
 
 				if !ctx.Options.IgnoreErrors {
-					os.Exit(1)
 					return err
 				}
+
+				return nil
 			}
 
-			relOutput, err := fsutils.SafeRelative(ctx.Options.Source, newContext.OutputPath)
+			relOutput, err := fsutils.SafeRelative(ctx.Options.Source, newContext.Shared.OutputPath)
 
 			if err != nil {
 				file.Fail(err)
@@ -103,7 +104,7 @@ func run(ctx *context.TemplateContext) error {
 				return err
 			}
 
-			if newContext.OutputPath != "" {
+			if newContext.Shared.OutputPath != "" {
 				file.SetOutput(relOutput)
 			}
 

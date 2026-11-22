@@ -1,6 +1,7 @@
 package funcs
 
 import (
+	"errors"
 	"fmt"
 	"io/fs"
 	"os"
@@ -11,13 +12,6 @@ import (
 	"github.com/codeshelldev/goplater/pkg/gplt/modules"
 	"github.com/codeshelldev/goplater/utils/fsutils"
 )
-
-func isPathAllowed(path string, allowed []string) bool {
-	err := fsutils.WithAllowedRoot(path, allowed, func(_ *os.Root, _ string) error {
-		return nil
-	})
-	return err == nil
-}
 
 // Reads and templates file.
 //
@@ -107,15 +101,16 @@ func readHandler(ctx *gplt.Context, path string) (string, *gplt.Context, error) 
 	filePathAbs := ResolvePath(*tmplContext, path)
 
 	res, err := SafeRead(filePathAbs, tmplContext)
-
 	if err != nil {
 		return "", nil, fmt.Errorf("could not read %q: %w", path, err)
 	}
 
-	tmplContext.Invoker = filePathAbs
+	// copy local
+	c := *tmplContext
+	c.Local.Invoker = filePathAbs
 
 	newContext := &gplt.Context{}
-	newContext.Set(context.TemplateContextKey, tmplContext)
+	newContext.Set(context.TemplateContextKey, &c)
 
 	return res, newContext, nil
 }
@@ -196,6 +191,7 @@ func appendFile(_ *gplt.Runtime, ctx *gplt.Context, path string, content string)
 //
 // @param path string
 // @returns bool
+// @returns error
 //
 // @example
 //	 +{{ if (fsExists "/path/to/somewhere") }}
@@ -203,17 +199,21 @@ func appendFile(_ *gplt.Runtime, ctx *gplt.Context, path string, content string)
 //	 +{{ end }}
 var fsExistsFunc = modules.NewFunc("fsExists", fsExists)
 
-func fsExists(_ *gplt.Runtime, ctx *gplt.Context, path string) bool {
+func fsExists(_ *gplt.Runtime, ctx *gplt.Context, path string) (bool, error) {
 	tmplContext := ctx.Get(context.TemplateContextKey).(*context.TemplateContext)
 
-	filePathAbs := ResolvePath(*tmplContext, path)
+	absPath := ResolvePath(*tmplContext, path)
 
-	_, err := os.Stat(filePathAbs)
-	if err != nil {
-		return false
+	err := fsutils.WithAllowedRoot(absPath, tmplContext.Options.AllowedInputs, func(root *os.Root, relative string) error {
+		_, err := root.Stat(relative)
+		return err
+	})
+
+	if errors.Is(err, os.ErrNotExist) {
+		return false, nil
 	}
 
-	return true
+	return err == nil, err
 }
 
 // Returns if a file exists at a given path.
@@ -232,7 +232,14 @@ func isFile(_ *gplt.Runtime, ctx *gplt.Context, path string) bool {
 
 	absPath := ResolvePath(*tmplContext, path)
 
-	info, err := os.Stat(absPath)
+	var info os.FileInfo
+
+	err := fsutils.WithAllowedRoot(absPath, tmplContext.Options.AllowedInputs, func(root *os.Root, relative string) error {
+		i, err := root.Stat(relative)
+		info = i
+		return err
+	})
+
 	if err != nil {
 		return false
 	}
@@ -256,7 +263,14 @@ func isDir(_ *gplt.Runtime, ctx *gplt.Context, path string) bool {
 
 	absPath := ResolvePath(*tmplContext, path)
 
-	info, err := os.Stat(absPath)
+	var info os.FileInfo
+
+	err := fsutils.WithAllowedRoot(absPath, tmplContext.Options.AllowedInputs, func(root *os.Root, relative string) error {
+		i, err := root.Stat(relative)
+		info = i
+		return err
+	})
+
 	if err != nil {
 		return false
 	}
@@ -281,8 +295,15 @@ func listDir(_ *gplt.Runtime, ctx *gplt.Context, path string) ([]string, error) 
 
 	folderPathAbs := ResolvePath(*tmplContext, path)
 
-	entries, err := os.ReadDir(folderPathAbs)
-	if err != nil {
+	var entries []os.DirEntry
+
+	err := fsutils.WithAllowedRoot(folderPathAbs, tmplContext.Options.AllowedInputs, func(root *os.Root, relative string) error {
+		e, err := fs.ReadDir(root.FS(), filepath.ToSlash(relative))
+		entries = e
+		return err
+	})
+
+	if err != nil  {
 		return nil, err
 	}
 
@@ -314,12 +335,16 @@ func walkDir(_ *gplt.Runtime, ctx *gplt.Context, path string) ([]string, error) 
 
 	paths := []string{}
 
-	err := filepath.WalkDir(folderPathAbs, func(path string, d fs.DirEntry, err error) error {
-		if err != nil {
-			return err
-		}
-		paths = append(paths, path)
-		return nil
+	err := fsutils.WithAllowedRoot(folderPathAbs, tmplContext.Options.AllowedInputs, func(root *os.Root, relative string) error {
+		return fs.WalkDir(root.FS(), filepath.ToSlash(relative), func(path string, d fs.DirEntry, err error) error {
+			if err != nil {
+				return err
+			}
+
+			paths = append(paths, filepath.Join(root.Name(), filepath.FromSlash(path)))
+
+			return nil
+		})
 	})
 
 	return paths, err

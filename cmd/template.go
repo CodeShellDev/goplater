@@ -65,19 +65,28 @@ func validate(cmd *cobra.Command, args []string) error {
 	return nil
 }
 
+func makePathAbsolute(path string) (string, error) {
+	if !filepath.IsAbs(path) {
+		var err error
+		path, err = filepath.Abs(path)
+
+		if err != nil {
+			return "", fmt.Errorf("could not make %q absolute: %w", path, err)
+		}
+	}
+
+	return path, nil
+}
+
+
 func makePathsAbsolute(in []string) ([]string, error) {
 	out := []string{}
 
 	for _, path := range in {
-		absPath := path
+		absPath, err := makePathAbsolute(path)
 
-		if !filepath.IsAbs(path) {
-			var err error
-			absPath, err = filepath.Abs(path)
-
-			if err != nil {
-				return nil, fmt.Errorf("could not make %q absolute: %w", path, err)
-			}
+		if err != nil {
+			return nil, err
 		}
 
 		out = append(out, absPath)
@@ -96,16 +105,25 @@ func parseStringSlice(slice []string) []string {
 func run(cmd *cobra.Command, args []string) error {
 	templateContext := tmplContext.New(templateOptions)
 
+	// ctx path
+	ctxPathAbs, err := filepath.Abs(args[0])
+
+	if err != nil {
+		return fmt.Errorf("could not make source path %q absolute: %w", templateOptions.Source, err)
+	}
+
+	templateContext.Shared.Path = ctxPathAbs
+
+	// allowed dirs
 	allowedOutputFolders := append(parseStringSlice(templateOptions.AllowedOutputs), templateOptions.Output)
 
-	var err error
 	templateOptions.AllowedOutputs, err = makePathsAbsolute(allowedOutputFolders)
 
 	if err != nil {
 		return err
 	}
 
-	allowedInputFolders := append(parseStringSlice(templateOptions.AllowedInputs), templateOptions.Source)
+	allowedInputFolders := append(parseStringSlice(templateOptions.AllowedInputs), templateOptions.Source, ctxPathAbs)
 
 	templateOptions.AllowedInputs, err = makePathsAbsolute(allowedInputFolders)
 
@@ -113,6 +131,7 @@ func run(cmd *cobra.Command, args []string) error {
 		return err
 	}
 
+	// output
 	outputPathAbs, err := filepath.Abs(templateOptions.Output)
 
 	if err != nil {
@@ -121,6 +140,7 @@ func run(cmd *cobra.Command, args []string) error {
 
 	templateOptions.Output = outputPathAbs
 
+	// root
 	if templateOptions.Root != "" {
 		rootPathAbs, err := filepath.Abs(templateOptions.Root)
 
@@ -131,14 +151,7 @@ func run(cmd *cobra.Command, args []string) error {
 		templateOptions.Root = rootPathAbs
 	}
 
-	sourcePathAbs, err := filepath.Abs(args[0])
-
-	if err != nil {
-		return fmt.Errorf("could not make source path %q absolute: %w", templateOptions.Source, err)
-	}
-
-	templateContext.Path = sourcePathAbs
-
+	// init
 	core.Renderer = &templater
 	core.Matcher = &templater
 

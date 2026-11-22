@@ -71,7 +71,7 @@ func (rt *Runtime) Import(callerScope, path, aliasOverride, expectedHash string,
 		return nil
 	}
 
-	resolved, err := rt.engine.resolver.Resolve(path)
+	resolved, err := rt.engine.resolver.Resolve(ctx, path)
 	if err != nil {
 		return fmt.Errorf("module %q: %w", path, err)
 	}

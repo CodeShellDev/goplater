@@ -30,7 +30,7 @@ func templateStr(input string, tmplContext *context.TemplateContext) (string, er
 	
 	e.SetResolver(
 		gplt.NewResolverChain(
-			funcs.NewFsResolver(tmplContext),
+			funcs.NewFsResolver(),
 			resolvers.NewHttpResolver(),
 		),
 	)
@@ -38,7 +38,7 @@ func templateStr(input string, tmplContext *context.TemplateContext) (string, er
 	ctx := &gplt.Context{}
 	ctx.Set(context.TemplateContextKey, tmplContext)
 
-	output, err := e.Execute(tmplContext.Path, input, nil, gplt.EngineOptions{
+	output, err := e.Execute(tmplContext.Shared.Path, input, nil, gplt.EngineOptions{
 		Delims: DELIMS,
 		ParseFunc: parseFunc(tmplContext),
 		ProcessFunc: transformFunc(tmplContext),

@@ -12,7 +12,7 @@ func (t *Templater) Match(ctx *context.TemplateContext) (bool, error) {
 }
 
 func matchFile(ctx *context.TemplateContext) (bool, error) {
-	fileName := filepath.Base(ctx.Path)
+	fileName := filepath.Base(ctx.Shared.Path)
 
 	for _, reStr := range ctx.Options.Match {
 		re, err := regexp.Compile(reStr)

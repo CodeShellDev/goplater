@@ -11,12 +11,10 @@ import (
 	"github.com/codeshelldev/goplater/utils/fsutils"
 )
 
-type FsResolver struct {
-	ctx *context.TemplateContext
-}
+type FsResolver struct {}
 
-func NewFsResolver(ctx *context.TemplateContext) *FsResolver {
-	return &FsResolver{ctx: ctx}
+func NewFsResolver() *FsResolver {
+	return &FsResolver{}
 }
 
 func (r *FsResolver) Trusted() bool {
@@ -27,10 +25,18 @@ func (r *FsResolver) CanResolve(path string) bool {
 	return strings.HasPrefix(path, "./") || strings.HasPrefix(path, "../") || strings.HasPrefix(path, "~/") || strings.HasPrefix(path, "/")
 }
 
-func (r *FsResolver) Resolve(path string) (string, error) {
-	filePathAbs := ResolvePath(*r.ctx, path + "." + gplt.IMPORT_FILE_EXTENSION)
+func (r *FsResolver) Resolve(ctx *gplt.Context, path string) (string, error) {
+	tmplContext, _ := ctx.Get(context.TemplateContextKey).(context.TemplateContext)
 
-	info, err := os.Stat(filePathAbs)
+	filePathAbs := ResolvePath(tmplContext, path + "." + gplt.IMPORT_FILE_EXTENSION)
+
+	var info os.FileInfo
+
+	err := fsutils.WithAllowedRoot(filePathAbs, tmplContext.Options.AllowedInputs, func(root *os.Root, relative string) error {
+		i, err := root.Stat(relative)
+		info = i
+		return err
+	})
 
 	if err != nil {
 		return "", errors.New("file does not exist")
@@ -40,7 +46,7 @@ func (r *FsResolver) Resolve(path string) (string, error) {
 		return "", errors.New("import is not a valid file")
 	}
 
-	return SafeRead(filePathAbs, r.ctx)
+	return SafeRead(filePathAbs, &tmplContext)
 }
 
 func SafeRead(path string, tmplContext *context.TemplateContext) (string, error) {
@@ -71,8 +77,10 @@ func (r *FsResolver) DeriveName(path string) (string, error) {
 	return name, nil
 }
 
-func (r *FsResolver) CleanPath(path string) (string, error) {
-	return ResolvePath(*r.ctx, path + "." + gplt.IMPORT_FILE_EXTENSION), nil
+func (r *FsResolver) CleanPath(ctx *gplt.Context, path string) (string, error) {
+	tmplContext, _ := ctx.Get(context.TemplateContextKey).(context.TemplateContext)
+
+	return ResolvePath(tmplContext, path + "." + gplt.IMPORT_FILE_EXTENSION), nil
 }
 
 func ResolvePath(ctx context.TemplateContext, path string) string {
@@ -82,7 +90,7 @@ func ResolvePath(ctx context.TemplateContext, path string) string {
 	var filePathAbs string
 
 	if isRel {
-		absPath, _ := filepath.Abs(ctx.Invoker)
+		absPath, _ := filepath.Abs(ctx.Local.Invoker)
 
 		filePathAbs = GetAbsPathWithSource(path, filepath.Dir(absPath))
 	} else if isRelToSource {

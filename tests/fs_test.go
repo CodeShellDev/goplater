@@ -34,7 +34,9 @@ func newFSTestContext(t *testing.T) (*gplt.Context, string, string) {
 	}
 
 	tmplContext := &context.TemplateContext{
-		Invoker: filepath.Join(source, "main.gplt"),
+		Local: context.Local{
+			Invoker: filepath.Join(source, "main.gplt"),
+		},
 		Options: &context.TemplateOptions{
 			Root:			root,
 			Source:			source,

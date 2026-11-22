@@ -1,9 +1,7 @@
 package resolvers
 
 import (
-	"errors"
 	"fmt"
-	"io"
 	"net/http"
 	"net/url"
 	"path/filepath"
@@ -11,14 +9,22 @@ import (
 	"time"
 
 	"github.com/codeshelldev/goplater/pkg/gplt"
+	"github.com/codeshelldev/goplater/pkg/gplt/utils/httpclient"
 )
 
 type HttpResolver struct {
 	Client *http.Client
 }
 
+// imports: https only
+var ImportPolicy = httpclient.Policy{
+	AllowedSchemes:	[]string{"https"},
+	MaxRedirects:	5,
+	Timeout:		5 * time.Second,
+}
+
 func NewHttpResolver() *HttpResolver {
-	return &HttpResolver{Client: &http.Client{Timeout: 5 * time.Second}}
+	return &HttpResolver{Client: httpclient.NewClient(ImportPolicy)}
 }
 
 func (r *HttpResolver) Trusted() bool { 
@@ -29,35 +35,21 @@ func (r *HttpResolver) CanResolve(path string) bool {
 	return strings.HasPrefix(path, "http://") || strings.HasPrefix(path, "https://")
 }
 
-func (r *HttpResolver) Resolve(path string) (string, error) {
-	path += "." + gplt.IMPORT_FILE_EXTENSION
-
-	return FetchURL(r.Client, path)
-}
-
-func FetchURL(client *http.Client, url string) (string, error) {
-	resp, err := client.Get(url)
+func (r *HttpResolver) Resolve(ctx *gplt.Context, path string) (string, error) {
+	u, err := url.Parse(path)
 	if err != nil {
-		return "", fmt.Errorf("remote request failed: %w", err)
-	}
-	defer resp.Body.Close()
-
-	if resp.StatusCode != http.StatusOK {
-		return "", fmt.Errorf("remote returned %q: %s", url, resp.Status)
+		return "", fmt.Errorf("malformed url %q: %w", path, err)
 	}
 
-	const maxResponseSize = 10 << 20 // 10 MB
-
-	body, err := io.ReadAll(io.LimitReader(resp.Body, maxResponseSize + 1))
-	if err != nil {
-		return "", fmt.Errorf("could not read response body: %w", err)
+	if u.Scheme != "https" {
+		return "", fmt.Errorf("import %q: only https is allowed", path)
 	}
 
-	if len(body) > maxResponseSize {
-		return "", errors.New("remote response exceeds 10 MB limit")
-	}
+	// default file ext
+	u.Path += "." + gplt.IMPORT_FILE_EXTENSION
+	u.RawPath = ""
 
-	return string(body), nil
+	return httpclient.FetchURL(r.Client, u.String())
 }
 
 func (r *HttpResolver) DeriveName(path string) (string, error) {
@@ -73,7 +65,7 @@ func (r *HttpResolver) DeriveName(path string) (string, error) {
 	return name, nil
 }
 
-func (r *HttpResolver) CleanPath(path string) (string, error) {
+func (r *HttpResolver) CleanPath(ctx *gplt.Context, path string) (string, error) {
 	URL, err := url.Parse(path)
 
 	if err != nil {

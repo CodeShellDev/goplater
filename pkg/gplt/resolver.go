@@ -4,9 +4,9 @@ import "fmt"
 
 type Resolver interface {
 	CanResolve(path string) bool
-	Resolve(path string) (string, error)
+	Resolve(ctx *Context, path string) (string, error)
 	DeriveName(path string) (string, error)
-	CleanPath(path string) (string, error)
+	CleanPath(ctx *Context, path string) (string, error)
 	Trusted() bool
 }
 
@@ -31,10 +31,10 @@ func (c *ResolverChain) Add(r Resolver) {
 	c.resolvers = append(c.resolvers, r)
 }
 
-func (c *ResolverChain) Resolve(path string) (ResolvedModule, error) {
+func (c *ResolverChain) Resolve(ctx *Context, path string) (ResolvedModule, error) {
 	for _, r := range c.resolvers {
 		if r.CanResolve(path) {
-			source, err := r.Resolve(path)
+			source, err := r.Resolve(ctx, path)
 
 			if err != nil {
 				return ResolvedModule{}, err
@@ -46,7 +46,7 @@ func (c *ResolverChain) Resolve(path string) (ResolvedModule, error) {
 				return ResolvedModule{}, err
 			}
 
-			clean, err := r.CleanPath(path)
+			clean, err := r.CleanPath(ctx, path)
 
 			if err != nil {
 				return ResolvedModule{}, err
