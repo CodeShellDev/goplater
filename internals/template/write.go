@@ -77,11 +77,14 @@ func handleFileWrite(content string, ctx *context.TemplateContext) error {
 		return err
 	}
 
-	return fsutils.WithAllowedRoot(filePathAbs, ctx.Options.AllowedOutputs, func(root *os.Root, relative string) error {
-		if ctx.Options.DryRun {
-			return nil
+	if !ctx.Options.DryRun {
+		err := ensureAllowedDir(filePathAbs, ctx.Options.AllowedOutputs)
+		if err != nil {
+			return err
 		}
+	}
 
+	return fsutils.WithAllowedRoot(filePathAbs, ctx.Options.AllowedOutputs, func(root *os.Root, relative string) error {
 		dir := filepath.Dir(relative)
 		err := root.MkdirAll(dir, 0755)
 
@@ -91,4 +94,14 @@ func handleFileWrite(content string, ctx *context.TemplateContext) error {
 
 		return root.WriteFile(relative, []byte(content), 0644)
 	})
+}
+
+func ensureAllowedDir(target string, allowed []string) error {
+	for _, dir := range allowed {
+		if fsutils.IsInside(target, dir) {
+			return os.MkdirAll(dir, 0755)
+		}
+	}
+
+	return nil
 }
