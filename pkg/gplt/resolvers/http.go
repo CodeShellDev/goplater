@@ -20,7 +20,7 @@ type HttpResolver struct {
 	cache	map[string]string
 }
 
-const MAX_CACHE_ENTRIES = 64
+const MAX_CACHE_SIZE = 64
 
 // imports: https only
 var ImportPolicy = httpclient.Policy{
@@ -75,7 +75,7 @@ func (r *HttpResolver) Resolve(ctx *gplt.Context, path string) (string, error) {
 	}
 
 	r.mu.Lock()
-	if len(r.cache) >= MAX_CACHE_ENTRIES {
+	if len(r.cache) >= MAX_CACHE_SIZE {
 		clear(r.cache)
 	}
 	r.cache[target] = body
