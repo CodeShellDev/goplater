@@ -48,6 +48,11 @@ func run(ctx *context.TemplateContext) error {
 				return nil
 			}
 
+			// skip symlinks
+			if d.Type()&fs.ModeSymlink != 0 {
+				return nil
+			}
+
 			absPath, err := filepath.Abs(path)
 
 			if err != nil {
