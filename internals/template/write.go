@@ -78,7 +78,7 @@ func handleFileWrite(content string, ctx *context.TemplateContext) error {
 	}
 
 	if !ctx.Options.DryRun {
-		err := ensureAllowedDir(filePathAbs, ctx.Options.AllowedOutputs)
+		err := ensureOutputDir(filePathAbs, ctx.Options.AllowedOutputs)
 		if err != nil {
 			return err
 		}
@@ -96,12 +96,12 @@ func handleFileWrite(content string, ctx *context.TemplateContext) error {
 	})
 }
 
-func ensureAllowedDir(target string, allowed []string) error {
-	for _, dir := range allowed {
-		if fsutils.IsInside(target, dir) {
-			return os.MkdirAll(dir, 0755)
+func ensureOutputDir(target string, allowed []string) error {
+	for _, path := range allowed {
+		if target == path || fsutils.IsInside(target, path) {
+			return os.MkdirAll(filepath.Dir(target), 0755)
 		}
 	}
 
-	return nil
+	return fmt.Errorf("target %q is not allowed", target)
 }
