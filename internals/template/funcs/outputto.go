@@ -22,7 +22,7 @@ var OutsideOfScopeErr = errors.New("outside of allowed scope")
 func outputToFn(rt *gplt.Runtime, ctx *gplt.Context, path string) error {
 	tmplContext := ctx.Get(context.TemplateContextKey).(*context.TemplateContext)
 
-	absPath := ResolvePath(*tmplContext, path)
+	absPath := ResolvePath(tmplContext, path)
 
 	// only lexically, does not prevent symlink bypass (will get caught at final write)
 	allowed := false
