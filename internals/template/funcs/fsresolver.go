@@ -26,7 +26,11 @@ func (r *FsResolver) CanResolve(path string) bool {
 }
 
 func (r *FsResolver) Resolve(ctx *gplt.Context, path string) (string, error) {
-	tmplContext, _ := ctx.Get(context.TemplateContextKey).(context.TemplateContext)
+	tmplContext, ok := ctx.Get(context.TemplateContextKey).(context.TemplateContext)
+
+	if !ok {
+		return "", errors.New("missing template context")
+	}
 
 	filePathAbs := ResolvePath(tmplContext, path + "." + gplt.IMPORT_FILE_EXTENSION)
 
