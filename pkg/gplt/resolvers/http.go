@@ -6,6 +6,7 @@ import (
 	"net/url"
 	"path/filepath"
 	"strings"
+	"sync"
 	"time"
 
 	"github.com/codeshelldev/goplater/pkg/gplt"
@@ -14,7 +15,12 @@ import (
 
 type HttpResolver struct {
 	Client *http.Client
+
+	mu		sync.Mutex
+	cache	map[string]string
 }
+
+const MAX_CACHE_ENTRIES = 64
 
 // imports: https only
 var ImportPolicy = httpclient.Policy{
@@ -24,7 +30,10 @@ var ImportPolicy = httpclient.Policy{
 }
 
 func NewHttpResolver() *HttpResolver {
-	return &HttpResolver{Client: httpclient.NewClient(ImportPolicy)}
+	return &HttpResolver{
+		Client: httpclient.NewClient(ImportPolicy),
+		cache: map[string]string{},
+	}
 }
 
 func (r *HttpResolver) Trusted() bool { 
@@ -48,8 +57,31 @@ func (r *HttpResolver) Resolve(ctx *gplt.Context, path string) (string, error) {
 	// default file ext
 	u.Path += "." + gplt.IMPORT_FILE_EXTENSION
 	u.RawPath = ""
+	u.Fragment = ""
 
-	return httpclient.FetchURL(r.Client, u.String())
+	target := u.String()
+
+	r.mu.Lock()
+	body, ok := r.cache[target]
+	r.mu.Unlock()
+
+	if ok {
+		return body, nil
+	}
+
+	body, err = httpclient.FetchURL(r.Client, target)
+	if err != nil {
+		return "", err
+	}
+
+	r.mu.Lock()
+	if len(r.cache) >= MAX_CACHE_ENTRIES {
+		clear(r.cache)
+	}
+	r.cache[target] = body
+	r.mu.Unlock()
+
+	return body, nil
 }
 
 func (r *HttpResolver) DeriveName(path string) (string, error) {
