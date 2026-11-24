@@ -26,7 +26,7 @@ func (r *FsResolver) CanResolve(path string) bool {
 }
 
 func (r *FsResolver) Resolve(ctx *gplt.Context, path string) (string, error) {
-	tmplContext, ok := ctx.Get(context.TemplateContextKey).(context.TemplateContext)
+	tmplContext, ok := ctx.Get(context.TemplateContextKey).(*context.TemplateContext)
 
 	if !ok {
 		return "", errors.New("missing template context")
@@ -50,7 +50,7 @@ func (r *FsResolver) Resolve(ctx *gplt.Context, path string) (string, error) {
 		return "", errors.New("import is not a valid file")
 	}
 
-	return SafeRead(filePathAbs, &tmplContext)
+	return SafeRead(filePathAbs, tmplContext)
 }
 
 func SafeRead(path string, tmplContext *context.TemplateContext) (string, error) {
@@ -82,12 +82,12 @@ func (r *FsResolver) DeriveName(path string) (string, error) {
 }
 
 func (r *FsResolver) CleanPath(ctx *gplt.Context, path string) (string, error) {
-	tmplContext, _ := ctx.Get(context.TemplateContextKey).(context.TemplateContext)
+	tmplContext, _ := ctx.Get(context.TemplateContextKey).(*context.TemplateContext)
 
 	return ResolvePath(tmplContext, path + "." + gplt.IMPORT_FILE_EXTENSION), nil
 }
 
-func ResolvePath(ctx context.TemplateContext, path string) string {
+func ResolvePath(ctx *context.TemplateContext, path string) string {
 	isRel := strings.HasPrefix(path, "./") || strings.HasPrefix(path, "../")
 	isRelToSource := strings.HasPrefix(path, "~/")
 	

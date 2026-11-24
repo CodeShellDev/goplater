@@ -67,6 +67,7 @@ func (rt *Runtime) Import(callerScope, path, aliasOverride, expectedHash string,
 	if rt.registry.Loaded(path) {
 		if expectedHash != "" {
 			hash, _ := rt.registry.GetHashFor(path)
+
 			err := expectHash(expectedHash, hash)
 			if err != nil {
 				return fmt.Errorf("import checksum mismatch: %w", err)
