@@ -78,30 +78,34 @@ func handleFileWrite(content string, ctx *context.TemplateContext) error {
 	}
 
 	if !ctx.Options.DryRun {
-		err := ensureOutputDir(filePathAbs, ctx.Options.AllowedOutputs)
-		if err != nil {
-			return err
+		var allowed bool
+		for _, path := range ctx.Options.AllowedOutputs {
+			if filePathAbs == path || fsutils.IsInside(filePathAbs, path) {
+				allowed = true
+
+				err := os.MkdirAll(filepath.Dir(filePathAbs), 0755)
+
+				if err != nil {
+					return err
+				}
+
+				// explicitly allowed file => direct write
+				if filePathAbs == path {
+					return os.WriteFile(filePathAbs, []byte(content), 0644)
+				}
+			}
+		}
+
+		if !allowed {
+			return fmt.Errorf("target %q is not allowed", filePathAbs)
 		}
 	}
 
 	return fsutils.WithAllowedRoot(filePathAbs, ctx.Options.AllowedOutputs, func(root *os.Root, relative string) error {
-		dir := filepath.Dir(relative)
-		err := root.MkdirAll(dir, 0755)
-
-		if err != nil {
-			return fmt.Errorf("could not create output %q: %w", dir, err)
+		if ctx.Options.DryRun {
+			return nil
 		}
 
 		return root.WriteFile(relative, []byte(content), 0644)
 	})
-}
-
-func ensureOutputDir(target string, allowed []string) error {
-	for _, path := range allowed {
-		if target == path || fsutils.IsInside(target, path) {
-			return os.MkdirAll(filepath.Dir(target), 0755)
-		}
-	}
-
-	return fmt.Errorf("target %q is not allowed", target)
 }
