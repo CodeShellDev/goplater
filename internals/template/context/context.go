@@ -39,5 +39,5 @@ type Shared struct {
 const TemplateContextKey gplt.ContextKey = "templateContext"
 
 func New(options *TemplateOptions) *TemplateContext {
-	return &TemplateContext{ Options: options }
+	return &TemplateContext{Options: options, Local: Local{}, Shared: &Shared{}}
 }
