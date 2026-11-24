@@ -9,21 +9,40 @@ import (
 	"github.com/codeshelldev/goplater/pkg/gplt/modules"
 )
 
-var cache sync.Map
+const (
+	MAX_CACHE_SIZE  = 256
+	MAX_PATTERN_LEN = 4096
+)
+
+var cache = make(map[string]*regexp.Regexp, MAX_CACHE_SIZE)
+var mu sync.RWMutex
 
 func compile(expr string) (*regexp.Regexp, error) {
-	re, ok := cache.Load(expr)
+	if len(expr) > MAX_PATTERN_LEN {
+		return nil, fmt.Errorf("regex too long (max %d bytes)", MAX_PATTERN_LEN)
+	}
+
+	mu.RLock()
+	re, ok := cache[expr]
+	mu.RUnlock()
+
 	if ok {
-		return re.(*regexp.Regexp), nil
+		return re, nil
 	}
 
 	re, err := regexp.Compile(expr)
 	if err != nil {
-		return nil, fmt.Errorf("error parsing regex: %w", err)
+		return nil, err
 	}
 
-	cache.Store(expr, re)
-	return re.(*regexp.Regexp), nil
+	mu.Lock()
+	if len(cache) >= MAX_CACHE_SIZE {
+		clear(cache)
+	}
+	cache[expr] = re
+	mu.Unlock()
+
+	return re, nil
 }
 
 var Module = modules.NewModule(regexMatchFunc, regexFindAllFunc, regexFindGroupsFunc, regexFindGroupsIndexFunc, regexReplaceAllFunc)
@@ -103,16 +122,16 @@ func regexFindGroupsIndex(_ *gplt.Runtime, _ *gplt.Context, regex string, str st
 	return re.FindAllStringSubmatchIndex(str, -1), nil
 }
 
-// Replaces all matches from the given regex pattern in a string with new (which for allows using '$1', etc.).
+// Replaces all matches from the given regex pattern in a string with new (which for allows using '${1}', etc.).
 //
-// @param str string
 // @param regex string
+// @param str string
 // @param new string
 // @returns string
 // @returns error
 var regexReplaceAllFunc = modules.NewFunc("regexReplaceAll", regexReplaceAll)
 
-func regexReplaceAll(_ *gplt.Runtime, _ *gplt.Context, str string, regex string, new string) (string, error)  {
+func regexReplaceAll(_ *gplt.Runtime, _ *gplt.Context, regex string, str string, new string) (string, error)  {
 	re, err := compile(regex)
 
 	if err != nil {
