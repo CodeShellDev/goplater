@@ -16,17 +16,17 @@
 
 +{{ define "indentTabs(text, indent)" }}
     +{{ $prefix := repeat "\t" .indent }}
-    +{{ return (regexReplaceAll .text `(?m)^` $prefix) }}
+    +{{ return (regexReplaceAll `(?m)^` .text $prefix) }}
 +{{ end }}
 
 +{{ define "generateHeadingAnchor(text)" }}
     +{{ $text := .text }}
 
     +{{ $text = lower $text }}
-    +{{ $text = regexReplaceAll $text "`" "" }}
-    +{{ $text = regexReplaceAll $text `[^a-z0-9\s-]` "" }}
-    +{{ $text = regexReplaceAll $text `\s+` "-" }}
-    +{{ $text = regexReplaceAll $text `-+` "-" }}
+    +{{ $text = regexReplaceAll "`" $text "" }}
+    +{{ $text = regexReplaceAll `[^a-z0-9\s-]` $text "" }}
+    +{{ $text = regexReplaceAll `\s+` $text "-" }}
+    +{{ $text = regexReplaceAll `-+` $text "-" }}
     +{{ $text = trim $text "-" }}
 
     +{{ return $text }}
