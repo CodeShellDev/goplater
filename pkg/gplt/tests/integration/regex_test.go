@@ -51,8 +51,8 @@ func TestRegexFindGroupsIndex(t *testing.T) {
 
 func TestRegexReplaceAll(t *testing.T) {
 	tmpl := `
-	{{ emit "replace" (regexReplaceAll "hello 123 world 456" "[0-9]+" "NUM") }}
-	{{ emit "groups" (regexReplaceAll "John Doe" "([A-Za-z]+) ([A-Za-z]+)" "$2, $1") }}
+	{{ emit "replace" (regexReplaceAll "[0-9]+" "hello 123 world 456" "NUM") }}
+	{{ emit "groups" (regexReplaceAll "([A-Za-z]+) ([A-Za-z]+)" "John Doe" "$2, $1") }}
 	`
 
 	trt := tester.Collect(t, tmpl)
@@ -83,7 +83,7 @@ func TestRegexErrors(t *testing.T) {
 		},
 		{
 			name: "replaceAll",
-			tmpl: `{{ regexReplaceAll "hello" "[" "world" }}`,
+			tmpl: `{{ regexReplaceAll "[" "hello" "world" }}`,
 		},
 	}
 
