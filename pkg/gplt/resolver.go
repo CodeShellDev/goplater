@@ -1,6 +1,10 @@
 package gplt
 
-import "fmt"
+import (
+	"crypto/sha256"
+	"encoding/hex"
+	"fmt"
+)
 
 type Resolver interface {
 	CanResolve(path string) bool
@@ -29,6 +33,13 @@ func NewResolverChain(resolvers ...Resolver) *ResolverChain {
 
 func (c *ResolverChain) Add(r Resolver) {
 	c.resolvers = append(c.resolvers, r)
+}
+
+func (m *ResolvedModule) GetHash() string {
+	sum := sha256.Sum256([]byte(m.Template))
+	hash := hex.EncodeToString(sum[:])
+
+	return hash
 }
 
 func (c *ResolverChain) Resolve(ctx *Context, path string) (ResolvedModule, error) {

@@ -1,6 +1,9 @@
 package gplt
 
 import (
+	"crypto/sha256"
+	"encoding/hex"
+	"errors"
 	"strings"
 	"text/template"
 )
@@ -52,12 +55,25 @@ func (r *ModuleRegistry) Trusted(name string) bool {
 	return ok && e.trusted
 }
 
-func (r *ModuleRegistry) AllowReach(callerScope, importName string) {
+func (r *ModuleRegistry) AllowReach(callerScope, name string) {
 	if r.reachable[callerScope] == nil {
 		r.reachable[callerScope] = map[string]bool{}
 	}
 
-	r.reachable[callerScope][importName] = true
+	r.reachable[callerScope][name] = true
+}
+
+func (r *ModuleRegistry) GetHashFor(name string) (string, error) {
+	t, exists := r.trees[name]
+
+	if !exists {
+		return "", errors.New("module not found")
+	}
+
+	sum := sha256.Sum256([]byte(t.body))
+	hash := hex.EncodeToString(sum[:])
+
+	return hash, nil
 }
 
 func (r *ModuleRegistry) CanReach(callerScope, target string) bool {

@@ -2,8 +2,6 @@ package gplt
 
 import (
 	"bytes"
-	"crypto/sha256"
-	"encoding/hex"
 	"errors"
 	"fmt"
 	"io"
@@ -67,6 +65,14 @@ func (rt *Runtime) UnegisterStore(id string) error {
 
 func (rt *Runtime) Import(callerScope, path, aliasOverride, expectedHash string, ctx *Context) error {
 	if rt.registry.Loaded(path) {
+		if expectedHash != "" {
+			hash, _ := rt.registry.GetHashFor(path)
+			err := expectHash(expectedHash, hash)
+			if err != nil {
+				return fmt.Errorf("import checksum mismatch: %w", err)
+			}
+		}
+
 		rt.registry.AllowReach(callerScope, path)
 		return nil
 	}
@@ -77,11 +83,9 @@ func (rt *Runtime) Import(callerScope, path, aliasOverride, expectedHash string,
 	}
 
 	if expectedHash != "" {
-		sum := sha256.Sum256([]byte(resolved.Template))
-		hash := hex.EncodeToString(sum[:])
-
-		if hash != expectedHash {
-			return fmt.Errorf("import checksum mismatch: expected %s, got %s", expectedHash, hash)
+		err := expectHash(expectedHash, resolved.GetHash())
+		if err != nil {
+			return fmt.Errorf("import checksum mismatch: %w", err)
 		}
 	}
 
@@ -122,6 +126,14 @@ func (rt *Runtime) Import(callerScope, path, aliasOverride, expectedHash string,
 	rt.registry.AllowReach(callerScope, path)
 
 	maps.Copy(rt.signatures, sigs)
+	return nil
+}
+
+func expectHash(expected, hash string) error {
+	if hash != expected {
+		return fmt.Errorf("expected %s, got %s", expected, hash)
+	}
+
 	return nil
 }
 
