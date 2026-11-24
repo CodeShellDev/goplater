@@ -3,7 +3,7 @@ module github.com/codeshelldev/pkg/gplt/tests/integration
 go 1.27.3
 
 require (
-	github.com/codeshelldev/goplater/pkg/gplt v0.4.0
+	github.com/codeshelldev/goplater/pkg/gplt v0.4.3
 	github.com/codeshelldev/goplater/pkg/gplt/collections v0.2.1
 )
 
