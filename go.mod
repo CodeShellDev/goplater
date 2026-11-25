@@ -3,7 +3,7 @@ module github.com/codeshelldev/goplater
 go 1.27.3
 
 require (
-	github.com/codeshelldev/goplater/pkg/gplt v0.4.3
+	github.com/codeshelldev/goplater/pkg/gplt v0.4.4
 	github.com/codeshelldev/goplater/pkg/gplt/collections v0.2.2
 	github.com/codeshelldev/goplater/pkg/transformer v0.1.0
 	github.com/mattn/go-runewidth v0.0.31
