@@ -1,6 +1,10 @@
 package context
 
-import "github.com/codeshelldev/goplater/pkg/gplt"
+import (
+	"errors"
+
+	"github.com/codeshelldev/goplater/pkg/gplt"
+)
 
 type TemplateOptions struct {
 	Root				string
@@ -40,4 +44,14 @@ const TemplateContextKey gplt.ContextKey = "templateContext"
 
 func New(options *TemplateOptions) *TemplateContext {
 	return &TemplateContext{Options: options, Local: Local{}, Shared: &Shared{}}
+}
+
+func Extract(ctx *gplt.Context) (*TemplateContext, error) {
+	tmplContext, ok := ctx.Get(TemplateContextKey).(*TemplateContext)
+
+	if !ok {
+		return nil, errors.New("missing template context")
+	}
+
+	return tmplContext, nil
 }

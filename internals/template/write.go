@@ -71,16 +71,16 @@ func handleFile(ctx *context.TemplateContext) error {
 	return handleFileWrite(content, ctx)
 }
 
-func handleFileWrite(content string, ctx *context.TemplateContext) error {
-	filePathAbs, err := filepath.Abs(ctx.Shared.OutputPath)
+func handleFileWrite(content string, tmplContext *context.TemplateContext) error {
+	filePathAbs, err := filepath.Abs(tmplContext.Shared.OutputPath)
 
 	if err != nil {
 		return err
 	}
 
 	// case 1: explicitly allowed file => direct write
-	if slices.Contains(ctx.Options.AllowedOutputs, filePathAbs) {
-		if ctx.Options.DryRun {
+	if slices.Contains(tmplContext.Options.AllowedOutputs, filePathAbs) {
+		if tmplContext.Options.DryRun {
 			return nil
 		}
 
@@ -95,7 +95,7 @@ func handleFileWrite(content string, ctx *context.TemplateContext) error {
 	// case 2: allowed dir containing target?
 	var allowedDir string
 
-	for _, p := range ctx.Options.AllowedOutputs {
+	for _, p := range tmplContext.Options.AllowedOutputs {
 		if fsutils.IsInside(filePathAbs, p) {
 			allowedDir = p
 			break
@@ -106,7 +106,7 @@ func handleFileWrite(content string, ctx *context.TemplateContext) error {
 		return fmt.Errorf("target %q is not allowed", filePathAbs)
 	}
 
-	if ctx.Options.DryRun {
+	if tmplContext.Options.DryRun {
 		return nil
 	}
 

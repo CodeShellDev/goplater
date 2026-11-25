@@ -24,7 +24,13 @@ import (
 var readFunc = modules.NewFunc("read", read)
 
 func read(rt *gplt.Runtime, ctx *gplt.Context, path string) (string, error) {
-	content, ctx, err := readHandler(ctx, path)
+	tmplContext, err := context.Extract(ctx)
+
+	if err != nil {
+		return "", err
+	}
+
+	content, ctx, err := readHandler(tmplContext, path)
 
 	if err != nil {
 		return "", err
@@ -50,8 +56,12 @@ func read(rt *gplt.Runtime, ctx *gplt.Context, path string) (string, error) {
 var readRawFunc = modules.NewFunc("readRaw", readRaw)
 
 func readRaw(_ *gplt.Runtime, ctx *gplt.Context, path string) (string, error) {
-	tmplContext := ctx.Get(context.TemplateContextKey).(*context.TemplateContext)
+	tmplContext, err := context.Extract(ctx)
 
+	if err != nil {
+		return "", err
+	}
+	
 	filePathAbs := ResolvePath(tmplContext, path)
 
 	res, err := SafeRead(filePathAbs, tmplContext)
@@ -76,7 +86,13 @@ func readRaw(_ *gplt.Runtime, ctx *gplt.Context, path string) (string, error) {
 var readArgsFunc = modules.NewFunc("readArgs", readArgs)
 
 func readArgs(rt *gplt.Runtime, ctx *gplt.Context, path string, args any) (string, error) {
-	content, newContext, err := readHandler(ctx, path)
+	tmplContext, err := context.Extract(ctx)
+
+	if err != nil {
+		return "", err
+	}
+	
+	content, newContext, err := readHandler(tmplContext, path)
 
 	if err != nil {
 		return "", err
@@ -95,9 +111,7 @@ func readArgs(rt *gplt.Runtime, ctx *gplt.Context, path string, args any) (strin
 	return content, nil
 }
 
-func readHandler(ctx *gplt.Context, path string) (string, *gplt.Context, error) {
-	tmplContext := ctx.Get(context.TemplateContextKey).(*context.TemplateContext)
-
+func readHandler(tmplContext *context.TemplateContext, path string) (string, *gplt.Context, error) {
 	filePathAbs := ResolvePath(tmplContext, path)
 
 	res, err := SafeRead(filePathAbs, tmplContext)
@@ -126,7 +140,15 @@ func readHandler(ctx *gplt.Context, path string) (string, *gplt.Context, error) 
 var writeFunc = modules.NewFunc("write", write)
 
 func write(_ *gplt.Runtime, ctx *gplt.Context, path string, content string) (string, error) {
-	tmplContext := ctx.Get(context.TemplateContextKey).(*context.TemplateContext)
+	tmplContext, err := context.Extract(ctx)
+
+	if err != nil {
+		return "", err
+	}
+
+	if tmplContext.Options.DryRun {
+		return "", nil
+	}
 
 	filePathAbs := ResolvePath(tmplContext, path)
 
@@ -147,7 +169,11 @@ func write(_ *gplt.Runtime, ctx *gplt.Context, path string, content string) (str
 var mkdirFunc = modules.NewFunc("mkdir", mkdir)
 
 func mkdir(_ *gplt.Runtime, ctx *gplt.Context, path string) (string, error) {
-	tmplContext := ctx.Get(context.TemplateContextKey).(*context.TemplateContext)
+	tmplContext, err := context.Extract(ctx)
+
+	if err != nil {
+		return "", err
+	}
 
 	folderPathAbs := ResolvePath(tmplContext, path)
 
@@ -169,7 +195,15 @@ func mkdir(_ *gplt.Runtime, ctx *gplt.Context, path string) (string, error) {
 var appendFileFunc = modules.NewFunc("appendFile", appendFile)
 
 func appendFile(_ *gplt.Runtime, ctx *gplt.Context, path string, content string) (string, error) {
-	tmplContext := ctx.Get(context.TemplateContextKey).(*context.TemplateContext)
+	tmplContext, err := context.Extract(ctx)
+
+	if err != nil {
+		return "", err
+	}
+
+	if tmplContext.Options.DryRun {
+		return "", nil
+	}
 
 	filePathAbs := ResolvePath(tmplContext, path)
 
@@ -200,11 +234,15 @@ func appendFile(_ *gplt.Runtime, ctx *gplt.Context, path string, content string)
 var fsExistsFunc = modules.NewFunc("fsExists", fsExists)
 
 func fsExists(_ *gplt.Runtime, ctx *gplt.Context, path string) (bool, error) {
-	tmplContext := ctx.Get(context.TemplateContextKey).(*context.TemplateContext)
+	tmplContext, err := context.Extract(ctx)
+
+	if err != nil {
+		return false, err
+	}
 
 	absPath := ResolvePath(tmplContext, path)
 
-	err := fsutils.WithAllowedRoot(absPath, tmplContext.Options.AllowedInputs, func(root *os.Root, relative string) error {
+	err = fsutils.WithAllowedRoot(absPath, tmplContext.Options.AllowedInputs, func(root *os.Root, relative string) error {
 		_, err := root.Stat(relative)
 		return err
 	})
@@ -228,13 +266,17 @@ func fsExists(_ *gplt.Runtime, ctx *gplt.Context, path string) (bool, error) {
 var isFileFunc = modules.NewFunc("isFile", isFile)
 
 func isFile(_ *gplt.Runtime, ctx *gplt.Context, path string) bool {
-	tmplContext := ctx.Get(context.TemplateContextKey).(*context.TemplateContext)
+	tmplContext, err := context.Extract(ctx)
+
+	if err != nil {
+		return false
+	}
 
 	absPath := ResolvePath(tmplContext, path)
 
 	var info os.FileInfo
 
-	err := fsutils.WithAllowedRoot(absPath, tmplContext.Options.AllowedInputs, func(root *os.Root, relative string) error {
+	err = fsutils.WithAllowedRoot(absPath, tmplContext.Options.AllowedInputs, func(root *os.Root, relative string) error {
 		i, err := root.Stat(relative)
 		info = i
 		return err
@@ -259,13 +301,17 @@ func isFile(_ *gplt.Runtime, ctx *gplt.Context, path string) bool {
 var isDirFunc = modules.NewFunc("isDir", isDir)
 
 func isDir(_ *gplt.Runtime, ctx *gplt.Context, path string) bool {
-	tmplContext := ctx.Get(context.TemplateContextKey).(*context.TemplateContext)
+	tmplContext, err := context.Extract(ctx)
+
+	if err != nil {
+		return false
+	}
 
 	absPath := ResolvePath(tmplContext, path)
 
 	var info os.FileInfo
 
-	err := fsutils.WithAllowedRoot(absPath, tmplContext.Options.AllowedInputs, func(root *os.Root, relative string) error {
+	err = fsutils.WithAllowedRoot(absPath, tmplContext.Options.AllowedInputs, func(root *os.Root, relative string) error {
 		i, err := root.Stat(relative)
 		info = i
 		return err
@@ -291,13 +337,17 @@ func isDir(_ *gplt.Runtime, ctx *gplt.Context, path string) bool {
 var listDirFunc = modules.NewFunc("listDir", listDir)
 
 func listDir(_ *gplt.Runtime, ctx *gplt.Context, path string) ([]string, error) {
-	tmplContext := ctx.Get(context.TemplateContextKey).(*context.TemplateContext)
+	tmplContext, err := context.Extract(ctx)
+
+	if err != nil {
+		return nil, err
+	}
 
 	folderPathAbs := ResolvePath(tmplContext, path)
 
 	var entries []os.DirEntry
 
-	err := fsutils.WithAllowedRoot(folderPathAbs, tmplContext.Options.AllowedInputs, func(root *os.Root, relative string) error {
+	err = fsutils.WithAllowedRoot(folderPathAbs, tmplContext.Options.AllowedInputs, func(root *os.Root, relative string) error {
 		e, err := fs.ReadDir(root.FS(), filepath.ToSlash(relative))
 		entries = e
 		return err
@@ -329,13 +379,17 @@ func listDir(_ *gplt.Runtime, ctx *gplt.Context, path string) ([]string, error) 
 var walkDirFunc = modules.NewFunc("walkDir", walkDir)
 
 func walkDir(_ *gplt.Runtime, ctx *gplt.Context, path string) ([]string, error) {
-	tmplContext := ctx.Get(context.TemplateContextKey).(*context.TemplateContext)
+	tmplContext, err := context.Extract(ctx)
+
+	if err != nil {
+		return nil, err
+	}
 
 	folderPathAbs := ResolvePath(tmplContext, path)
 
 	paths := []string{}
 
-	err := fsutils.WithAllowedRoot(folderPathAbs, tmplContext.Options.AllowedInputs, func(root *os.Root, relative string) error {
+	err = fsutils.WithAllowedRoot(folderPathAbs, tmplContext.Options.AllowedInputs, func(root *os.Root, relative string) error {
 		return fs.WalkDir(root.FS(), filepath.ToSlash(relative), func(path string, d fs.DirEntry, err error) error {
 			if err != nil {
 				return err
@@ -361,7 +415,15 @@ func walkDir(_ *gplt.Runtime, ctx *gplt.Context, path string) ([]string, error) 
 var fsRemoveFunc = modules.NewFunc("fsRemove", fsRemove)
 
 func fsRemove(_ *gplt.Runtime, ctx *gplt.Context, path string) (string, error) {
-	tmplContext := ctx.Get(context.TemplateContextKey).(*context.TemplateContext)
+	tmplContext, err := context.Extract(ctx)
+
+	if err != nil {
+		return "", err
+	}
+
+	if tmplContext.Options.DryRun {
+		return "", nil
+	}
 
 	absPath := ResolvePath(tmplContext, path)
 

@@ -26,17 +26,17 @@ func (r *FsResolver) CanResolve(path string) bool {
 }
 
 func (r *FsResolver) Resolve(ctx *gplt.Context, path string) (string, error) {
-	tmplContext, ok := ctx.Get(context.TemplateContextKey).(*context.TemplateContext)
+	tmplContext, err := context.Extract(ctx)
 
-	if !ok {
-		return "", errors.New("missing template context")
+	if err != nil {
+		return "", err
 	}
 
 	filePathAbs := ResolvePath(tmplContext, path + "." + gplt.IMPORT_FILE_EXTENSION)
 
 	var info os.FileInfo
 
-	err := fsutils.WithAllowedRoot(filePathAbs, tmplContext.Options.AllowedInputs, func(root *os.Root, relative string) error {
+	err = fsutils.WithAllowedRoot(filePathAbs, tmplContext.Options.AllowedInputs, func(root *os.Root, relative string) error {
 		i, err := root.Stat(relative)
 		info = i
 		return err
@@ -82,10 +82,10 @@ func (r *FsResolver) DeriveName(path string) (string, error) {
 }
 
 func (r *FsResolver) CleanPath(ctx *gplt.Context, path string) (string, error) {
-	tmplContext, ok := ctx.Get(context.TemplateContextKey).(*context.TemplateContext)
+	tmplContext, err := context.Extract(ctx)
 
-	if !ok {
-		return "", errors.New("missing template context")
+	if err != nil {
+		return "", err
 	}
 
 	return ResolvePath(tmplContext, path + "." + gplt.IMPORT_FILE_EXTENSION), nil

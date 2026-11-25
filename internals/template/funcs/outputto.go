@@ -19,8 +19,12 @@ var outputToFunc = modules.NewFunc("outputTo", outputToFn)
 
 var OutsideOfScopeErr = errors.New("outside of allowed scope")
 
-func outputToFn(rt *gplt.Runtime, ctx *gplt.Context, path string) error {
-	tmplContext := ctx.Get(context.TemplateContextKey).(*context.TemplateContext)
+func outputToFn(rt *gplt.Runtime, ctx *gplt.Context, path string) (string, error) {
+	tmplContext, err := context.Extract(ctx)
+
+	if err != nil {
+		return "", err
+	}
 
 	absPath := ResolvePath(tmplContext, path)
 
@@ -35,9 +39,9 @@ func outputToFn(rt *gplt.Runtime, ctx *gplt.Context, path string) error {
 	}
 
 	if !allowed {
-		return fmt.Errorf("%q cannot be outputted to %q: %w", tmplContext.Shared.Path, absPath, OutsideOfScopeErr)
+		return "", fmt.Errorf("%q cannot be outputted to %q: %w", tmplContext.Shared.Path, absPath, OutsideOfScopeErr)
 	}
 
 	tmplContext.Shared.OutputPath = absPath
-	return nil
+	return "", nil
 }
