@@ -463,7 +463,7 @@ Arguments are available as <code>.arg</code> in the file being read.</p>
 
 
 <table width="100%">
-<tr><th align="left"><h4><code>fsExists(path string) bool</code></h4></th>
+<tr><th align="left"><h4><code>fsExists(path string) (bool, throws error)</code></h4></th>
 </tr><tr><td>
 <p>Returns if a file or folder exists at a given path.</p>
 
@@ -1478,27 +1478,9 @@ map[key1:value1 key2:value2]
 
 
 <table width="100%">
-<tr><th align="left"><h4><code>sha1(str string)</code></h4></th>
-</tr><tr><td>
-<p>Hashes a given string with SHA-1.</p>
-
-
-</td></tr></table>
-
-
-<table width="100%">
 <tr><th align="left"><h4><code>sha512(str string)</code></h4></th>
 </tr><tr><td>
 <p>Hashes a given string with SHA-512.</p>
-
-
-</td></tr></table>
-
-
-<table width="100%">
-<tr><th align="left"><h4><code>md5(str string)</code></h4></th>
-</tr><tr><td>
-<p>Hashes a given string with MD-5.</p>
 
 
 </td></tr></table>
@@ -1508,8 +1490,7 @@ map[key1:value1 key2:value2]
 <table width="100%">
 <tr><th align="left"><h4><code>fetch(url string) (string, throws error)</code></h4></th>
 </tr><tr><td>
-<p>Fetches a resource from a given url.
-Outputs errors as string.</p>
+<p>Fetches a resource from a given url.</p>
 
 
 </td></tr></table>
@@ -1700,9 +1681,9 @@ Outputs errors as string.</p>
 
 
 <table width="100%">
-<tr><th align="left"><h4><code>regexReplaceAll(str string, regex string, new string) (string, throws error)</code></h4></th>
+<tr><th align="left"><h4><code>regexReplaceAll(regex string, str string, new string) (string, throws error)</code></h4></th>
 </tr><tr><td>
-<p>Replaces all matches from the given regex pattern in a string with new (which for allows using '$1', etc.).</p>
+<p>Replaces all matches from the given regex pattern in a string with new (which for allows using '${1}', etc.).</p>
 
 
 </td></tr></table>
