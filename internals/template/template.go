@@ -17,32 +17,32 @@ import (
 
 type Templater struct{}
 
-func (Templater) Run(ctx *context.TemplateContext) error {
-	return run(ctx)
+func (Templater) Run(tmplContext *context.TemplateContext) error {
+	return run(tmplContext)
 }
 
 func New() *Templater {
 	return &Templater{}
 }
 
-func run(ctx *context.TemplateContext) error {
-	isDir := fsutils.IsDir(ctx.Shared.Path)
-	isFile := fsutils.IsFile(ctx.Shared.Path)
+func run(tmplContext *context.TemplateContext) error {
+	isDir := fsutils.IsDir(tmplContext.Shared.Path)
+	isFile := fsutils.IsFile(tmplContext.Shared.Path)
 	
-	ctx.Local.Invoker = ctx.Shared.Path
+	tmplContext.Local.Invoker = tmplContext.Shared.Path
 
 	if isDir {
-		t := tree.NewTree(os.Stdout, ctx.Shared.Path)
+		t := tree.NewTree(os.Stdout, tmplContext.Shared.Path)
 
 		t.Start()
 
-		err := filepath.WalkDir(ctx.Shared.Path, func(path string, d fs.DirEntry, err error) error {
+		err := filepath.WalkDir(tmplContext.Shared.Path, func(path string, d fs.DirEntry, err error) error {
 			if err != nil {
 				return err
 			}
 
 			if d.IsDir() {
-				if path != ctx.Shared.Path && !ctx.Options.Recursive {
+				if path != tmplContext.Shared.Path && !tmplContext.Options.Recursive {
 					return filepath.SkipDir
 				}
 				return nil
@@ -59,7 +59,7 @@ func run(ctx *context.TemplateContext) error {
 				return err
 			}
 
-			newContext := *ctx
+			newContext := *tmplContext
 			newContext.Local.Invoker = absPath
 			newContext.Shared = &context.Shared{Path: absPath}
 
@@ -73,7 +73,7 @@ func run(ctx *context.TemplateContext) error {
 				return nil
 			}
 
-			relPath, err := filepath.Rel(ctx.Shared.Path, path)
+			relPath, err := filepath.Rel(tmplContext.Shared.Path, path)
 			if err != nil {
 				return err
 			}
@@ -94,7 +94,7 @@ func run(ctx *context.TemplateContext) error {
 
 				fmt.Println()
 
-				if !ctx.Options.IgnoreErrors {
+				if !tmplContext.Options.IgnoreErrors {
 					return err
 				}
 
@@ -102,7 +102,7 @@ func run(ctx *context.TemplateContext) error {
 			}
 
 			if newContext.Shared.OutputPath != "" {
-				relOutput, err := fsutils.SafeRelative(ctx.Options.Source, newContext.Shared.OutputPath)
+				relOutput, err := fsutils.SafeRelative(tmplContext.Shared.Path, newContext.Shared.OutputPath)
 
 				if err != nil {
 					// not under source: show abs path instead
@@ -123,7 +123,7 @@ func run(ctx *context.TemplateContext) error {
 			return fmt.Errorf("error recursively templating: %w", err)
 		}
 	} else if isFile {
-		err := handleFile(ctx)
+		err := handleFile(tmplContext)
 		if err != nil {
 			return err
 		}
