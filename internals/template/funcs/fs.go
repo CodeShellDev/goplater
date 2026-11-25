@@ -146,15 +146,44 @@ func write(_ *gplt.Runtime, ctx *gplt.Context, path string, content string) (str
 		return "", err
 	}
 
-	if tmplContext.Options.DryRun {
-		return "", nil
-	}
-
 	filePathAbs := ResolvePath(tmplContext, path)
 
 	return "", fsutils.WithAllowedRoot(filePathAbs, tmplContext.Options.AllowedOutputs,
 		func(root *os.Root, relative string) error {
+			if tmplContext.Options.DryRun {
+				return nil
+			}
+
 			return root.WriteFile(relative, []byte(content), 0644)
+		},
+	)
+}
+
+// Removes a file or folder at a given path.
+//
+// @param path string
+// @returns error
+//
+// @example
+//	 +{{ fsRemove "/path/to/file/or/folder" }}
+var fsRemoveFunc = modules.NewFunc("fsRemove", fsRemove)
+
+func fsRemove(_ *gplt.Runtime, ctx *gplt.Context, path string) (string, error) {
+	tmplContext, err := context.Extract(ctx)
+
+	if err != nil {
+		return "", err
+	}
+	
+	absPath := ResolvePath(tmplContext, path)
+
+	return "", fsutils.WithAllowedRoot(absPath, tmplContext.Options.AllowedOutputs,
+		func(root *os.Root, relative string) error {
+			if tmplContext.Options.DryRun {
+				return nil
+			}
+
+			return root.RemoveAll(relative)
 		},
 	)
 }
@@ -179,6 +208,10 @@ func mkdir(_ *gplt.Runtime, ctx *gplt.Context, path string) (string, error) {
 
 	return "", fsutils.WithAllowedRoot(folderPathAbs, tmplContext.Options.AllowedOutputs,
 		func(root *os.Root, relative string) error {
+			if tmplContext.Options.DryRun {
+				return nil
+			}
+
 			return root.MkdirAll(relative, 0755)
 		},
 	)
@@ -201,14 +234,14 @@ func appendFile(_ *gplt.Runtime, ctx *gplt.Context, path string, content string)
 		return "", err
 	}
 
-	if tmplContext.Options.DryRun {
-		return "", nil
-	}
-
 	filePathAbs := ResolvePath(tmplContext, path)
 
 	return "", fsutils.WithAllowedRoot(filePathAbs, tmplContext.Options.AllowedOutputs,
 		func(root *os.Root, relative string) error {
+			if tmplContext.Options.DryRun {
+				return nil
+			}
+
 			f, err := root.OpenFile(relative, os.O_WRONLY|os.O_CREATE|os.O_APPEND, 0644)
 			if err != nil {
 				return err
@@ -402,36 +435,6 @@ func walkDir(_ *gplt.Runtime, ctx *gplt.Context, path string) ([]string, error) 
 	})
 
 	return paths, err
-}
-
-
-// Removes a file or folder at a given path.
-//
-// @param path string
-// @returns error
-//
-// @example
-//	 +{{ fsRemove "/path/to/file/or/folder" }}
-var fsRemoveFunc = modules.NewFunc("fsRemove", fsRemove)
-
-func fsRemove(_ *gplt.Runtime, ctx *gplt.Context, path string) (string, error) {
-	tmplContext, err := context.Extract(ctx)
-
-	if err != nil {
-		return "", err
-	}
-
-	if tmplContext.Options.DryRun {
-		return "", nil
-	}
-
-	absPath := ResolvePath(tmplContext, path)
-
-	return "", fsutils.WithAllowedRoot(absPath, tmplContext.Options.AllowedOutputs,
-		func(root *os.Root, relative string) error {
-			return root.RemoveAll(relative)
-		},
-	)
 }
 
 // Joins paths together.

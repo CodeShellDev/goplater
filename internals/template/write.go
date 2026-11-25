@@ -23,14 +23,14 @@ func resolveOutput(root, source, output string, preserveStruct bool) (string, er
 	return outputresolver.ResolveOutput(source, output), nil
 }
 
-func templateFile(ctx *context.TemplateContext) (string, error) {
-	root, err := os.OpenRoot(filepath.Dir(ctx.Shared.Path))
+func templateFile(tmplContext *context.TemplateContext) (string, error) {
+	root, err := os.OpenRoot(filepath.Dir(tmplContext.Shared.Path))
 	if err != nil {
 		return "", err
 	}
 	defer root.Close()
 
-	name := filepath.Base(ctx.Shared.Path)
+	name := filepath.Base(tmplContext.Shared.Path)
 
 	info, err := root.Lstat(name)
 	if err != nil {
@@ -38,7 +38,7 @@ func templateFile(ctx *context.TemplateContext) (string, error) {
 	}
 
 	if !info.Mode().IsRegular() {
-		return "", fmt.Errorf("%q is not a regular file", ctx.Shared.Path)
+		return "", fmt.Errorf("%q is not a regular file", tmplContext.Shared.Path)
 	}
 
 	data, err := root.ReadFile(name)
@@ -46,29 +46,29 @@ func templateFile(ctx *context.TemplateContext) (string, error) {
 		return "", err
 	}
 
-	return templateContent(string(data), ctx)
+	return templateContent(string(data), tmplContext)
 }
 
-func handleFile(ctx *context.TemplateContext) error {
-	output, err := resolveOutput(ctx.Options.Root, ctx.Shared.Path, ctx.Options.Output, !ctx.Options.Flatten)
+func handleFile(tmplContext *context.TemplateContext) error {
+	output, err := resolveOutput(tmplContext.Options.Root, tmplContext.Shared.Path, tmplContext.Options.Output, !tmplContext.Options.Flatten)
 
 	if err != nil {
 		return err
 	}
 
-	ctx.Shared.OutputPath, err = filepath.Abs(output)
+	tmplContext.Shared.OutputPath, err = filepath.Abs(output)
 
 	if err != nil {
 		return err
 	}
 
-	content, err := templateFile(ctx)
+	content, err := templateFile(tmplContext)
 
 	if err != nil {
 		return err
 	}
 
-	return handleFileWrite(content, ctx)
+	return handleFileWrite(content, tmplContext)
 }
 
 func handleFileWrite(content string, tmplContext *context.TemplateContext) error {
