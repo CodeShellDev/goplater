@@ -106,6 +106,10 @@ func handleFileWrite(content string, ctx *context.TemplateContext) error {
 		return fmt.Errorf("target %q is not allowed", filePathAbs)
 	}
 
+	if ctx.Options.DryRun {
+		return nil
+	}
+
 	err = os.MkdirAll(allowedDir, 0755)
 	if err != nil {
 		return err
