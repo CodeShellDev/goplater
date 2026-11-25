@@ -8,6 +8,9 @@ import (
 	"github.com/codeshelldev/goplater/pkg/gplt/resolvers"
 )
 
+// share resolver for shared cache
+var httpResolver = resolvers.NewHttpResolver()
+
 func (t *Templater) Render(content string, ctx *context.TemplateContext) (string, error) {
 	return templateContent(content, ctx)
 }
@@ -31,7 +34,7 @@ func templateStr(input string, tmplContext *context.TemplateContext) (string, er
 	e.SetResolver(
 		gplt.NewResolverChain(
 			funcs.NewFsResolver(),
-			resolvers.NewHttpResolver(),
+			httpResolver,
 		),
 	)
 

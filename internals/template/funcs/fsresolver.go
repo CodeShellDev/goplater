@@ -82,7 +82,11 @@ func (r *FsResolver) DeriveName(path string) (string, error) {
 }
 
 func (r *FsResolver) CleanPath(ctx *gplt.Context, path string) (string, error) {
-	tmplContext, _ := ctx.Get(context.TemplateContextKey).(*context.TemplateContext)
+	tmplContext, ok := ctx.Get(context.TemplateContextKey).(*context.TemplateContext)
+
+	if !ok {
+		return "", errors.New("missing template context")
+	}
 
 	return ResolvePath(tmplContext, path + "." + gplt.IMPORT_FILE_EXTENSION), nil
 }

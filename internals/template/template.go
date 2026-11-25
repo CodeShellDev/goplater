@@ -101,15 +101,14 @@ func run(ctx *context.TemplateContext) error {
 				return nil
 			}
 
-			relOutput, err := fsutils.SafeRelative(ctx.Options.Source, newContext.Shared.OutputPath)
-
-			if err != nil {
-				file.Fail(err)
-				os.Exit(1)
-				return err
-			}
-
 			if newContext.Shared.OutputPath != "" {
+				relOutput, err := fsutils.SafeRelative(ctx.Options.Source, newContext.Shared.OutputPath)
+
+				if err != nil {
+					// not under source: show abs path instead
+					relOutput = newContext.Shared.OutputPath
+				}
+
 				file.SetOutput(relOutput)
 			}
 

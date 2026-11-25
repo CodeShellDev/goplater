@@ -78,6 +78,8 @@ func WithAllowedRoot(target string, allowed []string, fn func(root *os.Root, rel
 		return err
 	}
 
+	var openErr error
+
 	for _, path := range allowed {
 		absPath, err := filepath.Abs(path)
 		if err != nil {
@@ -91,6 +93,7 @@ func WithAllowedRoot(target string, allowed []string, fn func(root *os.Root, rel
 
 		root, err := os.OpenRoot(absPath)
 		if err != nil {
+			openErr = err
 			continue
 		}
 
@@ -102,6 +105,10 @@ func WithAllowedRoot(target string, allowed []string, fn func(root *os.Root, rel
 		}
 
 		return closeErr
+	}
+
+	if openErr != nil {
+		return openErr
 	}
 
 	return fmt.Errorf("path %q is outside the allowed directories", targetAbs)

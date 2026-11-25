@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
+	"slices"
 
 	"github.com/codeshelldev/goplater/internals/template/context"
 	"github.com/codeshelldev/goplater/utils/fsutils"
@@ -77,35 +78,49 @@ func handleFileWrite(content string, ctx *context.TemplateContext) error {
 		return err
 	}
 
-	if !ctx.Options.DryRun {
-		var allowed bool
-		for _, path := range ctx.Options.AllowedOutputs {
-			if filePathAbs == path || fsutils.IsInside(filePathAbs, path) {
-				allowed = true
-
-				err := os.MkdirAll(filepath.Dir(filePathAbs), 0755)
-
-				if err != nil {
-					return err
-				}
-
-				// explicitly allowed file => direct write
-				if filePathAbs == path {
-					return os.WriteFile(filePathAbs, []byte(content), 0644)
-				}
-			}
-		}
-
-		if !allowed {
-			return fmt.Errorf("target %q is not allowed", filePathAbs)
-		}
-	}
-
-	return fsutils.WithAllowedRoot(filePathAbs, ctx.Options.AllowedOutputs, func(root *os.Root, relative string) error {
+	// case 1: explicitly allowed file => direct write
+	if slices.Contains(ctx.Options.AllowedOutputs, filePathAbs) {
 		if ctx.Options.DryRun {
 			return nil
 		}
 
-		return root.WriteFile(relative, []byte(content), 0644)
-	})
+		err := os.MkdirAll(filepath.Dir(filePathAbs), 0755)
+		if err != nil {
+			return err
+		}
+
+		return os.WriteFile(filePathAbs, []byte(content), 0644)
+	}
+
+	// case 2: allowed dir containing target?
+	var allowedDir string
+
+	for _, p := range ctx.Options.AllowedOutputs {
+		if fsutils.IsInside(filePathAbs, p) {
+			allowedDir = p
+			break
+		}
+	}
+
+	if allowedDir == "" {
+		return fmt.Errorf("target %q is not allowed", filePathAbs)
+	}
+
+	err = os.MkdirAll(allowedDir, 0755)
+	if err != nil {
+		return err
+	}
+
+	return fsutils.WithAllowedRoot(filePathAbs, []string{allowedDir},
+		func(root *os.Root, relative string) error {
+			dir := filepath.Dir(relative)
+
+			err := root.MkdirAll(dir, 0755)
+			if err != nil {
+				return fmt.Errorf("could not create output %q: %w", dir, err)
+			}
+
+			return root.WriteFile(relative, []byte(content), 0644)
+		},
+	)
 }
