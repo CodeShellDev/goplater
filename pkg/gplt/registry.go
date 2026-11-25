@@ -135,3 +135,21 @@ func (r *ModuleRegistry) ScopeOf(tmpl *template.Template) TreeScope {
 
 	return TreeScope{Name: "unknown", Trusted: false}
 }
+
+// checks for conflicts with previously defined templates / imported modules and returns potential conflicting template
+func (r *ModuleRegistry) Conflict(callerScope, alias string, t *template.Template) (string, bool) {
+	for imported := range r.reachable[callerScope] {
+		entry, exists := r.trees[imported]
+		if !exists || entry.alias != alias {
+			continue
+		}
+
+		for _, t := range t.Templates() {
+			if strings.HasPrefix(t.Name(), alias + ".") && entry.template.Lookup(t.Name()) != nil {
+				return t.Name(), true
+			}
+		}
+	}
+
+	return "", false
+}

@@ -123,6 +123,11 @@ func (rt *Runtime) Import(callerScope, path, aliasOverride, expectedHash string,
 		return fmt.Errorf("module %q: %w", path, err)
 	}
 
+	other, conflicted := rt.registry.Conflict(callerScope, name, t)
+	if conflicted {
+		return fmt.Errorf("module %q: %q already defined by another import, use a different alias", path, other)
+	}
+
 	rt.registry.Register(path, t, resolved.Template, resolved.Trusted, name)
 	rt.registry.AllowReach(callerScope, path)
 
