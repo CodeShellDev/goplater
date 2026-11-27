@@ -7,14 +7,14 @@ import (
 	"github.com/codeshelldev/goplater/internals/template/context"
 )
 
-func (t *Templater) Match(ctx *context.TemplateContext) (bool, error) {
-	return matchFile(ctx)
+func (t *Templater) Match(tmplContext *context.TemplateContext) (bool, error) {
+	return matchFile(tmplContext)
 }
 
-func matchFile(ctx *context.TemplateContext) (bool, error) {
-	fileName := filepath.Base(ctx.Shared.Path)
+func matchFile(tmplContext *context.TemplateContext) (bool, error) {
+	fileName := filepath.Base(tmplContext.Shared.Path)
 
-	for _, reStr := range ctx.Options.Match {
+	for _, reStr := range tmplContext.Options.Match {
 		re, err := regexp.Compile(reStr)
 
 		if err != nil {

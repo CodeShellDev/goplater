@@ -91,21 +91,21 @@ func (r *FsResolver) CleanPath(ctx *gplt.Context, path string) (string, error) {
 	return ResolvePath(tmplContext, path + "." + gplt.IMPORT_FILE_EXTENSION), nil
 }
 
-func ResolvePath(ctx *context.TemplateContext, path string) string {
+func ResolvePath(tmplContext *context.TemplateContext, path string) string {
 	isRel := strings.HasPrefix(path, "./") || strings.HasPrefix(path, "../")
 	isRelToSource := strings.HasPrefix(path, "~/")
 	
 	var filePathAbs string
 
 	if isRel {
-		absPath, _ := filepath.Abs(ctx.Local.Invoker)
+		absPath, _ := filepath.Abs(tmplContext.Local.Invoker)
 
 		filePathAbs = GetAbsPathWithSource(path, filepath.Dir(absPath))
 	} else if isRelToSource {
 		path, _ = strings.CutPrefix(path, "~/")
 		path = "./" + path
 
-		filePathAbs = GetAbsPathWithSource(path, ctx.Options.Source)
+		filePathAbs = GetAbsPathWithSource(path, tmplContext.Options.Source)
 	} else {
 		filePathAbs, _ = filepath.Abs(path)
 	}
