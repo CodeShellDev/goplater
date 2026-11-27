@@ -26,7 +26,10 @@ func outputToFn(rt *gplt.Runtime, ctx *gplt.Context, path string) (string, error
 		return "", err
 	}
 
-	absPath := ResolvePath(tmplContext, path)
+	absPath, err := ResolvePath(tmplContext, path)
+	if err != nil {
+		return "", fmt.Errorf("could not resolve %q: %w", path, err)
+	}
 
 	// only lexically, does not prevent symlink bypass (will get caught at final write)
 	allowed := false

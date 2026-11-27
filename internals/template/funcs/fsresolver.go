@@ -32,7 +32,11 @@ func (r *FsResolver) Resolve(ctx *gplt.Context, path string) (string, error) {
 		return "", err
 	}
 
-	filePathAbs := ResolvePath(tmplContext, path + "." + gplt.IMPORT_FILE_EXTENSION)
+	filePathAbs, err := ResolvePath(tmplContext, path + "." + gplt.IMPORT_FILE_EXTENSION)
+
+	if err != nil {
+		return "", err
+	}
 
 	var info os.FileInfo
 
@@ -43,7 +47,7 @@ func (r *FsResolver) Resolve(ctx *gplt.Context, path string) (string, error) {
 	})
 
 	if err != nil {
-		return "", errors.New("file does not exist")
+		return "", err
 	}
 
 	if info.IsDir() {
@@ -88,45 +92,36 @@ func (r *FsResolver) CleanPath(ctx *gplt.Context, path string) (string, error) {
 		return "", err
 	}
 
-	return ResolvePath(tmplContext, path + "." + gplt.IMPORT_FILE_EXTENSION), nil
+	return ResolvePath(tmplContext, path + "." + gplt.IMPORT_FILE_EXTENSION)
 }
 
-func ResolvePath(tmplContext *context.TemplateContext, path string) string {
-	isRel := strings.HasPrefix(path, "./") || strings.HasPrefix(path, "../")
-	isRelToSource := strings.HasPrefix(path, "~/")
-	
-	var filePathAbs string
+func ResolvePath(tc *context.TemplateContext, path string) (string, error) {
+	switch {
+	case strings.HasPrefix(path, "./") || strings.HasPrefix(path, "../"):
 
-	if isRel {
-		absPath, _ := filepath.Abs(tmplContext.Local.Invoker)
-
-		filePathAbs = GetAbsPathWithSource(path, filepath.Dir(absPath))
-	} else if isRelToSource {
-		path, _ = strings.CutPrefix(path, "~/")
-		path = "./" + path
-
-		filePathAbs = GetAbsPathWithSource(path, tmplContext.Options.Source)
-	} else {
-		filePathAbs, _ = filepath.Abs(path)
-	}
-
-	return filePathAbs
-}
-
-func GetAbsPathWithSource(path, source string) string {
-	if !filepath.IsAbs(source) {
-		var err error
-
-		source, err = filepath.Abs(source)
-		
+		inv, err := filepath.Abs(tc.Local.Invoker)
 		if err != nil {
-			return ""
+			return "", err
 		}
+		return GetAbsPathWithSource(path, filepath.Dir(inv))
+
+	case strings.HasPrefix(path, "~/"):
+		return GetAbsPathWithSource("./" + strings.TrimPrefix(path, "~/"), tc.Options.Source)
+
+	default:
+		return filepath.Abs(path)
+	}
+}
+
+func GetAbsPathWithSource(path, source string) (string, error) {
+	source, err := filepath.Abs(source)
+	if err != nil {
+		return "", err
 	}
 
 	if filepath.IsAbs(path) {
-		return filepath.Clean(path)
+		return filepath.Clean(path), nil
 	}
 
-	return filepath.Join(source, path)
+	return filepath.Join(source, path), nil
 }
