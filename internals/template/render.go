@@ -4,6 +4,9 @@ import (
 	"github.com/codeshelldev/goplater/internals/template/context"
 	"github.com/codeshelldev/goplater/internals/template/funcs"
 	"github.com/codeshelldev/goplater/pkg/gplt"
+	"github.com/codeshelldev/goplater/pkg/gplt/modules/ext/html"
+	"github.com/codeshelldev/goplater/pkg/gplt/modules/ext/markdown"
+	"github.com/codeshelldev/goplater/pkg/gplt/modules/ext/yaml"
 	"github.com/codeshelldev/goplater/pkg/gplt/modules/std"
 	"github.com/codeshelldev/goplater/pkg/gplt/resolvers"
 )
@@ -23,6 +26,7 @@ func templateStr(input string, tmplContext *context.TemplateContext) (string, er
 	e := gplt.NewEngine()
 
 	e.Use(funcs.Module)
+	e.Use(yaml.Module, html.Module, markdown.Module)
 
 	e.Use(std.Collections.Unsafe...)
 	e.UseSafe(std.Collections.Safe...)
