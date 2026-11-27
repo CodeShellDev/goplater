@@ -1,6 +1,7 @@
 package strings
 
 import (
+	"errors"
 	"fmt"
 	"strings"
 
@@ -311,10 +312,21 @@ func joinVariadic(_ *gplt.Runtime, _ *gplt.Context, sep string, args ...any) str
 // @param str string
 // @param count int
 // @returns string
+// @returns error
 var repeatFunc = modules.NewFunc("repeat", repeat)
 
-func repeat(_ *gplt.Runtime, _ *gplt.Context, str string, count int) string	 {
-	return strings.Repeat(str, count)
+const MAX_REPEAT_SIZE = 10 << 20 // 10MB
+
+func repeat(_ *gplt.Runtime, _ *gplt.Context, str string, count int) (string, error) {
+	if count < 0 {
+		return "", errors.New("negative count")
+	}
+
+	if len(str) > 0 && count > MAX_REPEAT_SIZE/len(str) {
+		return "", fmt.Errorf("result exceeds %d bytes", MAX_REPEAT_SIZE)
+	}
+	
+	return strings.Repeat(str, count), nil
 }
 
 func toStringSlice(values []any) []string {
