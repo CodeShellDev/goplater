@@ -1,7 +1,9 @@
 package fsutils
 
 import (
+	"bytes"
 	"fmt"
+	"io"
 	"os"
 	"path/filepath"
 	"strings"
@@ -72,13 +74,31 @@ func IsInside(file, dir string) bool {
 	return relPath == "." || (relPath != ".." && !strings.HasPrefix(relPath, ".." + string(filepath.Separator)))
 }
 
+// check for NUL byte in first 8000 bytes (same as git does)
+func IsBinary(path string) (bool, error) {
+	f, err := os.Open(path)
+	if err != nil {
+		return false, err
+	}
+	defer f.Close()
+
+	buf := make([]byte, 8000)
+
+	n, err := f.Read(buf)
+	if err != nil && err != io.EOF {
+		return false, err
+	}
+
+	return bytes.IndexByte(buf[:n], 0) != -1, nil
+}
+
 func WithAllowedRoot(target string, allowed []string, fn func(root *os.Root, relative string) error) error {
 	targetAbs, err := filepath.Abs(target)
 	if err != nil {
 		return err
 	}
 
-	var openErr error
+	var lastErr error
 
 	for _, path := range allowed {
 		absPath, err := filepath.Abs(path)
@@ -93,23 +113,23 @@ func WithAllowedRoot(target string, allowed []string, fn func(root *os.Root, rel
 
 		root, err := os.OpenRoot(absPath)
 		if err != nil {
-			openErr = err
+			lastErr = err
 			continue
 		}
 
 		err = fn(root, relative)
 		closeErr := root.Close()
 
-		if err != nil {
-			return err
+		if err == nil {
+			return closeErr
 		}
 
-		return closeErr
+		// save err and try next allowed (may just be an error in fn)
+		lastErr = err
 	}
 
-	if openErr != nil {
-		return openErr
+	if lastErr != nil {
+		return lastErr
 	}
-
 	return fmt.Errorf("path %q is outside the allowed directories", targetAbs)
 }
