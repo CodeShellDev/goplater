@@ -1,7 +1,7 @@
-+{{ define "renderCommandDocs" }}
++{{ define "renderCommandDocs(root)" }}
     +{{- $level := 4 -}}
 
-    +{{- $files := walkDir "~/" -}}
+    +{{- $files := walkDir .root -}}
     +{{- range $files -}}
         +{{- if eq (fileExt .) ".go" -}}
             +{{- $source := readRaw . -}}

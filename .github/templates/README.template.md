@@ -10,7 +10,7 @@
 +{{ import "terminal" "./terminal" }}
 
 # library commands
-+{{ $cmds := call "commands.renderCommandDocs" }}
++{{ $cmds := call "commands.renderCommandDocs" "pkg/gplt/modules" }}
 +{{ $cmdContents := call "contents.indentTabs" (call "contents.renderContentSection" $cmds 3) 1 }}
 -->
 
