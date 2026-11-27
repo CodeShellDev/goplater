@@ -312,7 +312,7 @@ func fsExists(_ *gplt.Runtime, ctx *gplt.Context, path string) (bool, error) {
 		return false, nil
 	}
 
-	return err == nil, err
+	return err == nil, nil
 }
 
 // Returns if a file exists at a given path.
@@ -348,7 +348,7 @@ func isFile(_ *gplt.Runtime, ctx *gplt.Context, path string) (bool, error) {
 	})
 
 	if err != nil {
-		return false, err
+		return false, nil
 	}
 
 	return info.Mode().IsRegular(), nil
@@ -387,7 +387,7 @@ func isDir(_ *gplt.Runtime, ctx *gplt.Context, path string) (bool, error) {
 	})
 
 	if err != nil {
-		return false, err
+		return false, nil
 	}
 
 	return info.IsDir(), nil
