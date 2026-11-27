@@ -93,5 +93,10 @@ func mod(_ *gplt.Runtime, _ *gplt.Context, a, b any, rest ...any) (any, error) {
 			}
 			return x % y, nil
 		},
-		func(x, y float64) (float64, error) { return math.Mod(x, y), nil })
+		func(x, y float64) (float64, error) {
+			if y == 0 {
+				return 0, ModuloByZeroErr
+			}
+			return math.Mod(x, y), nil
+		})
 }
