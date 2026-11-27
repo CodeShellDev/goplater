@@ -9,9 +9,9 @@ import (
 
 	"github.com/codeshelldev/goplater/internals/template"
 	tmplContext "github.com/codeshelldev/goplater/internals/template/context"
-	"github.com/codeshelldev/goplater/internals/template/core"
 
 	"github.com/spf13/cobra"
+	"github.com/spf13/pflag"
 )
 
 var templateCmd = &cobra.Command{
@@ -25,29 +25,41 @@ var templateCmd = &cobra.Command{
 	RunE: run,
 }
 
-var templateOptions = &tmplContext.TemplateOptions{}
-
-var templater template.Templater = *template.New()
+var opts = &tmplContext.TemplateOptions{}
 
 func init() {
 	rootCmd.AddCommand(templateCmd)
 
-	templateCmd.Flags().BoolVarP(&templateOptions.Recursive, "recursive", "r", false, "Recursively process files")
+	templateCmd.Flags().BoolVarP(&opts.Recursive, "recursive", "r", false, "Recursively process files")
 
-	templateCmd.Flags().BoolVarP(&templateOptions.Flatten, "flatten", "f", false, "Flatten output paths without preserving source directory structure")
+	templateCmd.Flags().BoolVarP(&opts.Flatten, "flatten", "f", false, "Flatten output paths without preserving source directory structure")
 
-	templateCmd.Flags().StringVar(&templateOptions.Root, "root", "", "Source root, output keeps paths relative to it (default: inferred)")
-	templateCmd.Flags().StringVarP(&templateOptions.Output, "output", "o", ".", "Output directory for templated files")
-	templateCmd.Flags().StringVarP(&templateOptions.Source, "source", "s", ".", "Source directory containing files")
+	templateCmd.Flags().StringVar(&opts.Root, "root", "", "Source root, output keeps paths relative to it (default: inferred)")
+	templateCmd.Flags().StringVarP(&opts.Output, "output", "o", ".", "Output directory for templated files")
+	templateCmd.Flags().StringVarP(&opts.Source, "source", "s", ".", "Source directory, ~/ is relative to it")
 
-	templateCmd.Flags().IntVar(&templateOptions.TrimMaxBlankLines, "trim-max-blank-lines", -1, "experimental: Max blank lines kept around non-output actions")
+	templateCmd.Flags().IntVar(&opts.TrimMaxBlankLines, "trim-max-blank-lines", -1, "Experimental: Max blank lines kept around non-output actions")
 
-	templateCmd.Flags().StringSliceVar(&templateOptions.AllowedOutputs, "allowed-outputs", []string{}, "Allowed output directories, including their subdirectories (always includes output path)")
-	templateCmd.Flags().StringSliceVar(&templateOptions.AllowedInputs, "allowed-inputs", []string{}, "Allowed input directories, including their subdirectories (always includes source path)")
-	templateCmd.Flags().StringSliceVarP(&templateOptions.Match, "match", "m", []string{".*"}, "Regular expressions used to match files for processing")
+	templateCmd.Flags().StringSliceVar(&opts.AllowedOutputs, "allowed-outputs", []string{}, "Allowed output directories, including their subdirectories (always includes output path)")
+	templateCmd.Flags().StringSliceVar(&opts.AllowedInputs, "allowed-inputs", []string{}, "Allowed input directories, including their subdirectories (always includes context path)")
+	
+	templateCmd.Flags().StringArrayVarP(&opts.Match, "match", "m", []string{".*"}, "Only template files/folders whose relative path matches regex")
+	templateCmd.Flags().StringArrayVar(&opts.Exclude, "exclude", []string{}, "Skip files/folders whose relative path matches regex")
+	templateCmd.Flags().BoolVar(&opts.IncludeHidden, "hidden", false, "Include dotfiles and dotfolders")
+	templateCmd.Flags().BoolVar(&opts.IncludeBinary, "binary", false, "Include binary files")
 
-	templateCmd.Flags().BoolVar(&templateOptions.DryRun, "dry-run", false, "Show what would be written, change nothing")
-	templateCmd.Flags().BoolVarP(&templateOptions.IgnoreErrors, "ignore-errors", "i", false, "Continue processing when errors occur")
+	templateCmd.Flags().BoolVar(&opts.DryRun, "dry-run", false, "Show what would be written, change nothing")
+	templateCmd.Flags().BoolVarP(&opts.IgnoreErrors, "ignore-errors", "i", false, "Continue processing when errors occur")
+
+	templateCmd.Flags().SetNormalizeFunc(func(f *pflag.FlagSet, name string) pflag.NormalizedName {
+		switch name {
+		case "allowed-output":
+			name = "allowed-outputs"
+		case "allowed-input":
+			name = "allowed-inputs"
+		}
+		return pflag.NormalizedName(name)
+	})
 }
 
 func validate(cmd *cobra.Command, args []string) error {
@@ -78,7 +90,6 @@ func makePathAbsolute(path string) (string, error) {
 	return path, nil
 }
 
-
 func makePathsAbsolute(in []string) ([]string, error) {
 	out := []string{}
 
@@ -103,57 +114,63 @@ func parseStringSlice(slice []string) []string {
 }
 
 func run(cmd *cobra.Command, args []string) error {
-	templateContext := tmplContext.New(templateOptions)
+	tmplContext := tmplContext.New(opts)
 
 	// ctx path
 	ctxPathAbs, err := filepath.Abs(args[0])
 
 	if err != nil {
-		return fmt.Errorf("could not make source path %q absolute: %w", templateOptions.Source, err)
+		return fmt.Errorf("could not make context path %q absolute: %w", args[0], err)
 	}
 
-	templateContext.Shared.Path = ctxPathAbs
+	tmplContext.Shared.Path = ctxPathAbs
 
 	// allowed dirs
-	allowedOutputFolders := append(parseStringSlice(templateOptions.AllowedOutputs), templateOptions.Output)
+	allowedOutputFolders := append(parseStringSlice(opts.AllowedOutputs), opts.Output)
 
-	templateOptions.AllowedOutputs, err = makePathsAbsolute(allowedOutputFolders)
+	opts.AllowedOutputs, err = makePathsAbsolute(allowedOutputFolders)
 
 	if err != nil {
 		return err
 	}
 
-	allowedInputFolders := append(parseStringSlice(templateOptions.AllowedInputs), templateOptions.Source, ctxPathAbs)
+	allowedInputFolders := append(parseStringSlice(opts.AllowedInputs), ctxPathAbs)
 
-	templateOptions.AllowedInputs, err = makePathsAbsolute(allowedInputFolders)
+	opts.AllowedInputs, err = makePathsAbsolute(allowedInputFolders)
 
 	if err != nil {
 		return err
 	}
 
 	// output
-	outputPathAbs, err := filepath.Abs(templateOptions.Output)
+	outputPathAbs, err := filepath.Abs(opts.Output)
 
 	if err != nil {
-		return fmt.Errorf("could not make output path %q absolute: %w", templateOptions.Output, err)
+		return fmt.Errorf("could not make output path %q absolute: %w", opts.Output, err)
 	}
 
-	templateOptions.Output = outputPathAbs
+	opts.Output = outputPathAbs
 
 	// root
-	if templateOptions.Root != "" {
-		rootPathAbs, err := filepath.Abs(templateOptions.Root)
+	if opts.Root != "" {
+		rootPathAbs, err := filepath.Abs(opts.Root)
 
 		if err != nil {
-			return fmt.Errorf("could not make root path %q absolute: %w", templateOptions.Root, err)
+			return fmt.Errorf("could not make root path %q absolute: %w", opts.Root, err)
 		}
 
-		templateOptions.Root = rootPathAbs
+		opts.Root = rootPathAbs
 	}
 
-	// init
-	core.Renderer = &templater
-	core.Matcher = &templater
+	opts.MatchRe, err = template.CompilePatterns(opts.Match)
+	if err != nil {
+		return err
+	}
 
-	return templater.Run(templateContext)
+	opts.ExcludeRe, err = template.CompilePatterns(opts.Exclude)
+	if err != nil {
+		return err
+	}
+
+	return template.Run(tmplContext)
 }
