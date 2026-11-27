@@ -2,6 +2,7 @@ package context
 
 import (
 	"errors"
+	"regexp"
 
 	"github.com/codeshelldev/goplater/pkg/gplt"
 )
@@ -15,6 +16,13 @@ type TemplateOptions struct {
 	AllowedInputs		[]string
 
 	Match				[]string
+	MatchRe				[]*regexp.Regexp
+
+	Exclude				[]string
+	ExcludeRe			[]*regexp.Regexp
+
+	IncludeHidden		bool
+	IncludeBinary		bool
 
 	Recursive			bool
 	Flatten				bool
@@ -33,6 +41,7 @@ type TemplateContext struct {
 
 type Local struct {
 	Invoker		string
+	Depth		int
 }
 
 type Shared struct {

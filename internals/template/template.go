@@ -15,34 +15,53 @@ import (
 	"github.com/codeshelldev/goplater/utils/tree"
 )
 
-type Templater struct{}
+func Run(tmplContext *context.TemplateContext) error {
+	ctxPath := tmplContext.Shared.Path
+	opts := tmplContext.Options
 
-func (Templater) Run(tmplContext *context.TemplateContext) error {
-	return run(tmplContext)
-}
-
-func New() *Templater {
-	return &Templater{}
-}
-
-func run(tmplContext *context.TemplateContext) error {
-	isDir := fsutils.IsDir(tmplContext.Shared.Path)
-	isFile := fsutils.IsFile(tmplContext.Shared.Path)
+	isDir := fsutils.IsDir(ctxPath)
+	isFile := fsutils.IsFile(ctxPath)
 	
-	tmplContext.Local.Invoker = tmplContext.Shared.Path
+	tmplContext.Local.Invoker = ctxPath
 
 	if isDir {
-		t := tree.NewTree(os.Stdout, tmplContext.Shared.Path)
+		t := tree.NewTree(os.Stdout, ctxPath)
 
 		t.Start()
 
-		err := filepath.WalkDir(tmplContext.Shared.Path, func(path string, d fs.DirEntry, err error) error {
+		err := filepath.WalkDir(ctxPath, func(path string, d fs.DirEntry, err error) error {
 			if err != nil {
 				return err
 			}
 
+			// always walk ctx path, even if dotfolder
+			if path == ctxPath {
+				return nil
+			}
+
+			relPath, err := filepath.Rel(ctxPath, path)
+			if err != nil {
+				return err
+			}
+			relPath = filepath.ToSlash(relPath)
+
+			// exclude hidden dotfiles and dotfolders
+			if !opts.IncludeHidden && isHidden(d.Name()) {
+				if d.IsDir() {
+					return filepath.SkipDir
+				}
+				return nil
+			}
+
+			if isExcluded(opts, relPath) {
+				if d.IsDir() {
+					return filepath.SkipDir
+				}
+				return nil
+			}
+
 			if d.IsDir() {
-				if path != tmplContext.Shared.Path && !tmplContext.Options.Recursive {
+				if path != ctxPath && !opts.Recursive {
 					return filepath.SkipDir
 				}
 				return nil
@@ -54,29 +73,28 @@ func run(tmplContext *context.TemplateContext) error {
 			}
 
 			absPath, err := filepath.Abs(path)
-
 			if err != nil {
 				return err
+			}
+
+			if !matchRelative(opts, relPath) {
+				return nil
+			}
+
+			if !opts.IncludeBinary {
+				isBin, err := fsutils.IsBinary(path)
+				if err != nil {
+					return err
+				}
+
+				if isBin {
+					return nil
+				}
 			}
 
 			newContext := *tmplContext
 			newContext.Local.Invoker = absPath
 			newContext.Shared = &context.Shared{Path: absPath}
-
-			ok, err := matchFile(&newContext)
-
-			if err != nil {
-				return err
-			}
-
-			if !ok {
-				return nil
-			}
-
-			relPath, err := filepath.Rel(tmplContext.Shared.Path, path)
-			if err != nil {
-				return err
-			}
 
 			file := t.Add(relPath)
 
@@ -94,7 +112,7 @@ func run(tmplContext *context.TemplateContext) error {
 
 				fmt.Println()
 
-				if !tmplContext.Options.IgnoreErrors {
+				if !opts.IgnoreErrors {
 					return err
 				}
 
@@ -102,7 +120,7 @@ func run(tmplContext *context.TemplateContext) error {
 			}
 
 			if newContext.Shared.OutputPath != "" {
-				relOutput, err := fsutils.SafeRelative(tmplContext.Shared.Path, newContext.Shared.OutputPath)
+				relOutput, err := fsutils.SafeRelative(ctxPath, newContext.Shared.OutputPath)
 
 				if err != nil {
 					// not under source: show abs path instead
