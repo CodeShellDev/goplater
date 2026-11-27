@@ -46,7 +46,7 @@ func templateFile(tmplContext *context.TemplateContext) (string, error) {
 		return "", err
 	}
 
-	return templateContent(string(data), tmplContext)
+	return Render(string(data), tmplContext)
 }
 
 func handleFile(tmplContext *context.TemplateContext) error {

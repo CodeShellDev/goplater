@@ -11,11 +11,7 @@ import (
 // share resolver for shared cache
 var httpResolver = resolvers.NewHttpResolver()
 
-func (t *Templater) Render(content string, tmplContext *context.TemplateContext) (string, error) {
-	return templateContent(content, tmplContext)
-}
-
-func templateContent(content string, tmplContext *context.TemplateContext) (string, error) {
+func Render(content string, tmplContext *context.TemplateContext) (string, error) {
 	normalized := content
 
 	tmplStr, err := templateStr(normalized, tmplContext)
