@@ -18,12 +18,16 @@ type Policy struct {
 	Timeout			time.Duration
 }
 
+const MAX_RESPONSE_SIZE = 10 << 20 // 10 MB
+
 var blockedPrefixes = []netip.Prefix{
 	netip.MustParsePrefix("100.64.0.0/10"), // CGNAT
 	netip.MustParsePrefix("192.0.0.0/24"),
 	netip.MustParsePrefix("198.18.0.0/15"),
 	netip.MustParsePrefix("240.0.0.0/4"),
 	netip.MustParsePrefix("64:ff9b::/96"), // NAT64
+	netip.MustParsePrefix("2001::/32"), // Teredo (ipv6 over ipv4 NAT tunnels)
+	netip.MustParsePrefix("2002::/16"), // 6to4 (ipv6 tunnels)
 	netip.MustParsePrefix("0.0.0.0/8"), // can reach localhost on linux
 }
 
@@ -130,18 +134,16 @@ func FetchURL(client *http.Client, url string) (string, error) {
 		return "", fmt.Errorf("remote returned %q: %s", url, resp.Status)
 	}
 
-	const maxResponseSize = 10 << 20 // 10 MB
-
-	if resp.ContentLength > maxResponseSize {
+	if resp.ContentLength > MAX_RESPONSE_SIZE {
 		return "", errors.New("remote response exceeds 10 MB limit")
 	}
 
-	body, err := io.ReadAll(io.LimitReader(resp.Body, maxResponseSize + 1))
+	body, err := io.ReadAll(io.LimitReader(resp.Body, MAX_RESPONSE_SIZE + 1))
 	if err != nil {
 		return "", fmt.Errorf("could not read response body: %w", err)
 	}
 
-	if len(body) > maxResponseSize {
+	if len(body) > MAX_RESPONSE_SIZE {
 		return "", errors.New("remote response exceeds 10 MB limit")
 	}
 
