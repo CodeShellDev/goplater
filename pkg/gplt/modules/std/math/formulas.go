@@ -2,6 +2,7 @@ package math
 
 import (
 	"errors"
+	"fmt"
 	"math"
 
 	"github.com/codeshelldev/goplater/pkg/gplt"
@@ -162,7 +163,11 @@ func roundDigits(_ *gplt.Runtime, _ *gplt.Context, number any, digits int) (floa
 		return n, nil
 	}
 
+	if digits < -15 || digits > 15 {
+		return 0, fmt.Errorf("digits out of range: %d", digits)
+	}
 	p := math.Pow10(digits)
+
 	return math.Round(n * p) / p, nil
 }
 
