@@ -20,7 +20,7 @@ jobs:
     name: Update
     with:
       version: latest-prerelease
-      allowed-inputs: .github/templates, images, examples/images
+      allowed-inputs: .github/templates, images, examples/images, pkg/gplt/modules
       allowed-outputs: images, examples/images
       path: .github/templates/README.template.md
       output: README.md
