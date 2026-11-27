@@ -9,12 +9,12 @@ import (
 	"github.com/codeshelldev/goplater/internals/template/context"
 	"github.com/codeshelldev/goplater/internals/template/funcs"
 	"github.com/codeshelldev/goplater/pkg/gplt"
-	"github.com/codeshelldev/goplater/pkg/gplt/collections"
 	"github.com/codeshelldev/goplater/pkg/gplt/modules"
+	"github.com/codeshelldev/goplater/pkg/gplt/modules/std"
 	"github.com/codeshelldev/goplater/pkg/gplt/utils/testutils"
 )
 
-var tester = testutils.NewTester(collections.Unsafe, collections.Safe)
+var tester = testutils.NewTester(std.Collections.Unsafe, std.Collections.Safe)
 
 func newFSTestContext(t *testing.T) (*gplt.Context, string, string) {
 	t.Helper()

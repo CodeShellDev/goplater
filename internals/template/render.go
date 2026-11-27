@@ -4,7 +4,7 @@ import (
 	"github.com/codeshelldev/goplater/internals/template/context"
 	"github.com/codeshelldev/goplater/internals/template/funcs"
 	"github.com/codeshelldev/goplater/pkg/gplt"
-	"github.com/codeshelldev/goplater/pkg/gplt/collections"
+	"github.com/codeshelldev/goplater/pkg/gplt/modules/std"
 	"github.com/codeshelldev/goplater/pkg/gplt/resolvers"
 )
 
@@ -24,8 +24,8 @@ func templateStr(input string, tmplContext *context.TemplateContext) (string, er
 
 	e.Use(funcs.Module)
 
-	e.Use(collections.Unsafe...)
-	e.UseSafe(collections.Safe...)
+	e.Use(std.Collections.Unsafe...)
+	e.UseSafe(std.Collections.Safe...)
 	
 	e.SetResolver(
 		gplt.NewResolverChain(
