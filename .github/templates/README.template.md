@@ -139,21 +139,37 @@ Point Goplater at a directory and it mirrors the structure into the output:
 goplater template ./examples -o ./out -r
 ```
 
-Useful flags:
+### Flags
 
-| Flag                     | What it does                                                       |
-| ------------------------ | ------------------------------------------------------------------ |
-| `-o`                     | Output file or directory                                           |
-| `-s`                     | Source directory for `~/` paths                                    |
-| `-r`                     | Walk directories                                                   |
-| `--match`                | Only template files matching a regex                               |
-| `--flatten`              | Drop the directory structure                                       |
-| `--root`                 | Choose the root that output paths are relative to                  |
-| `--allowed-inputs`       | Limit from where templates may read                                |
-| `--allowed-outputs`      | Limit where templates may write                                    |
-| `--trim-max-blank-lines` | Experimental: Remove blank lines left behind by non-output actions |
-| `--dry-run`              | Show what would be written, change nothing                         |
-| `--ignore-errors`        | Continue processing when errors occur                              |
+Control how Goplater processes your templates and where it writes the results.
+
+| Flag                | What it does                                                                        |
+| ------------------- | ----------------------------------------------------------------------------------- |
+| `-o`                | Set the output file or directory                                                    |
+| `-s`                | Set the source directory for `~/` paths                                             |
+| `-r`                | Process directories recursively                                                     |
+| `--flatten`         | Write all files into a single directory, without preserving the directory structure |
+| `--root`            | Set the root directory used to determine relative output paths                      |
+| `--allowed-inputs`  | Restrict which directories templates can read from                                  |
+| `--allowed-outputs` | Restrict which directories templates can write to                                   |
+| `--dry-run`         | Preview the changes without writing any files                                       |
+| `--ignore-errors`   | Report errors and continue processing the remaining files                           |
+
+#### Advanced
+
+Fine-tune which files Goplater processes and how it handles them.
+
+| Flag                     | What it does                                                                           |
+| ------------------------ | -------------------------------------------------------------------------------------- |
+| `--match`                | Only process files and directories whose relative paths match a regex                  |
+| `--exclude`              | Skip files and directories whose relative paths match a regex                          |
+| `--hidden`               | Include hidden files and directories (those starting with `.`)                         |
+| `--binary`               | Include binary files in the template process                                           |
+| `--trim-max-blank-lines` | Remove excess blank lines left behind by actions that produce no output (experimental) |
+
+> [!IMPORTANT]
+> `--match` and `--exclude` can only accept one regex per flag.
+> To specify multiple patterns, repeat the flag instead (e.g. `--match=a --match=b`).
 
 ### Your own functions
 
