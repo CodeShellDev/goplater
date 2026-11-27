@@ -19,8 +19,9 @@ func NewGlobalStore() *GlobalStore {
 	}
 }
 
-func (s *GlobalStore) Set(key string, value any) {
+func (s *GlobalStore) Set(key string, value any) error {
 	s.data[key] = value
+	return nil
 }
 
 func (s *GlobalStore) Get(key string) (any, error) {

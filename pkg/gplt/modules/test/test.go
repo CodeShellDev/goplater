@@ -24,12 +24,14 @@ func NewStore() *Store {
 }
 
 
-func (s *Store) Set(label string, value any) {
+func (s *Store) Set(label string, value any) error {
 	s.entries = append(s.entries, Entry{label, value})
 
 	if label != "" {
 		s.byLabel[label] = value
 	}
+
+	return nil
 }
 
 func (s *Store) Get(label string) (any, error) {

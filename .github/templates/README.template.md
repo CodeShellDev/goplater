@@ -161,7 +161,7 @@ Fine-tune which files Goplater processes and how it handles them.
 
 | Flag                     | What it does                                                                           |
 | ------------------------ | -------------------------------------------------------------------------------------- |
-| `--match`                | Only process files and directories whose relative paths match a regex                  |
+| `--match`                | Only process files whose relative path match a regex                                   |
 | `--exclude`              | Skip files and directories whose relative paths match a regex                          |
 | `--hidden`               | Include hidden files and directories (those starting with `.`)                         |
 | `--binary`               | Include binary files in the template process                                           |

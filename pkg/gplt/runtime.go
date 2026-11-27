@@ -23,7 +23,7 @@ type Runtime struct {
 }
 
 type StoreContainer interface {
-	Set(key string, value any)
+	Set(key string, value any) error
 	Get(key string) (any, error)
 	Delete(key string) bool
 	Has(key string) bool

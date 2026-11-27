@@ -21,10 +21,10 @@ func NewCallOutputStore() *FuncOutputStore {
 	return &FuncOutputStore{outputs: map[string][]any{}}
 }
 
-func (s *FuncOutputStore) Set(key string, value any) {
+func (s *FuncOutputStore) Set(key string, value any) error {
 	outputs, ok := value.([]any)
 	if !ok {
-		panic("'value' is expected to be []any")
+		return errors.New("'value' is expected to be []any")
 	}
 
 	if s.outputs == nil {
@@ -32,6 +32,7 @@ func (s *FuncOutputStore) Set(key string, value any) {
 	}
 
 	s.outputs[key] = outputs
+	return nil
 }
 
 func (s *FuncOutputStore) Get(key string) (any, error) {

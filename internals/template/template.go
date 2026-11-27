@@ -61,7 +61,7 @@ func Run(tmplContext *context.TemplateContext) error {
 			}
 
 			if d.IsDir() {
-				if path != ctxPath && !opts.Recursive {
+				if !opts.Recursive {
 					return filepath.SkipDir
 				}
 				return nil

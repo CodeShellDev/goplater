@@ -348,7 +348,7 @@ func isFile(_ *gplt.Runtime, ctx *gplt.Context, path string) (bool, error) {
 	})
 
 	if err != nil {
-		return false, nil
+		return false, err
 	}
 
 	return info.Mode().IsRegular(), nil
@@ -387,7 +387,7 @@ func isDir(_ *gplt.Runtime, ctx *gplt.Context, path string) (bool, error) {
 	})
 
 	if err != nil {
-		return false, nil
+		return false, err
 	}
 
 	return info.IsDir(), nil

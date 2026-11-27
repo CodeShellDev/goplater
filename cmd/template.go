@@ -42,7 +42,7 @@ func init() {
 
 	templateCmd.Flags().StringSliceVar(&opts.AllowedOutputs, "allowed-outputs", []string{}, "Allowed output directories, including their subdirectories (always includes output path)")
 	templateCmd.Flags().StringSliceVar(&opts.AllowedInputs, "allowed-inputs", []string{}, "Allowed input directories, including their subdirectories (always includes context path)")
-	
+
 	templateCmd.Flags().StringArrayVarP(&opts.Match, "match", "m", []string{".*"}, "Only template files/folders whose relative path matches regex")
 	templateCmd.Flags().StringArrayVar(&opts.Exclude, "exclude", []string{}, "Skip files/folders whose relative path matches regex")
 	templateCmd.Flags().BoolVar(&opts.IncludeHidden, "hidden", false, "Include dotfiles and dotfolders")
