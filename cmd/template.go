@@ -9,6 +9,7 @@ import (
 
 	"github.com/codeshelldev/goplater/internals/template"
 	tmplContext "github.com/codeshelldev/goplater/internals/template/context"
+	"github.com/codeshelldev/goplater/utils/outputresolver"
 
 	"github.com/spf13/cobra"
 	"github.com/spf13/pflag"
@@ -158,6 +159,11 @@ func run(cmd *cobra.Command, args []string) error {
 	}
 
 	opts.Output = outputPathAbs
+
+	opts.Output, err = outputresolver.EnsureDirOutput(ctxPathAbs, opts.Output)
+	if err != nil {
+		return err
+	}
 
 	// root
 	if opts.Root != "" {
