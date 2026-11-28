@@ -53,11 +53,21 @@ func CommonParent(a, b string) string {
 	}
 }
 
-func Validate(ctxPath, output string) error {
-	if IsDirPath(ctxPath) && !IsDirPath(output) {
-		return ErrDirToFile
+// if source is folder then output must be too, else error (normalizes by adding trailing "/" if needed)
+func EnsureDirOutput(source, output string) (string, error) {
+	if !IsDirPath(source) {
+		return output, nil
 	}
-	return nil
+
+	if fsutils.IsFile(output) {
+		return "", ErrDirToFile
+	}
+
+	if hasTrailingSep(output) {
+		return output, nil
+	}
+
+	return output + string(filepath.Separator), nil
 }
 
 // doesn't preserve structure ("dumps")
