@@ -12,6 +12,11 @@
 # library commands
 
 
+
+
+
+
+
 -->
 
 <p align="center">
@@ -111,14 +116,6 @@ Run `npm install my-app`
 - [Standard Library](#standard-library)
 	- [fs](#fs)
 	- [outputto](#outputto)
-	- [funcs](#funcs)
-	- [globals](#globals)
-	- [import](#import)
-	- [return](#return)
-	- [types](#types)
-	- [html](#html)
-	- [markdown](#markdown)
-	- [yaml](#yaml)
 	- [container](#container)
 	- [conversion](#conversion)
 	- [debug](#debug)
@@ -131,7 +128,9 @@ Run `npm install my-app`
 	- [operators](#operators)
 	- [regex](#regex)
 	- [strings](#strings)
-	- [test](#test)
+	- [html](#html)
+	- [markdown](#markdown)
+	- [yaml](#yaml)
 - [Contributing](#contributing)
 - [Support](#support)
 - [License](#license)
@@ -191,21 +190,37 @@ Point Goplater at a directory and it mirrors the structure into the output:
 goplater template ./examples -o ./out -r
 ```
 
-Useful flags:
+### Flags
 
-| Flag                     | What it does                                                       |
-| ------------------------ | ------------------------------------------------------------------ |
-| `-o`                     | Output file or directory                                           |
-| `-s`                     | Source directory for `~/` paths                                    |
-| `-r`                     | Walk directories                                                   |
-| `--match`                | Only template files matching a regex                               |
-| `--flatten`              | Drop the directory structure                                       |
-| `--root`                 | Choose the root that output paths are relative to                  |
-| `--allowed-inputs`       | Limit from where templates may read                                |
-| `--allowed-outputs`      | Limit where templates may write                                    |
-| `--trim-max-blank-lines` | Experimental: Remove blank lines left behind by non-output actions |
-| `--dry-run`              | Show what would be written, change nothing                         |
-| `--ignore-errors`        | Continue processing when errors occur                              |
+Control how Goplater processes your templates and where it writes the results.
+
+| Flag                | What it does                                                                        |
+| ------------------- | ----------------------------------------------------------------------------------- |
+| `-o`                | Set the output file or directory                                                    |
+| `-s`                | Set the source directory for `~/` paths                                             |
+| `-r`                | Process directories recursively                                                     |
+| `--flatten`         | Write all files into a single directory, without preserving the directory structure |
+| `--root`            | Set the root directory used to determine relative output paths                      |
+| `--allowed-inputs`  | Restrict which directories templates can read from                                  |
+| `--allowed-outputs` | Restrict which directories templates can write to                                   |
+| `--dry-run`         | Preview the changes without writing any files                                       |
+| `--ignore-errors`   | Report errors and continue processing the remaining files                           |
+
+#### Advanced
+
+Fine-tune which files Goplater processes and how it handles them.
+
+| Flag                     | What it does                                                                           |
+| ------------------------ | -------------------------------------------------------------------------------------- |
+| `--match`                | Only process files whose relative path match a regex                                   |
+| `--exclude`              | Skip files and directories whose relative paths match a regex                          |
+| `--hidden`               | Include hidden files and directories (those starting with `.`)                         |
+| `--binary`               | Include binary files in the template process                                           |
+| `--trim-max-blank-lines` | Remove excess blank lines left behind by actions that produce no output (experimental) |
+
+> [!IMPORTANT]
+> `--match` and `--exclude` can only accept one regex per flag.
+> To specify multiple patterns, repeat the flag instead (e.g. `--match=a --match=b`).
 
 ### Your own functions
 
@@ -423,6 +438,26 @@ Arguments are available as <code>.arg</code> in the file being read.</p>
 
 
 <table width="100%">
+<tr><th align="left"><h4><code>fsRemove(path string) throws error</code></h4></th>
+</tr><tr><td>
+<p>Removes a file or folder at a given path.</p>
+
+
+<details>
+  <summary>Examples</summary>
+  <br/>
+
+**Example**:
+```handlebars
++{{ fsRemove "/path/to/file/or/folder" }}
+```
+
+</details>
+
+</td></tr></table>
+
+
+<table width="100%">
 <tr><th align="left"><h4><code>mkdir(path string) throws error</code></h4></th>
 </tr><tr><td>
 <p>Creates directory at path.</p>
@@ -485,7 +520,7 @@ Path exists!
 
 
 <table width="100%">
-<tr><th align="left"><h4><code>isFile(path string) bool</code></h4></th>
+<tr><th align="left"><h4><code>isFile(path string) (bool, throws error)</code></h4></th>
 </tr><tr><td>
 <p>Returns if a file exists at a given path.</p>
 
@@ -507,7 +542,7 @@ Path is a file!
 
 
 <table width="100%">
-<tr><th align="left"><h4><code>isDir(path string) bool</code></h4></th>
+<tr><th align="left"><h4><code>isDir(path string) (bool, throws error)</code></h4></th>
 </tr><tr><td>
 <p>Returns if a folder exists at a given path.</p>
 
@@ -579,26 +614,6 @@ Path is a folder!
 
 
 <table width="100%">
-<tr><th align="left"><h4><code>fsRemove(path string) throws error</code></h4></th>
-</tr><tr><td>
-<p>Removes a file or folder at a given path.</p>
-
-
-<details>
-  <summary>Examples</summary>
-  <br/>
-
-**Example**:
-```handlebars
-+{{ fsRemove "/path/to/file/or/folder" }}
-```
-
-</details>
-
-</td></tr></table>
-
-
-<table width="100%">
 <tr><th align="left"><h4><code>joinPath(paths []string) string</code></h4></th>
 </tr><tr><td>
 <p>Joins paths together.</p>
@@ -660,513 +675,6 @@ The returned path will always be relative to basePath, even if basePath and targ
 </tr><tr><td>
 <p>Changes the output path for the current file.
 Errors if path is not allowed.</p>
-
-
-</td></tr></table>
-<h3><a href="https://github.com/codeshelldev/goplater/blob/main/pkg/gplt/modules/core/funcs.go">funcs</a></h3>
-
-
-<table width="100%">
-<tr><th align="left"><h4><code>call(name string, args []any) (any, throws error)</code></h4></th>
-</tr><tr><td>
-<p>Calls a func by name with args, optionally with a namespace handle.
-Fails if func is not accessible, undefined or has no signature.</p>
-<p>Args are bound to the params of the func signature:</p>
-<ul>
-<li><code>name</code>: required, call fails if missing</li>
-<li><code>name?</code>: optional (end only), <code>nil</code> if not given</li>
-<li><code>...name</code>: variadic (last only), a slice of all remaining args</li>
-</ul>
-<p>Too many args fail unless the last param is variadic.</p>
-<p>Result:</p>
-<ul>
-<li><code>return</code> not called (or called with no values): captured template output</li>
-<li><code>return</code> with one value: that value</li>
-<li><code>return</code> with multiple values: a slice of all values</li>
-</ul>
-
-
-<details>
-  <summary>Examples</summary>
-  <br/>
-
-**Example**:
-```handlebars
-+{{ define "greet(name)" }}
-+{{ echo (printf "Hello %s!" .name) }}
-+{{ end }}
-```
-**Output**:
-```
-Hello John!
-```
-
-
-**Example**:
-```handlebars
-+{{ define "greet(name)" }}
-Hello +{{ .name }}!
-+{{ end }}
-```
-**Output**:
-```
-Hello John!
-```
-
-
-**Example**:
-```handlebars
-+{{ define "greet(name)" }}
-+{{ return (printf "Hello %s!" .name) }}
-+{{ end }}
-```
-**Output**:
-```
-Hello John!
-```
-
-
-</details>
-
-</td></tr></table>
-<h3><a href="https://github.com/codeshelldev/goplater/blob/main/pkg/gplt/modules/core/globals.go">globals</a></h3>
-
-
-<table width="100%">
-<tr><th align="left"><h4><code>globalSet(key string, value any) throws error</code></h4></th>
-</tr><tr><td>
-<p>Defines a global value with a key.</p>
-
-
-</td></tr></table>
-
-
-<table width="100%">
-<tr><th align="left"><h4><code>globalGet(key string) (any, throws error)</code></h4></th>
-</tr><tr><td>
-<p>Tries to retrieve a global value with a key.</p>
-
-
-</td></tr></table>
-
-
-<table width="100%">
-<tr><th align="left"><h4><code>globalHas(key string) bool</code></h4></th>
-</tr><tr><td>
-<p>Returns whether a given global variable exists.</p>
-
-
-</td></tr></table>
-<h3><a href="https://github.com/codeshelldev/goplater/blob/main/pkg/gplt/modules/core/import.go">import</a></h3>
-
-
-<table width="100%">
-<tr><th align="left"><h4><code>import(alias string?, path string) throws error</code></h4></th>
-</tr><tr><td>
-<p>Tries to import a template file with func definitions.
-Optionally supply an alias for easier access.</p>
-<p>The fs resolver is only available as an internal module and does not ship with <code>gplt</code>.</p>
-
-
-<details>
-  <summary>Examples</summary>
-  <br/>
-
-**Example**:
-```handlebars
-+{{ import "https://domain.com/functions" }}
-```
-**Output**:
-```
-+{{ call "functions.greet" "John" }}
-```
-
-
-**Example**:
-```handlebars
-+{{ import "funcs" "https://domain.com/functions" }}
-```
-**Output**:
-```
-+{{ call "funcs.greet" "John" }}
-```
-
-
-</details>
-
-</td></tr></table>
-
-
-<table width="100%">
-<tr><th align="left"><h4><code>importExact(alias string?, path string, hash string?) throws error</code></h4></th>
-</tr><tr><td>
-<p>Same <code>import</code>, but only imports if content matches expected SHA-256 hash.</p>
-
-
-<details>
-  <summary>Examples</summary>
-  <br/>
-
-**Example**:
-```handlebars
-+{{ importExact "funcs" "https://domain.com/functions" "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855" }}
-```
-**Output**:
-```
-+{{ call "funcs.greet" "John" }}
-```
-
-
-</details>
-
-</td></tr></table>
-<h3><a href="https://github.com/codeshelldev/goplater/blob/main/pkg/gplt/modules/core/return.go">return</a></h3>
-
-
-<table width="100%">
-<tr><th align="left"><h4><code>return(values []any?)</code></h4></th>
-</tr><tr><td>
-<p>Sets output value(s).</p>
-
-
-<details>
-  <summary>Examples</summary>
-  <br/>
-
-**Example**:
-```handlebars
-+{{ return "a" "b" 1 2 }}
-+{{ return (list "3" "4" "5") }}
-```
-
-</details>
-
-</td></tr></table>
-
-
-<table width="100%">
-<tr><th align="left"><h4><code>getOutputs() []any</code></h4></th>
-</tr><tr><td>
-<p>Returns current outputs.</p>
-
-
-</td></tr></table>
-<h3><a href="https://github.com/codeshelldev/goplater/blob/main/pkg/gplt/modules/core/types.go">types</a></h3>
-
-
-<table width="100%">
-<tr><th align="left"><h4><code>typeOf(value any) (string, throws error)</code></h4></th>
-</tr><tr><td>
-<p>Returns the type of a value as a string (using <a href="https://pkg.go.dev/reflect#TypeOf">reflect.TypeOf</a>).</p>
-
-
-</td></tr></table>
-
-
-<table width="100%">
-<tr><th align="left"><h4><code>isType(value any, typeName string) bool</code></h4></th>
-</tr><tr><td>
-<p>Reports whether value is of type (using <a href="https://pkg.go.dev/reflect#TypeOf">reflect.TypeOf</a>).</p>
-
-
-</td></tr></table>
-<h3><a href="https://github.com/codeshelldev/goplater/blob/main/pkg/gplt/modules/ext/html/html.go">html</a></h3>
-
-
-<table width="100%">
-<tr><th align="left"><h4><code>htmlDecode(html string) (*goquery.Document, throws error)</code></h4></th>
-</tr><tr><td>
-<p>Decodes html into a document.</p>
-
-
-</td></tr></table>
-
-
-<table width="100%">
-<tr><th align="left"><h4><code>htmlDocFindAll(doc *goquery.Document, selector string) ([]*goquery.Selection, throws error)</code></h4></th>
-</tr><tr><td>
-<p>Finds elements in document by selector (using <a href="https://pkg.go.dev/github.com/PuerkitoBio/goquery#Selection.Find">goquery.Find</a>).</p>
-
-
-</td></tr></table>
-
-
-<table width="100%">
-<tr><th align="left"><h4><code>htmlDocFind(doc *goquery.Document, selector string) (*goquery.Selection, throws error)</code></h4></th>
-</tr><tr><td>
-<p>Finds element in document by selector (using <a href="https://pkg.go.dev/github.com/PuerkitoBio/goquery#Selection.Find">goquery.Find</a>).</p>
-
-
-</td></tr></table>
-
-
-<table width="100%">
-<tr><th align="left"><h4><code>htmlFindAll(doc *goquery.Document, selector string) ([]*goquery.Selection, throws error)</code></h4></th>
-</tr><tr><td>
-<p>Finds elements in element by selector (using <a href="https://pkg.go.dev/github.com/PuerkitoBio/goquery#Selection.Find">goquery.Find</a>).</p>
-
-
-</td></tr></table>
-
-
-<table width="100%">
-<tr><th align="left"><h4><code>htmlFind(doc *goquery.Document, selector string) (*goquery.Selection, throws error)</code></h4></th>
-</tr><tr><td>
-<p>Finds element in element by selector (using <a href="https://pkg.go.dev/github.com/PuerkitoBio/goquery#Selection.Find">goquery.Find</a>).</p>
-
-
-</td></tr></table>
-
-
-<table width="100%">
-<tr><th align="left"><h4><code>htmlText(el *goquery.Selection) string</code></h4></th>
-</tr><tr><td>
-<p>Returns the elements text content.</p>
-
-
-</td></tr></table>
-
-
-<table width="100%">
-<tr><th align="left"><h4><code>htmlAttr(el *goquery.Selection, attr string) string</code></h4></th>
-</tr><tr><td>
-<p>Returns an elements attribute content.</p>
-
-
-</td></tr></table>
-
-
-<table width="100%">
-<tr><th align="left"><h4><code>htmlInner(el *goquery.Selection) string</code></h4></th>
-</tr><tr><td>
-<p>Returns the elements inner html.</p>
-
-
-</td></tr></table>
-<h3><a href="https://github.com/codeshelldev/goplater/blob/main/pkg/gplt/modules/ext/markdown/markdown.go">markdown</a></h3>
-
-
-<table width="100%">
-<tr><th align="left"><h4><code>markdownDecode(md string) *Document</code></h4></th>
-</tr><tr><td>
-<p>Decodes markdown into a document.</p>
-
-
-</td></tr></table>
-
-
-<table width="100%">
-<tr><th align="left"><h4><code>markdownEncode(doc *Document) string</code></h4></th>
-</tr><tr><td>
-<p>Encodes a document into markdown.</p>
-
-
-</td></tr></table>
-
-
-<table width="100%">
-<tr><th align="left"><h4><code>markdownFindAll(target Searchable, selector string) []*Node</code></h4></th>
-</tr><tr><td>
-<p>Finds elements in target by selector (using <a href="https://pkg.go.dev/github.com/codeshelldev/goplater/pkg/gplt/modules/markdown#TypeMatches">custom</a>).</p>
-
-
-</td></tr></table>
-
-
-<table width="100%">
-<tr><th align="left"><h4><code>markdownFind(target Searchable, selector string) *Node</code></h4></th>
-</tr><tr><td>
-<p>Finds element in target by selector (using <a href="https://pkg.go.dev/github.com/codeshelldev/goplater/pkg/gplt/modules/markdown#TypeMatches">custom</a>).</p>
-
-
-</td></tr></table>
-
-
-<table width="100%">
-<tr><th align="left"><h4><code>markdownIs(node *Node, selector string) bool</code></h4></th>
-</tr><tr><td>
-<p>Returns whether node matches selector (using <a href="https://pkg.go.dev/github.com/codeshelldev/goplater/pkg/gplt/modules/markdown#TypeMatches">custom</a>).</p>
-
-
-</td></tr></table>
-
-
-<table width="100%">
-<tr><th align="left"><h4><code>markdownHTML(doc *Document) (string, throws error)</code></h4></th>
-</tr><tr><td>
-<p>Returns html markdown representation.</p>
-
-
-</td></tr></table>
-
-
-<table width="100%">
-<tr><th align="left"><h4><code>markdownText(node *Node) string</code></h4></th>
-</tr><tr><td>
-<p>Returns all raw markdown text in a node recursively.</p>
-
-
-</td></tr></table>
-
-
-<table width="100%">
-<tr><th align="left"><h4><code>markdownHeadings(doc *Document) []*Heading</code></h4></th>
-</tr><tr><td>
-<p>Returns all markdown headings.</p>
-
-
-</td></tr></table>
-
-
-<table width="100%">
-<tr><th align="left"><h4><code>markdownLinks(doc *Document) []*Link</code></h4></th>
-</tr><tr><td>
-<p>Returns all markdown links.</p>
-
-
-</td></tr></table>
-
-
-<table width="100%">
-<tr><th align="left"><h4><code>markdownLinkURL(link *Link) string</code></h4></th>
-</tr><tr><td>
-<p>Returns the url of a markdown link node.</p>
-
-
-</td></tr></table>
-
-
-<table width="100%">
-<tr><th align="left"><h4><code>markdownLinkSetURL(link *Link, url string)</code></h4></th>
-</tr><tr><td>
-<p>Sets a link node's url.</p>
-
-
-</td></tr></table>
-
-
-<table width="100%">
-<tr><th align="left"><h4><code>markdownLinkSetTitle(link *Link, title string)</code></h4></th>
-</tr><tr><td>
-<p>Sets a link node's title.</p>
-
-
-</td></tr></table>
-
-
-<table width="100%">
-<tr><th align="left"><h4><code>markdownLinkText(link *Link) string</code></h4></th>
-</tr><tr><td>
-<p>Returns the text of a markdown link node.</p>
-
-
-</td></tr></table>
-
-
-<table width="100%">
-<tr><th align="left"><h4><code>markdownImages(doc *Document) []*Image</code></h4></th>
-</tr><tr><td>
-<p>Returns all markdown images.</p>
-
-
-</td></tr></table>
-
-
-<table width="100%">
-<tr><th align="left"><h4><code>markdownImageURL(image *Image) string</code></h4></th>
-</tr><tr><td>
-<p>Returns the url of a markdown image node.</p>
-
-
-</td></tr></table>
-
-
-<table width="100%">
-<tr><th align="left"><h4><code>markdownImageSetURL(image *Image, url string)</code></h4></th>
-</tr><tr><td>
-<p>Sets a image node's url.</p>
-
-
-</td></tr></table>
-
-
-<table width="100%">
-<tr><th align="left"><h4><code>markdownImageSetAlt(image *Image, alt string)</code></h4></th>
-</tr><tr><td>
-<p>Sets a image node's alt.</p>
-
-
-</td></tr></table>
-
-
-<table width="100%">
-<tr><th align="left"><h4><code>markdownParagraphs(doc *Document) []*Paragraph</code></h4></th>
-</tr><tr><td>
-<p>Returns all markdown paragraphs.</p>
-
-
-</td></tr></table>
-
-
-<table width="100%">
-<tr><th align="left"><h4><code>markdownCodeBlocks(doc *Document) []*CodeBlock</code></h4></th>
-</tr><tr><td>
-<p>Returns all markdown code blocks.</p>
-
-
-</td></tr></table>
-
-
-<table width="100%">
-<tr><th align="left"><h4><code>markdownBlockquotes(doc *Document) []*Blockquote</code></h4></th>
-</tr><tr><td>
-<p>Returns all markdown block quotes.</p>
-
-
-</td></tr></table>
-
-
-<table width="100%">
-<tr><th align="left"><h4><code>markdownRemove(node *Node)</code></h4></th>
-</tr><tr><td>
-<p>Removes a markdown node.</p>
-
-
-</td></tr></table>
-
-
-<table width="100%">
-<tr><th align="left"><h4><code>markdownAppend(doc *Document, str string)</code></h4></th>
-</tr><tr><td>
-<p>Appends text to a markdown document.</p>
-
-
-</td></tr></table>
-
-
-<table width="100%">
-<tr><th align="left"><h4><code>markdownPrepend(doc *Document, str string)</code></h4></th>
-</tr><tr><td>
-<p>Prepends text to a markdown document.</p>
-
-
-</td></tr></table>
-<h3><a href="https://github.com/codeshelldev/goplater/blob/main/pkg/gplt/modules/ext/yaml/yaml.go">yaml</a></h3>
-
-
-<table width="100%">
-<tr><th align="left"><h4><code>yamlEncode(obj any) (string, throws error)</code></h4></th>
-</tr><tr><td>
-<p>Encodes an object into a yaml string.</p>
-
-
-</td></tr></table>
-
-
-<table width="100%">
-<tr><th align="left"><h4><code>yamlDecode(yaml string) (any, throws error)</code></h4></th>
-</tr><tr><td>
-<p>Decodes a yaml string into an object.</p>
 
 
 </td></tr></table>
@@ -1490,7 +998,7 @@ map[key1:value1 key2:value2]
 <table width="100%">
 <tr><th align="left"><h4><code>fetch(url string) (string, throws error)</code></h4></th>
 </tr><tr><td>
-<p>Fetches a resource from a given url.</p>
+<p>Fetches a resource from a given url (https-only).</p>
 
 
 </td></tr></table>
@@ -1871,7 +1379,7 @@ map[key1:value1 key2:value2]
 
 
 <table width="100%">
-<tr><th align="left"><h4><code>repeat(str string, count int) string</code></h4></th>
+<tr><th align="left"><h4><code>repeat(str string, count int) (string, throws error)</code></h4></th>
 </tr><tr><td>
 <p>Repeat a string n times.</p>
 
@@ -1886,14 +1394,303 @@ map[key1:value1 key2:value2]
 
 
 </td></tr></table>
-<h3><a href="https://github.com/codeshelldev/goplater/blob/main/pkg/gplt/modules/test/test.go">test</a></h3>
+<h3><a href="https://github.com/codeshelldev/goplater/blob/main/pkg/gplt/modules/ext/html/html.go">html</a></h3>
 
 
 <table width="100%">
-<tr><th align="left"><h4><code>emit(label string?, value any) throws error</code></h4></th>
+<tr><th align="left"><h4><code>htmlDecode(html string) (*goquery.Document, throws error)</code></h4></th>
 </tr><tr><td>
-<p>Records a value, optionally with a label.</p>
-<p>Not bundled with goplater, used internally for unit and integration tests.</p>
+<p>Decodes html into a document.</p>
+
+
+</td></tr></table>
+
+
+<table width="100%">
+<tr><th align="left"><h4><code>htmlDocFindAll(doc *goquery.Document, selector string) ([]*goquery.Selection, throws error)</code></h4></th>
+</tr><tr><td>
+<p>Finds elements in document by selector (using <a href="https://pkg.go.dev/github.com/PuerkitoBio/goquery#Selection.Find">goquery.Find</a>).</p>
+
+
+</td></tr></table>
+
+
+<table width="100%">
+<tr><th align="left"><h4><code>htmlDocFind(doc *goquery.Document, selector string) (*goquery.Selection, throws error)</code></h4></th>
+</tr><tr><td>
+<p>Finds element in document by selector (using <a href="https://pkg.go.dev/github.com/PuerkitoBio/goquery#Selection.Find">goquery.Find</a>).</p>
+
+
+</td></tr></table>
+
+
+<table width="100%">
+<tr><th align="left"><h4><code>htmlFindAll(doc *goquery.Document, selector string) ([]*goquery.Selection, throws error)</code></h4></th>
+</tr><tr><td>
+<p>Finds elements in element by selector (using <a href="https://pkg.go.dev/github.com/PuerkitoBio/goquery#Selection.Find">goquery.Find</a>).</p>
+
+
+</td></tr></table>
+
+
+<table width="100%">
+<tr><th align="left"><h4><code>htmlFind(doc *goquery.Document, selector string) (*goquery.Selection, throws error)</code></h4></th>
+</tr><tr><td>
+<p>Finds element in element by selector (using <a href="https://pkg.go.dev/github.com/PuerkitoBio/goquery#Selection.Find">goquery.Find</a>).</p>
+
+
+</td></tr></table>
+
+
+<table width="100%">
+<tr><th align="left"><h4><code>htmlText(el *goquery.Selection) string</code></h4></th>
+</tr><tr><td>
+<p>Returns the elements text content.</p>
+
+
+</td></tr></table>
+
+
+<table width="100%">
+<tr><th align="left"><h4><code>htmlAttr(el *goquery.Selection, attr string) string</code></h4></th>
+</tr><tr><td>
+<p>Returns an elements attribute content.</p>
+
+
+</td></tr></table>
+
+
+<table width="100%">
+<tr><th align="left"><h4><code>htmlInner(el *goquery.Selection) string</code></h4></th>
+</tr><tr><td>
+<p>Returns the elements inner html.</p>
+
+
+</td></tr></table>
+<h3><a href="https://github.com/codeshelldev/goplater/blob/main/pkg/gplt/modules/ext/markdown/markdown.go">markdown</a></h3>
+
+
+<table width="100%">
+<tr><th align="left"><h4><code>markdownDecode(md string) *Document</code></h4></th>
+</tr><tr><td>
+<p>Decodes markdown into a document.</p>
+
+
+</td></tr></table>
+
+
+<table width="100%">
+<tr><th align="left"><h4><code>markdownEncode(doc *Document) string</code></h4></th>
+</tr><tr><td>
+<p>Encodes a document into markdown.</p>
+
+
+</td></tr></table>
+
+
+<table width="100%">
+<tr><th align="left"><h4><code>markdownFindAll(target Searchable, selector string) []*Node</code></h4></th>
+</tr><tr><td>
+<p>Finds elements in target by selector (using <a href="https://pkg.go.dev/github.com/codeshelldev/goplater/pkg/gplt/modules/markdown#TypeMatches">custom</a>).</p>
+
+
+</td></tr></table>
+
+
+<table width="100%">
+<tr><th align="left"><h4><code>markdownFind(target Searchable, selector string) *Node</code></h4></th>
+</tr><tr><td>
+<p>Finds element in target by selector (using <a href="https://pkg.go.dev/github.com/codeshelldev/goplater/pkg/gplt/modules/markdown#TypeMatches">custom</a>).</p>
+
+
+</td></tr></table>
+
+
+<table width="100%">
+<tr><th align="left"><h4><code>markdownIs(node *Node, selector string) bool</code></h4></th>
+</tr><tr><td>
+<p>Returns whether node matches selector (using <a href="https://pkg.go.dev/github.com/codeshelldev/goplater/pkg/gplt/modules/markdown#TypeMatches">custom</a>).</p>
+
+
+</td></tr></table>
+
+
+<table width="100%">
+<tr><th align="left"><h4><code>markdownHTML(doc *Document) (string, throws error)</code></h4></th>
+</tr><tr><td>
+<p>Returns html markdown representation.</p>
+
+
+</td></tr></table>
+
+
+<table width="100%">
+<tr><th align="left"><h4><code>markdownText(node *Node) string</code></h4></th>
+</tr><tr><td>
+<p>Returns all raw markdown text in a node recursively.</p>
+
+
+</td></tr></table>
+
+
+<table width="100%">
+<tr><th align="left"><h4><code>markdownHeadings(doc *Document) []*Heading</code></h4></th>
+</tr><tr><td>
+<p>Returns all markdown headings.</p>
+
+
+</td></tr></table>
+
+
+<table width="100%">
+<tr><th align="left"><h4><code>markdownLinks(doc *Document) []*Link</code></h4></th>
+</tr><tr><td>
+<p>Returns all markdown links.</p>
+
+
+</td></tr></table>
+
+
+<table width="100%">
+<tr><th align="left"><h4><code>markdownLinkURL(link *Link) string</code></h4></th>
+</tr><tr><td>
+<p>Returns the url of a markdown link node.</p>
+
+
+</td></tr></table>
+
+
+<table width="100%">
+<tr><th align="left"><h4><code>markdownLinkSetURL(link *Link, url string)</code></h4></th>
+</tr><tr><td>
+<p>Sets a link node's url.</p>
+
+
+</td></tr></table>
+
+
+<table width="100%">
+<tr><th align="left"><h4><code>markdownLinkSetTitle(link *Link, title string)</code></h4></th>
+</tr><tr><td>
+<p>Sets a link node's title.</p>
+
+
+</td></tr></table>
+
+
+<table width="100%">
+<tr><th align="left"><h4><code>markdownLinkText(link *Link) string</code></h4></th>
+</tr><tr><td>
+<p>Returns the text of a markdown link node.</p>
+
+
+</td></tr></table>
+
+
+<table width="100%">
+<tr><th align="left"><h4><code>markdownImages(doc *Document) []*Image</code></h4></th>
+</tr><tr><td>
+<p>Returns all markdown images.</p>
+
+
+</td></tr></table>
+
+
+<table width="100%">
+<tr><th align="left"><h4><code>markdownImageURL(image *Image) string</code></h4></th>
+</tr><tr><td>
+<p>Returns the url of a markdown image node.</p>
+
+
+</td></tr></table>
+
+
+<table width="100%">
+<tr><th align="left"><h4><code>markdownImageSetURL(image *Image, url string)</code></h4></th>
+</tr><tr><td>
+<p>Sets a image node's url.</p>
+
+
+</td></tr></table>
+
+
+<table width="100%">
+<tr><th align="left"><h4><code>markdownImageSetAlt(image *Image, alt string)</code></h4></th>
+</tr><tr><td>
+<p>Sets a image node's alt.</p>
+
+
+</td></tr></table>
+
+
+<table width="100%">
+<tr><th align="left"><h4><code>markdownParagraphs(doc *Document) []*Paragraph</code></h4></th>
+</tr><tr><td>
+<p>Returns all markdown paragraphs.</p>
+
+
+</td></tr></table>
+
+
+<table width="100%">
+<tr><th align="left"><h4><code>markdownCodeBlocks(doc *Document) []*CodeBlock</code></h4></th>
+</tr><tr><td>
+<p>Returns all markdown code blocks.</p>
+
+
+</td></tr></table>
+
+
+<table width="100%">
+<tr><th align="left"><h4><code>markdownBlockquotes(doc *Document) []*Blockquote</code></h4></th>
+</tr><tr><td>
+<p>Returns all markdown block quotes.</p>
+
+
+</td></tr></table>
+
+
+<table width="100%">
+<tr><th align="left"><h4><code>markdownRemove(node *Node)</code></h4></th>
+</tr><tr><td>
+<p>Removes a markdown node.</p>
+
+
+</td></tr></table>
+
+
+<table width="100%">
+<tr><th align="left"><h4><code>markdownAppend(doc *Document, str string)</code></h4></th>
+</tr><tr><td>
+<p>Appends text to a markdown document.</p>
+
+
+</td></tr></table>
+
+
+<table width="100%">
+<tr><th align="left"><h4><code>markdownPrepend(doc *Document, str string)</code></h4></th>
+</tr><tr><td>
+<p>Prepends text to a markdown document.</p>
+
+
+</td></tr></table>
+<h3><a href="https://github.com/codeshelldev/goplater/blob/main/pkg/gplt/modules/ext/yaml/yaml.go">yaml</a></h3>
+
+
+<table width="100%">
+<tr><th align="left"><h4><code>yamlEncode(obj any) (string, throws error)</code></h4></th>
+</tr><tr><td>
+<p>Encodes an object into a yaml string.</p>
+
+
+</td></tr></table>
+
+
+<table width="100%">
+<tr><th align="left"><h4><code>yamlDecode(yaml string) (any, throws error)</code></h4></th>
+</tr><tr><td>
+<p>Decodes a yaml string into an object.</p>
 
 
 </td></tr></table>
