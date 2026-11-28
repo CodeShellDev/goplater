@@ -42,6 +42,7 @@ type TemplateContext struct {
 type Local struct {
 	Invoker		string
 	Depth		int
+	Chain		[]string
 }
 
 type Shared struct {
