@@ -6,6 +6,7 @@ import (
 	"io/fs"
 	"os"
 	"path/filepath"
+	"slices"
 
 	"github.com/codeshelldev/goplater/internals/template/context"
 	"github.com/codeshelldev/goplater/pkg/gplt"
@@ -126,6 +127,12 @@ func readHandler(tmplContext *context.TemplateContext, path string) (string, *gp
 		return "", nil, fmt.Errorf("could not resolve %q: %w", path, err)
 	}
 
+	chain := append(slices.Clone(tmplContext.Local.Chain), tmplContext.Local.Invoker)
+
+	if slices.Contains(chain, filePathAbs) {
+		return "", nil, fmt.Errorf("read %q is a cycle: already in read chain", path)
+	}
+
 	res, err := SafeRead(filePathAbs, tmplContext)
 	if err != nil {
 		return "", nil, fmt.Errorf("could not read %q: %w", path, err)
@@ -133,6 +140,7 @@ func readHandler(tmplContext *context.TemplateContext, path string) (string, *gp
 
 	// copy local
 	c := *tmplContext
+	c.Local.Chain = chain
 	c.Local.Invoker = filePathAbs
 	c.Local.Depth++
 
