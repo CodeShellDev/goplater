@@ -108,10 +108,11 @@ func makePathsAbsolute(in []string) ([]string, error) {
 }
 
 func parseStringSlice(slice []string) []string {
-	for i, item := range slice {
+	out := make([]string, 0, len(slice))
+	for _, item := range slice {
 		trimmed := strings.TrimSpace(item)
 		if trimmed != "" {
-			slice[i] = trimmed
+			out = append(out, trimmed)
 		}
 	}
 	return slice
