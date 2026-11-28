@@ -12,14 +12,14 @@ import (
 
 // fetch: http(s) only
 var FetchPolicy = httpclient.Policy{
-	AllowedSchemes:	[]string{"https", "http"},
+	AllowedSchemes:	[]string{"https"},
 	MaxRedirects:	5,
 	Timeout:		15 * time.Second,
 }
 
 var Module = modules.NewModule(fetchFunc)
 
-// Fetches a resource from a given url.
+// Fetches a resource from a given url (https-only).
 //
 // @param url string
 // @returns string
