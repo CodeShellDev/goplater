@@ -126,6 +126,11 @@ func run(cmd *cobra.Command, args []string) error {
 		return fmt.Errorf("could not make context path %q absolute: %w", args[0], err)
 	}
 
+	ctxPathAbs, err = filepath.EvalSymlinks(ctxPathAbs)
+	if err != nil {
+		return fmt.Errorf("could not resolve context path %q: %w", args[0], err)
+	}
+
 	tmplContext.Shared.Path = ctxPathAbs
 
 	// allowed dirs
