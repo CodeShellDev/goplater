@@ -10,7 +10,6 @@ import (
 	"github.com/codeshelldev/goplater/internals/template/context"
 	"github.com/codeshelldev/goplater/pkg/gplt/utils/tmplerrors"
 	"github.com/codeshelldev/goplater/utils/fsutils"
-	"github.com/codeshelldev/goplater/utils/outputresolver"
 	"github.com/codeshelldev/goplater/utils/pretty"
 	"github.com/codeshelldev/goplater/utils/prettyerrors"
 	"github.com/codeshelldev/goplater/utils/tree"
@@ -21,14 +20,6 @@ func Run(tmplContext *context.TemplateContext) error {
 	opts := tmplContext.Options
 
 	isDir := fsutils.IsDir(ctxPath)
-
-	if isDir {
-		err := outputresolver.Validate(ctxPath, opts.Output)
-		if err != nil {
-			return err
-		}
-	}
-
 	isFile := fsutils.IsFile(ctxPath)
 	
 	tmplContext.Local.Invoker = ctxPath
