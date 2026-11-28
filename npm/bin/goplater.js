@@ -44,8 +44,12 @@ try {
 		stdio: "inherit",
 	})
 } catch (error) {
-	if (error.status !== undefined) {
+	if (typeof error.status === "number") {
 		process.exit(error.status)
+	}
+
+	if (error.signal) {
+		process.kill(process.pid, error.signal)
 	}
 
 	throw error
