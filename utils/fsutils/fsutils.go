@@ -2,7 +2,6 @@ package fsutils
 
 import (
 	"bytes"
-	"errors"
 	"fmt"
 	"io"
 	"os"
@@ -99,48 +98,54 @@ func WithAllowedRoot(target string, allowed []string, fn func(root *os.Root, rel
 		return err
 	}
 
-	var errs []error
+	var bestRoot, bestRel string
+	bestLen := -1
 
 	for _, path := range allowed {
-		absPath, err := filepath.Abs(path)
+		allowedAbs, err := filepath.Abs(path)
 		if err != nil {
 			continue
 		}
 
-		var relative string
-		info, err := os.Stat(absPath)
+		rootDir := allowedAbs
+		relative := ""
+
+		info, err := os.Stat(allowedAbs)
 		if err == nil && !info.IsDir() {
-			if targetAbs != absPath {
+			// allowed file = target
+			if targetAbs != allowedAbs {
 				continue
 			}
 
-			relative = filepath.Base(absPath)
-			absPath = filepath.Dir(absPath)
+			rootDir = filepath.Dir(allowedAbs)
+			relative = filepath.Base(allowedAbs)
 		} else {
-			relative, err = filepath.Rel(absPath, targetAbs)
+			relative, err = filepath.Rel(allowedAbs, targetAbs)
 			if err != nil || !filepath.IsLocal(relative) {
 				continue
 			}
 		}
 
-		root, err := os.OpenRoot(absPath)
-		if err != nil {
-			errs = append(errs, fmt.Errorf("%s: %w", absPath, err))
-			continue
+		// pick broadest
+		if bestLen == -1 || len(allowedAbs) < bestLen {
+			bestRoot, bestRel, bestLen = rootDir, relative, len(allowedAbs)
 		}
-
-		err = fn(root, relative)
-		closeErr := root.Close()
-
-		if err == nil {
-			return closeErr
-		}
-
-		errs = append(errs, fmt.Errorf("%s: %w", absPath, err))
 	}
 
-	if len(errs) > 0 {
-		return errors.Join(errs...)
+	if bestLen == -1 {
+		return fmt.Errorf("path %q is outside the allowed directories", targetAbs)
 	}
-	return fmt.Errorf("path %q is outside the allowed directories", targetAbs)
+
+	root, err := os.OpenRoot(bestRoot)
+	if err != nil {
+		return err
+	}
+
+	err = fn(root, bestRel)
+	closeErr := root.Close()
+
+	if err != nil {
+		return err
+	}
+	return closeErr
 }
