@@ -2,6 +2,7 @@ package fsutils
 
 import (
 	"bytes"
+	"errors"
 	"fmt"
 	"io"
 	"os"
@@ -98,7 +99,7 @@ func WithAllowedRoot(target string, allowed []string, fn func(root *os.Root, rel
 		return err
 	}
 
-	var lastErr error
+	var errs []error
 
 	for _, path := range allowed {
 		absPath, err := filepath.Abs(path)
@@ -106,14 +107,25 @@ func WithAllowedRoot(target string, allowed []string, fn func(root *os.Root, rel
 			continue
 		}
 
-		relative, err := filepath.Rel(absPath, targetAbs)
-		if err != nil || !filepath.IsLocal(relative) {
-			continue
+		var relative string
+		info, err := os.Stat(absPath)
+		if err == nil && !info.IsDir() {
+			if targetAbs != absPath {
+				continue
+			}
+
+			relative = filepath.Base(absPath)
+			absPath = filepath.Dir(absPath)
+		} else {
+			relative, err = filepath.Rel(absPath, targetAbs)
+			if err != nil || !filepath.IsLocal(relative) {
+				continue
+			}
 		}
 
 		root, err := os.OpenRoot(absPath)
 		if err != nil {
-			lastErr = err
+			errs = append(errs, fmt.Errorf("%s: %w", absPath, err))
 			continue
 		}
 
@@ -124,12 +136,11 @@ func WithAllowedRoot(target string, allowed []string, fn func(root *os.Root, rel
 			return closeErr
 		}
 
-		// save err and try next allowed (may just be an error in fn)
-		lastErr = err
+		errs = append(errs, fmt.Errorf("%s: %w", absPath, err))
 	}
 
-	if lastErr != nil {
-		return lastErr
+	if len(errs) > 0 {
+		return errors.Join(errs...)
 	}
 	return fmt.Errorf("path %q is outside the allowed directories", targetAbs)
 }

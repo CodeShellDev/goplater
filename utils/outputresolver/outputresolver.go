@@ -53,6 +53,13 @@ func CommonParent(a, b string) string {
 	}
 }
 
+func Validate(ctxPath, output string) error {
+	if IsDirPath(ctxPath) && !IsDirPath(output) {
+		return ErrDirToFile
+	}
+	return nil
+}
+
 // doesn't preserve structure ("dumps")
 func ResolveOutput(source, output string) string {
 	if !IsDirPath(output) {
